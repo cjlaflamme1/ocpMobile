@@ -37,8 +37,8 @@
       "backgroundColor": "#9DBDC6"
     },
     "android": {
-      "versionCode": 6,
-      "package": "com.nhclimbingpartners",
+      "versionCode": 1,
+      "package": "com.outdoorcommunityproject",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
@@ -47,6 +47,12 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "2097390c-7e23-45f1-8af9-542fff8eaa7c"
+      }
+    },
+    "owner": "cjlaflamme1"
   }
 }

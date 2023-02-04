@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "410200671044",
+    "project_id": "outdoor-community-project",
+    "storage_bucket": "outdoor-community-project.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:410200671044:android:ed939d4e070be91d918d11",
+        "android_client_info": {
+          "package_name": "com.outdoorcommunityproject"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "410200671044-onj8mrtnd5do3v6nevmckesj18fqv806.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAb9Sry7S5Sj4uIxIXi5JXsztR6uzalgfc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "410200671044-onj8mrtnd5do3v6nevmckesj18fqv806.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
