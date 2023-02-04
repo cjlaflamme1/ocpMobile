@@ -8,6 +8,7 @@ import { StatusBar } from 'expo-status-bar';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Provider } from 'react-redux';
 import { store } from './store';
+import RootNavigation from './navigation/RootNavigation';
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -84,10 +85,7 @@ export default function App() {
     <NavigationContainer>
       <SafeAreaView style={safeStyle.safeArea}>
         <Provider store={store}>
-          <View>
-            <Text>Open up App.tsx to start working on your app!</Text>
-            <StatusBar style="auto" />
-          </View>
+          <RootNavigation expoPushToken={expoPushToken} />
         </Provider>
       </SafeAreaView>
     </NavigationContainer>
