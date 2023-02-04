@@ -1,16 +1,30 @@
 {
   "expo": {
-    "name": "ocpMobile",
-    "slug": "ocpMobile",
+    "name": "Outdoor Community Project",
+    "slug": "outdoor-community-project",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
+    "backgroundColor": "#9DBDC6",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/rbt_logo.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#9DBDC6"
     },
+    "plugins": [
+      [
+        "expo-notifications",
+        {
+          "icon": "./local/assets/notification-icon.png",
+          "color": "#ffffff",
+          "sounds": [
+            "./local/assets/notification-sound.wav",
+            "./local/assets/notification-sound-other.wav"
+          ]
+        }
+      ]
+    ],
     "updates": {
       "fallbackToCacheTimeout": 0
     },
@@ -18,13 +32,18 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "bundleIdentifier": "com.outdoorcommunityproject",
+      "supportsTablet": false,
+      "backgroundColor": "#9DBDC6"
     },
     "android": {
+      "versionCode": 6,
+      "package": "com.nhclimbingpartners",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
-      }
+      },
+      "backgroundColor": "#9DBDC6"
     },
     "web": {
       "favicon": "./assets/favicon.png"
