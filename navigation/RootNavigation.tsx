@@ -8,6 +8,7 @@ import { useAppDispatch, useAppSelector } from '../store/hooks';
 // import SignIn from '../screens/loginSignup/SignIn';
 // import { getCurrentUserAsync, updateCurrentUserAsync } from '../store/userSlice';
 import { loginAction } from '../store/authSlice';
+import TabNavigator from './TabNavigator';
 
 interface Props {
   expoPushToken: string;
@@ -55,7 +56,7 @@ const RootNavigation: React.FC<Props> = ({ expoPushToken }) => {
 
   return (
     <>
-      {
+      {/* {
         !currentAuth || !currentAuth.loggedIn ? (
           <RootStack.Navigator initialRouteName="SignIn/SignUp" >
             <RootStack.Screen
@@ -79,16 +80,22 @@ const RootNavigation: React.FC<Props> = ({ expoPushToken }) => {
           </RootStack.Navigator >
 
         ) : (
-        // <RootStack.Navigator initialRouteName="UserTabNavigator">
-        //   <RootStack.Screen
-        //       name="UserTabNavigator"
-        //       component={TabNavigator}
-        //       options={{ headerShown: false }}
-        //     />
-        // </RootStack.Navigator>
-        null
+        <RootStack.Navigator initialRouteName="UserTabNavigator">
+          <RootStack.Screen
+              name="UserTabNavigator"
+              component={TabNavigator}
+              options={{ headerShown: false }}
+            />
+        </RootStack.Navigator>
       )
-      }
+      } */}
+      <RootStack.Navigator initialRouteName="UserTabNavigator">
+          <RootStack.Screen
+              name="UserTabNavigator"
+              component={TabNavigator}
+              options={{ headerShown: false }}
+            />
+        </RootStack.Navigator>
     </>
   );
 }
