@@ -1,5 +1,6 @@
 import React from 'react';
-import { View, Text } from 'react-native';
+import { View } from 'react-native';
+import CustomText from '../../components/CustomText';
 
 interface Props {
   navigation: any
@@ -8,7 +9,7 @@ interface Props {
 const CalendarLanding: React.FC<Props> = ({ navigation }) => {
   return (
     <View>
-      <Text>This is calendar landing</Text>
+      <CustomText>This is calendar landing</CustomText>
     </View>
   );
 };

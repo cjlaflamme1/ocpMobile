@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text } from 'react-native';
+import CustomText from '../../components/CustomText';
 
 interface Props {
   navigation: any
@@ -8,7 +9,7 @@ interface Props {
 const GroupsLanding: React.FC<Props> = ({ navigation }) => {
   return (
     <View>
-      <Text>This is groups landing</Text>
+      <CustomText>This is groups landing</CustomText>
     </View>
   );
 };

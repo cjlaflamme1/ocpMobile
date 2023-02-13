@@ -1,14 +1,16 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Platform, StyleSheet, Text, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { Subscription } from 'expo-modules-core';
 import * as Notifications from 'expo-notifications';
 import * as Device from 'expo-device';
-import { StatusBar } from 'expo-status-bar';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Provider } from 'react-redux';
 import { store } from './store';
 import RootNavigation from './navigation/RootNavigation';
+import { useFonts } from 'expo-font';
+import * as SplashScreen from 'expo-splash-screen';
+import { Manrope_400Regular, Manrope_600SemiBold, Manrope_800ExtraBold } from '@expo-google-fonts/manrope';
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -23,6 +25,17 @@ export default function App() {
   const [notification, setNotification] = useState(false);
   const notificationListener = useRef<Subscription>();
   const responseListener = useRef<Subscription>();
+  const [fontsLoaded] = useFonts({
+    Manrope_400Regular,
+    Manrope_600SemiBold,
+    Manrope_800ExtraBold
+  });
+
+  const onLayoutRootView = useCallback(async () => {
+    if (fontsLoaded) {
+      await SplashScreen.hideAsync();
+    }
+  }, [fontsLoaded]);
 
   async function registerForPushNotificationsAsync() {
     let token;
@@ -81,9 +94,12 @@ export default function App() {
       }
     };
   }, []);
+  if (!fontsLoaded) {
+    return null;
+  }
   return (
     <NavigationContainer>
-      <SafeAreaView style={safeStyle.safeArea}>
+      <SafeAreaView style={[safeStyle.safeArea]} onLayout={onLayoutRootView}>
         <Provider store={store}>
           <RootNavigation expoPushToken={expoPushToken} />
         </Provider>

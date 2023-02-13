@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text } from 'react-native';
+import CustomText from '../../components/CustomText';
 
 interface Props {
   navigation: any
@@ -8,7 +9,7 @@ interface Props {
 const SearchLanding: React.FC<Props> = ({ navigation }) => {
   return (
     <View>
-      <Text>This is search landing</Text>
+      <CustomText>This is search landing</CustomText>
     </View>
   );
 };

@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { View, StyleSheet, Platform, Text, Image, Button } from 'react-native';
+import CustomText from '../../components/CustomText';
 import { useAppDispatch } from '../../store/hooks';
 interface Props {
   navigation: any;
@@ -13,8 +14,8 @@ const LoginSignup: React.FC<Props> = ({ navigation }) => {
   return (
     <View>
       <View>
-        <Text>Outdoor Community</Text>
-        <Text>Project</Text>
+        <CustomText>Outdoor Community</CustomText>
+        <CustomText>Project</CustomText>
       </View>
       <View>
         <Image
