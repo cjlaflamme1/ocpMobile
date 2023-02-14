@@ -42,7 +42,9 @@ const ProfileLanding: React.FC<Props> = ({ navigation }) => {
         <View>
           <View style={[layoutStyles.flexRow, layoutStyles.jBetween]}>
             <CustomText h4 bold>User Activities</CustomText>
-            <Button title='+ Add Activity' />
+            <Pressable>
+              <CustomText style={[{ color: '#CB1406'}]}>+ Add Activity</CustomText>
+            </Pressable>
           </View>
           <View style={[profileLandingStyles.cardRow]}>
             <View style={[profileLandingStyles.cardColumn]}>
