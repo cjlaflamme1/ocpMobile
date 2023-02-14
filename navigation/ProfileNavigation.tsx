@@ -17,7 +17,8 @@ const ProfileNavigation: React.FC = () => {
             {
               contentStyle:
               {
-                alignItems: 'center'
+                alignItems: 'center',
+                backgroundColor: '#FAFAFA'
               },
             }
           }

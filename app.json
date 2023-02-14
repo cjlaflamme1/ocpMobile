@@ -6,7 +6,8 @@
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
-    "backgroundColor": "#9DBDC6",
+    "backgroundColor": "#FAFAFA",
+      // "backgroundColor": "#9DBDC6",
     "splash": {
       "image": "./assets/rbt_logo.png",
       "resizeMode": "contain",
@@ -34,7 +35,8 @@
     "ios": {
       "bundleIdentifier": "com.outdoorcommunityproject",
       "supportsTablet": false,
-      "backgroundColor": "#9DBDC6"
+      "backgroundColor": "#FAFAFA"
+      // "backgroundColor": "#9DBDC6"
     },
     "android": {
       "versionCode": 1,
@@ -43,7 +45,8 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
       },
-      "backgroundColor": "#9DBDC6"
+      "backgroundColor": "#FAFAFA"
+      // "backgroundColor": "#9DBDC6"
     },
     "web": {
       "favicon": "./assets/favicon.png"

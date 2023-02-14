@@ -10,6 +10,10 @@ interface Props {
   h3?: boolean,
   h2?: boolean,
   h1?: boolean,
+  style?: any[],
+  center?: boolean,
+  left?: boolean,
+  right?: boolean,
 };
 
 const CustomText: React.FC<Props> = (props: Props) => {
@@ -20,7 +24,11 @@ const CustomText: React.FC<Props> = (props: Props) => {
     h4,
     h3,
     h2,
-    h1
+    h1,
+    style,
+    center,
+    left,
+    right,
   } = props;
 
   return (
@@ -34,6 +42,10 @@ const CustomText: React.FC<Props> = (props: Props) => {
         (h3 && globalStyles.h3),
         (h2 && globalStyles.h2),
         (h1 && globalStyles.h1),
+        (center && globalStyles.tCenter),
+        (left && globalStyles.tLeft),
+        (right && globalStyles.tRight),
+        (style && (style as []))
       ]}
     >
       {children}
@@ -48,6 +60,10 @@ CustomText.defaultProps = {
   h3: false,
   h2: false,
   h1: false,
+  style: [],
+  center: false,
+  left: false,
+  right: false,
 }
 
 export default CustomText;

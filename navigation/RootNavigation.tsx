@@ -93,7 +93,14 @@ const RootNavigation: React.FC<Props> = ({ expoPushToken }) => {
           <RootStack.Screen
               name="UserTabNavigator"
               component={TabNavigator}
-              options={{ headerShown: false }}
+              options={
+                { headerShown: false,
+                  contentStyle: {
+                    backgroundColor: '#FAFAFA'
+                  }
+                }
+                
+              }
             />
         </RootStack.Navigator>
     </>

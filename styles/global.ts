@@ -24,7 +24,16 @@ const globalStyles = StyleSheet.create({
   },
   p: {
     fontSize: 16,
-  }
+  },
+  tCenter: {
+    textAlign: 'center',
+  },
+  tLeft: {
+    textAlign: 'left',
+  },
+  tRight: {
+    textAlign: 'right',
+  },
 });
 
 export default globalStyles;
