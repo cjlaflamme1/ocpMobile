@@ -1,6 +1,7 @@
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import CalendarLanding from '../screens/Calendar/CalendarLanding';
+import globalStyles from '../styles/global';
 
 
 
@@ -15,10 +16,7 @@ const CalendarNavigation: React.FC = () => {
           component={CalendarLanding}
           options={
             {
-              contentStyle:
-              {
-                alignItems: 'center'
-              },
+              contentStyle: globalStyles.navigationStackScreen,
             }
           }
         />

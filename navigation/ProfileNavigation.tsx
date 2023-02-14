@@ -1,6 +1,7 @@
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import ProfileLanding from '../screens/Profile/ProfileLanding';
+import globalStyles from '../styles/global';
 
 
 
@@ -15,11 +16,7 @@ const ProfileNavigation: React.FC = () => {
           component={ProfileLanding}
           options={
             {
-              contentStyle:
-              {
-                alignItems: 'center',
-                backgroundColor: '#FAFAFA'
-              },
+              contentStyle: globalStyles.navigationStackScreen,
             }
           }
         />

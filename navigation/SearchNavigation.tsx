@@ -2,6 +2,7 @@ import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import GroupsLanding from '../screens/Groups/GroupsLanding';
 import SearchLanding from '../screens/Search/SearchLanding';
+import globalStyles from '../styles/global';
 
 
 
@@ -16,10 +17,7 @@ const SearchNavigation: React.FC = () => {
           component={SearchLanding}
           options={
             {
-              contentStyle:
-              {
-                alignItems: 'center'
-              },
+              contentStyle: globalStyles.navigationStackScreen,
             }
           }
         />

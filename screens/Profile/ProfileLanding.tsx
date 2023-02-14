@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { ScrollView, View, Image, RefreshControl, AppState, Text, Button, Pressable } from 'react-native';
-import ProfileActivityCard from '../../components/Card';
+import ProfileActivityCard from '../../components/ProfileActivityCard';
 import CustomText from '../../components/CustomText';
 import globalStyles from '../../styles/global';
 import imageStyles from '../../styles/images';
@@ -43,7 +43,7 @@ const ProfileLanding: React.FC<Props> = ({ navigation }) => {
           <View style={[layoutStyles.flexRow, layoutStyles.jBetween]}>
             <CustomText h4 bold>User Activities</CustomText>
             <Pressable>
-              <CustomText style={[{ color: '#CB1406'}]}>+ Add Activity</CustomText>
+              <CustomText style={[globalStyles.redLink]}>+ Add Activity</CustomText>
             </Pressable>
           </View>
           <View style={[profileLandingStyles.cardRow]}>

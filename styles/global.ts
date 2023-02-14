@@ -34,6 +34,13 @@ const globalStyles = StyleSheet.create({
   tRight: {
     textAlign: 'right',
   },
+  redLink: {
+    color: '#CB1406',
+  },
+  navigationStackScreen: {
+    backgroundColor: '#FAFAFA',
+    alignItems: 'center',
+  }
 });
 
 export default globalStyles;
