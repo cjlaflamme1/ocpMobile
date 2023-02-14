@@ -55,12 +55,24 @@ const layoutStyles = StyleSheet.create({
   jBetween: {
     justifyContent: 'space-between',
   },
+  jEnd: {
+    justifyContent: 'flex-end'
+  },
+  jStart: {
+    justifyContent: 'flex-start',
+  },
   flexRow: {
     display: 'flex',
     flexDirection: 'row',
   },
   alignItemCenter: {
     alignItems: 'center',
+  },
+  alignItemStart: {
+    alignItems: 'flex-start',
+  },
+  alignItemEnd: {
+    alignItems: 'flex-end',
   },
   screenContainer: {
     width: '100%',

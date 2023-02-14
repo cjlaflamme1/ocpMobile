@@ -33,10 +33,10 @@ const ProfileLanding: React.FC<Props> = ({ navigation }) => {
           </CustomText>
           <View style={[layoutStyles.flexRow, layoutStyles.jCenter, layoutStyles.m_1]}>
             <Image 
-              source={{uri: "https://via.placeholder.com/15"}}
-              style={[{width: 15, height: 15}, layoutStyles.dFlex, layoutStyles.alignItemCenter, layoutStyles.jCenter]}
+              source={require('../../assets/icons/location.png')}
+              style={[{width: 16, height: 16, alignSelf: 'center'}]}
             />
-            <CustomText style={[layoutStyles.ml_1]}>Tamworth, NH</CustomText>
+            <CustomText style={[{color: '#8A8A8A'}]}>Tamworth, NH</CustomText>
           </View>
         </View>
         <View>
