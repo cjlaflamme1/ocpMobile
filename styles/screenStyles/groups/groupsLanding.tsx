@@ -34,7 +34,6 @@ const groupsLandingStyle = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     marginTop: 30,
-    marginBottom: 30,
   },
   bottomBorder: {
     borderBottomColor: '#CB1406',
