@@ -28,7 +28,21 @@ const groupsLandingStyle = StyleSheet.create({
   },
   searchIconPressed: {
     backgroundColor: 'grey',
-  }
+  },
+  radioTextContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginTop: 30,
+    marginBottom: 30,
+  },
+  bottomBorder: {
+    borderBottomColor: '#CB1406',
+    borderBottomWidth: 1,
+  },
+  radioText: {
+    padding: 10,
+  },
 });
 
 export default groupsLandingStyle;

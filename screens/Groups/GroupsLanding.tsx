@@ -32,28 +32,34 @@ const GroupsLanding: React.FC<Props> = ({ navigation }) => {
               <CustomText style={[globalStyles.redLink]}>+ Create New</CustomText>
           </Pressable>
         </View>
-        <View>
-          <View style={[groupsLandingStyle.searchContainer]}>
-            <Pressable
-              // style={[groupsLandingStyle.searchIconPressable]}
-              style={({pressed}) => {
-                if (pressed) {
-                  return [groupsLandingStyle.searchIconPressable, groupsLandingStyle.searchIconPressed]
-                } else {
-                  return [groupsLandingStyle.searchIconPressable];
-                }
-              }}
-            >
-              <Image 
-                source={require('../../assets/icons/searchBarIcon.png')}
-                style={[{width: 24, height: 24}]}
-              />
-            </Pressable>
-            <TextInput
-              placeholder='Search'
-              style={[groupsLandingStyle.searchBar]}
+        <View style={[groupsLandingStyle.searchContainer]}>
+          <Pressable
+            // style={[groupsLandingStyle.searchIconPressable]}
+            style={({pressed}) => {
+              if (pressed) {
+                return [groupsLandingStyle.searchIconPressable, groupsLandingStyle.searchIconPressed]
+              } else {
+                return [groupsLandingStyle.searchIconPressable];
+              }
+            }}
+          >
+            <Image 
+              source={require('../../assets/icons/searchBarIcon.png')}
+              style={[{width: 24, height: 24}]}
             />
-          </View>
+          </Pressable>
+          <TextInput
+            placeholder='Search'
+            style={[groupsLandingStyle.searchBar]}
+          />
+        </View>
+        <View style={[groupsLandingStyle.radioTextContainer]}>
+          <Pressable style={[groupsLandingStyle.bottomBorder]}>
+            <CustomText bold style={[groupsLandingStyle.radioText]}>Your Groups</CustomText>
+          </Pressable>
+          <Pressable>
+            <CustomText style={[groupsLandingStyle.radioText, globalStyles.mutedText]}>Explore Groups</CustomText>
+          </Pressable>
         </View>
       </ScrollView>
     </View>

@@ -36,7 +36,7 @@ const ProfileLanding: React.FC<Props> = ({ navigation }) => {
               source={require('../../assets/icons/location.png')}
               style={[{width: 16, height: 16, alignSelf: 'center'}]}
             />
-            <CustomText style={[{color: '#8A8A8A'}]}>Tamworth, NH</CustomText>
+            <CustomText style={[globalStyles.mutedText]}>Tamworth, NH</CustomText>
           </View>
         </View>
         <View>

@@ -40,6 +40,9 @@ const globalStyles = StyleSheet.create({
   navigationStackScreen: {
     backgroundColor: '#FAFAFA',
     alignItems: 'center',
+  },
+  mutedText: {
+    color: '#8A8A8A',
   }
 });
 
