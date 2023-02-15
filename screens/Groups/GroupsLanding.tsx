@@ -11,6 +11,7 @@ interface Props {
 
 const GroupsLanding: React.FC<Props> = ({ navigation }) => {
   const [refreshing, setRefreshing] = useState(false);
+  const [radioSelector, setRadioSelector] = useState(0);
   const onRefresh = () => {
     setRefreshing(true);
     // Refresh functions here
@@ -54,12 +55,15 @@ const GroupsLanding: React.FC<Props> = ({ navigation }) => {
           />
         </View>
         <View style={[groupsLandingStyle.radioTextContainer]}>
-          <Pressable style={[groupsLandingStyle.bottomBorder]}>
-            <CustomText bold style={[groupsLandingStyle.radioText]}>Your Groups</CustomText>
+          <Pressable onPress={() => setRadioSelector(0)} style={[(radioSelector <= 0 && groupsLandingStyle.bottomBorder)]}>
+            <CustomText bold style={[groupsLandingStyle.radioText, (radioSelector > 0 && globalStyles.mutedText)]}>Your Groups</CustomText>
           </Pressable>
-          <Pressable>
-            <CustomText style={[groupsLandingStyle.radioText, globalStyles.mutedText]}>Explore Groups</CustomText>
+          <Pressable onPress={() => setRadioSelector(1)} style={[(radioSelector > 0 && groupsLandingStyle.bottomBorder)]}>
+            <CustomText style={[groupsLandingStyle.radioText, (radioSelector <= 0 && globalStyles.mutedText)]}>Explore Groups</CustomText>
           </Pressable>
+        </View>
+        <View>
+          {/* Search result widgets */}
         </View>
       </ScrollView>
     </View>
