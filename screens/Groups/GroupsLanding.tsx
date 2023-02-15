@@ -63,8 +63,18 @@ const GroupsLanding: React.FC<Props> = ({ navigation }) => {
             <CustomText style={[groupsLandingStyle.radioText, (radioSelector <= 0 && globalStyles.mutedText)]}>Explore Groups</CustomText>
           </Pressable>
         </View>
-        <View>
+        <View style={[layoutStyles.mb_3]}>
           {/* Search result widgets */}
+          <GroupCard
+            groupTitle='MWV Backgrountry Skiing'
+            numberOfMembers={12}
+            imageSource={require('../../assets/profilePhotos/testSportImage.jpg')}
+          />
+          <GroupCard
+            groupTitle='MWV Backgrountry Skiing'
+            numberOfMembers={12}
+            imageSource={require('../../assets/profilePhotos/testSportImage.jpg')}
+          />
           <GroupCard
             groupTitle='MWV Backgrountry Skiing'
             numberOfMembers={12}

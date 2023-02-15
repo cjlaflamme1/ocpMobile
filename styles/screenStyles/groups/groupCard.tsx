@@ -8,6 +8,7 @@ const groupCardStyles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     padding: 5,
+    marginTop: 20,
   },
   imageContainer: {
     padding: 10,
