@@ -24,6 +24,7 @@ const SearchLanding: React.FC<Props> = ({ navigation }) => {
           <CustomText h1 bold>Search Results</CustomText>
         </View>
         <View style={[searchLandingStyle.searchContainer]}>
+          {/* TODO: Add more filter options here */}
           <Pressable
             // style={[groupsLandingStyle.searchIconPressable]}
             style={({pressed}) => {
