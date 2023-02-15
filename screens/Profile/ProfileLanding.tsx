@@ -20,7 +20,7 @@ const ProfileLanding: React.FC<Props> = ({ navigation }) => {
   }
   return (
     <View style={[layoutStyles.screenContainer]}>
-      <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
+      <ScrollView showsVerticalScrollIndicator={false}  refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
         <View style={[layoutStyles.m_1, layoutStyles.mt_3, layoutStyles.mb_3]}>
           <View style={[imageStyles.profileImageContainer]}>
             <Image

@@ -20,7 +20,7 @@ const GroupsLanding: React.FC<Props> = ({ navigation }) => {
   }
   return (
     <View style={[layoutStyles.screenContainer]}>
-      <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
+      <ScrollView showsVerticalScrollIndicator={false} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
         <View style={[
           layoutStyles.flexRow,
           layoutStyles.jBetween,
