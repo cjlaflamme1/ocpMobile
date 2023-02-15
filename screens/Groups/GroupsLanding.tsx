@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { View, Image, ScrollView, RefreshControl, Pressable, TextInput } from 'react-native';
 import CustomText from '../../components/CustomText';
+import GroupCard from '../../components/GroupCard';
 import globalStyles from '../../styles/global';
 import layoutStyles from '../../styles/layout';
-import groupsLandingStyle from '../../styles/screenStyles/groupsLanding';
+import groupsLandingStyle from '../../styles/screenStyles/groups/groupsLanding';
 
 interface Props {
   navigation: any
@@ -64,6 +65,11 @@ const GroupsLanding: React.FC<Props> = ({ navigation }) => {
         </View>
         <View>
           {/* Search result widgets */}
+          <GroupCard
+            groupTitle='MWV Backgrountry Skiing'
+            numberOfMembers={12}
+            imageSource={require('../../assets/profilePhotos/testSportImage.jpg')}
+          />
         </View>
       </ScrollView>
     </View>
