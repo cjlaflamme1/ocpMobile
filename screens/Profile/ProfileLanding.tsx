@@ -48,7 +48,7 @@ const ProfileLanding: React.FC<Props> = ({ navigation }) => {
           </View>
           <View style={[profileLandingStyles.cardRow]}>
             <View style={[profileLandingStyles.cardColumn]}>
-              <Pressable onPress={() => console.log('pressed')}>
+              <Pressable onPress={() => navigation.navigate('Activity Description')}>
                 <ProfileActivityCard imageSource={require('../../assets/profilePhotos/testSportImage.jpg')}>
                   Skiing
                 </ProfileActivityCard>

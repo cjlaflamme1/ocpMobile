@@ -24,7 +24,7 @@ export const dateYearMonthDay = (date: Date) => {
   return `${year}-${month}-${day}`;
 };
 
-export const dateMondayDayYear = (date: Date) => {
+export const dateMonthDayYear = (date: Date) => {
   const d = new Date(date);
   const year = d.getFullYear();
   const month = (`0${(d.getMonth() + 1)}`).slice(-2);
