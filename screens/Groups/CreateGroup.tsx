@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Image, ScrollView, RefreshControl, Pressable, TextInput } from 'react-native';
 import CustomText from '../../components/CustomText';
 import GroupCard from '../../components/GroupCard';
+import PrimaryButton from '../../components/PrimaryButton';
 import UserIconSmall from '../../components/UserIconSmall';
 import inputStyle from '../../styles/componentStyles/inputBar';
 import globalStyles from '../../styles/global';
@@ -15,7 +16,6 @@ interface Props {
 
 const CreateGroup: React.FC<Props> = ({ navigation }) => {
   const [refreshing, setRefreshing] = useState(false);
-  const [radioSelector, setRadioSelector] = useState(0);
   const onRefresh = () => {
     setRefreshing(true);
     // Refresh functions here
@@ -79,33 +79,61 @@ const CreateGroup: React.FC<Props> = ({ navigation }) => {
               />
             </View>
           </View>
-          <View style={[layoutStyles.mt_2]}>
-              <View style={[layoutStyles.flexRow, { flexWrap: 'wrap'}]}>
-                <Pressable>
-                  <UserIconSmall
-                    imageSource={require('../../assets/profilePhotos/testProfile.jpg')}
-                    userName='Chad Laflamme'
-                  />
-                </Pressable>
-                <Pressable>
-                  <UserIconSmall
-                    imageSource={require('../../assets/profilePhotos/testProfile.jpg')}
-                    userName='Chad Laflamme'
-                  />
-                </Pressable>
-                <Pressable>
-                  <UserIconSmall
-                    imageSource={require('../../assets/profilePhotos/testProfile.jpg')}
-                    userName='Chad Laflamme'
-                  />
-                </Pressable>
-                <Pressable>
-                  <UserIconSmall
-                    imageSource={require('../../assets/profilePhotos/testProfile.jpg')}
-                    userName='Chad Laflamme'
-                  />
-                </Pressable>
-              </View>
+          <View style={[layoutStyles.flexRow, { flexWrap: 'wrap'}, layoutStyles.mt_2]}>
+            <Pressable>
+              <UserIconSmall
+                imageSource={require('../../assets/profilePhotos/testProfile.jpg')}
+                userName='Chad Laflamme'
+              />
+            </Pressable>
+            <Pressable>
+              <UserIconSmall
+                imageSource={require('../../assets/profilePhotos/testProfile.jpg')}
+                userName='Chad Laflamme'
+              />
+            </Pressable>
+            <Pressable>
+              <UserIconSmall
+                imageSource={require('../../assets/profilePhotos/testProfile.jpg')}
+                userName='Chad Laflamme'
+              />
+            </Pressable>
+            <Pressable>
+              <UserIconSmall
+                imageSource={require('../../assets/profilePhotos/testProfile.jpg')}
+                userName='Chad Laflamme'
+              />
+            </Pressable>
+            <Pressable>
+              <UserIconSmall
+                imageSource={require('../../assets/profilePhotos/testProfile.jpg')}
+                userName='Chad Laflamme'
+              />
+            </Pressable>
+            <Pressable>
+              <UserIconSmall
+                imageSource={require('../../assets/profilePhotos/testProfile.jpg')}
+                userName='Chad Laflamme'
+              />
+            </Pressable>
+            <Pressable>
+              <UserIconSmall
+                imageSource={require('../../assets/profilePhotos/testProfile.jpg')}
+                userName='Chad Laflamme'
+              />
+            </Pressable>
+            <Pressable>
+              <UserIconSmall
+                imageSource={require('../../assets/profilePhotos/testProfile.jpg')}
+                userName='Chad Laflamme'
+              />
+            </Pressable>
+          </View>
+          <View style={[layoutStyles.mt_3]}>
+            <PrimaryButton
+              buttonText='Create'
+              callback={() => console.log('clicky')}
+            />
           </View>
         </View>
       </ScrollView>

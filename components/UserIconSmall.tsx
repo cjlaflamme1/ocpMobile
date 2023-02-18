@@ -18,7 +18,7 @@ const UserIconSmall: React.FC<Props> = (props: Props) => {
 
   return (
     <View style={[layoutStyles.mt_1]}>
-      <View style={[layoutStyles.dFlex, layoutStyles.alignItemCenter, { maxWidth: '90%'}]}>
+      <View style={[layoutStyles.dFlex, layoutStyles.alignItemCenter, { maxWidth: '95%'}]}>
         {
           imageSource &&
           (
@@ -29,8 +29,8 @@ const UserIconSmall: React.FC<Props> = (props: Props) => {
           )
         }
       </View>
-      <View style={[{ maxWidth: '90%' }, layoutStyles.dFlex, layoutStyles.alignItemCenter]}>
-        <CustomText style={[{ textAlign: 'center'}]}>{userName}</CustomText>
+      <View style={[{ maxWidth: '95%' }, layoutStyles.dFlex, layoutStyles.alignItemCenter]}>
+        <CustomText style={[{ textAlign: 'center', fontSize: 12}]}>{userName}</CustomText>
       </View>
     </View>
   );
