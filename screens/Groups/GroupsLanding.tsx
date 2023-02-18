@@ -64,11 +64,13 @@ const GroupsLanding: React.FC<Props> = ({ navigation }) => {
         </View>
         <View style={[layoutStyles.mb_3]}>
           {/* Search result widgets */}
-          <GroupCard
-            groupTitle='MWV Backgrountry Skiing'
-            numberOfMembers={12}
-            imageSource={require('../../assets/profilePhotos/testSportImage.jpg')}
-          />
+          <Pressable onPress={() => navigation.navigate('View Group')}>
+            <GroupCard
+              groupTitle='MWV Backgrountry Skiing'
+              numberOfMembers={12}
+              imageSource={require('../../assets/profilePhotos/testSportImage.jpg')}
+            />
+          </Pressable>
           <GroupCard
             groupTitle='MWV Backgrountry Skiing'
             numberOfMembers={12}
