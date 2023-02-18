@@ -30,13 +30,12 @@ const GroupsLanding: React.FC<Props> = ({ navigation }) => {
           ]}
         >
           <CustomText h1 bold>Groups</CustomText>
-          <Pressable style={[{ alignSelf: 'flex-end'}]}>
+          <Pressable onPress={() => navigation.navigate('Create Group')} style={[{ alignSelf: 'flex-end'}]}>
               <CustomText style={[globalStyles.redLink]}>+ Create New</CustomText>
           </Pressable>
         </View>
         <View style={[groupsLandingStyle.searchContainer]}>
           <Pressable
-            // style={[groupsLandingStyle.searchIconPressable]}
             style={({pressed}) => {
               if (pressed) {
                 return [groupsLandingStyle.searchIconPressable, groupsLandingStyle.searchIconPressed]

@@ -2,6 +2,7 @@ import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import GroupsLanding from '../screens/Groups/GroupsLanding';
 import globalStyles from '../styles/global';
+import CreateGroup from '../screens/Groups/CreateGroup';
 
 
 
@@ -14,6 +15,15 @@ const GroupsNavigation: React.FC = () => {
         <RootStack.Screen
           name="Groups Landing"
           component={GroupsLanding}
+          options={
+            {
+              contentStyle: globalStyles.navigationStackScreen,
+            }
+          }
+        />
+        <RootStack.Screen
+          name="Create Group"
+          component={CreateGroup}
           options={
             {
               contentStyle: globalStyles.navigationStackScreen,
