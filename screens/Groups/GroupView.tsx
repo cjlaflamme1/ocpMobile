@@ -6,6 +6,7 @@ import layoutStyles from '../../styles/layout';
 import globalStyles from '../../styles/global';
 import groupViewStyle from '../../styles/screenStyles/groups/groupView';
 import PostMessageCard from '../../components/groups/PostMessage';
+import MessageCard from '../../components/groups/MessageCard';
 
 interface Props {
   navigation: any
@@ -45,15 +46,37 @@ const GroupView: React.FC<Props> = ({ navigation }) => {
               <CustomText style={[groupViewStyle.radioText, (radioSelector <= 0 && globalStyles.mutedText)]}>Events</CustomText>
             </Pressable>
           </View>
-          <View style={[layoutStyles.mt_2]}>
+          <View style={[layoutStyles.mt_2, layoutStyles.mb_2]}>
             <PostMessageCard
               buttonText='Submit'
               placeholderText='Write post here.'
               groupId='12345'
             />
           </View>
-          <View>
-            {/* Message card */}
+          <View style={[layoutStyles.mb_2]}>
+            <MessageCard
+              userPosted={{
+                name: 'Chad Laflamme',
+                profile: require('../../assets/profilePhotos/testProfile.jpg')
+              }}
+              postId={{
+                postText: 'We are hosting a new ski tour this weekend!',
+                postImage: require('../../assets/profilePhotos/testSportImage.jpg')
+              }}
+              groupId={'1235677'}
+            />
+          </View>
+          <View style={[layoutStyles.mb_2]}>
+            <MessageCard
+              userPosted={{
+                name: 'Chad Laflamme',
+                profile: require('../../assets/profilePhotos/testProfile.jpg')
+              }}
+              postId={{
+                postText: 'Who is excited???  We are hosting a new ski tought coming up this weekend!!!  Get ready for the big announcement.',
+              }}
+              groupId={'1235677876'}
+            />
           </View>
         </View>
       </ScrollView>
