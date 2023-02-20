@@ -4,5 +4,4 @@ export interface SignupObject {
   matchingPw: boolean;
   firstName: string;
   lastName: string;
-  profilePhoto: string;
 }

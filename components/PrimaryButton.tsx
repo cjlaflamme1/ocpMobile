@@ -19,7 +19,7 @@ const PrimaryButton: React.FC<Props> = (props: Props) => {
   return (
     <Pressable
       style={[inputStyle.primaryButton]}
-      onPress={() => callback}
+      onPress={() => callback()}
     >
       <CustomText bold style={[{ color: 'white' }]}>{buttonText}</CustomText>
     </Pressable>
