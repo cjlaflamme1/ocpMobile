@@ -1,8 +1,6 @@
 import axios from 'axios';
 import * as SecureStore from 'expo-secure-store';
 import { Platform } from 'react-native';
-import { logoutAction } from '../store/authSlice';
-import { useAppDispatch } from '../store/hooks';
 
 const api = axios.create({
   // baseURL: 'https://staging.nhclimbingpartners.com',
@@ -17,8 +15,6 @@ api.interceptors.request.use(async (req) => {
   req.headers.Authorization = `Bearer ${await SecureStore.getItemAsync('accessToken')}`;
   return req;
 })
-
-const dispatch = useAppDispatch();
 
 api.interceptors.response.use((response) => response, async (error) => {
   const { response: errorResponse, config: originalRequest } = error;
@@ -37,13 +33,11 @@ api.interceptors.response.use((response) => response, async (error) => {
         if (e.response.status === 401) {
           await SecureStore.deleteItemAsync('refreshToken');
           await SecureStore.deleteItemAsync('accessToken');
-          dispatch(logoutAction());
         }
       });
     } else if (originalRequest.url === '/auth/refresh' && originalRequest._retry) {
       await SecureStore.deleteItemAsync('refreshToken');
       await SecureStore.deleteItemAsync('accessToken');
-      dispatch(logoutAction());
       return Promise.reject(error);
     } else {
       return Promise.reject(error);

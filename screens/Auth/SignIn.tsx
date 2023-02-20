@@ -6,7 +6,7 @@ interface Props {
   navigation: any;
 };
 
-const LoginSignup: React.FC<Props> = ({ navigation }) => {
+const SignIn: React.FC<Props> = ({ navigation }) => {
   const dispatch = useAppDispatch();
   useEffect(() => {
   }, [])
@@ -20,7 +20,7 @@ const LoginSignup: React.FC<Props> = ({ navigation }) => {
       <View>
         <Image
           source={require(imageUri)}
-          style={{width: 150, height: 150, maxHeight: 150, maxWidth: 150}}
+          style={{width: 150, height: 150, resizeMode: 'contain'}}
           resizeMode={'center'}
         />
       </View>
@@ -38,4 +38,4 @@ const LoginSignup: React.FC<Props> = ({ navigation }) => {
   )
 };
 
-export default LoginSignup;
+export default SignIn;
