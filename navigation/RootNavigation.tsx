@@ -8,6 +8,7 @@ import { getCurrentUserAsync, updateCurrentUserAsync } from '../store/userSlice'
 import { loginAction } from '../store/authSlice';
 import SignIn from '../screens/Auth/SignIn';
 import SignUp from '../screens/Auth/SignUp';
+import globalStyles from '../styles/global';
 
 interface Props {
   expoPushToken: string;
@@ -65,15 +66,8 @@ const RootNavigation: React.FC<Props> = ({ expoPushToken }) => {
               component={SignIn}
               options={
                 {
-                  contentStyle:
-                  {
-                    alignItems: 'center',
-                    backgroundColor: '#DAEAEF',
-                  },
+                  contentStyle: globalStyles.navigationStackScreen,
                   title: 'Welcome',
-                  headerStyle: {
-                    backgroundColor: '#9DBDC6',
-                  }
                 }
               }
 
@@ -83,15 +77,8 @@ const RootNavigation: React.FC<Props> = ({ expoPushToken }) => {
               component={SignUp}
               options={
                 {
-                  contentStyle:
-                  {
-                    alignItems: 'center',
-                    backgroundColor: '#DAEAEF',
-                  },
+                  contentStyle: globalStyles.navigationStackScreen,
                   title: 'Welcome',
-                  headerStyle: {
-                    backgroundColor: '#9DBDC6',
-                  }
                 }
               }
 
