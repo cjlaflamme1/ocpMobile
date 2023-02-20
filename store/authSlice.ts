@@ -27,8 +27,12 @@ const signUpAsync = createAsyncThunk(
     try {
       const response: any = await signUp(newUser);
       if (response.data.access_token) {
-        SecureStore.setItemAsync('jwt', response.data.access_token);
+        SecureStore.setItemAsync('accessToken', response.data.access_token);
         response.data.access_token = null;
+      }
+      if (response.data.refreshToken) {
+        SecureStore.setItemAsync('refreshToken', response.data.refreshToken);
+        response.data.refreshToken = null;
       }
       return response.data;
      } catch (err: any) {
@@ -46,8 +50,12 @@ const signInAsync = createAsyncThunk(
     try {
       const response: any = await login(signInObject);
       if (response.data.access_token) {
-        SecureStore.setItemAsync('jwt', response.data.access_token);
+        SecureStore.setItemAsync('accessToken', response.data.access_token);
         response.data.access_token = null;
+      }
+      if (response.data.refreshToken) {
+        SecureStore.setItemAsync('refreshToken', response.data.refreshToken);
+        response.data.refreshToken = null;
       }
       return response.data;
     } catch (err: any) {
