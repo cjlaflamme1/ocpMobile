@@ -8,6 +8,8 @@ import layoutStyles from '../../styles/layout';
 import globalStyles from '../../styles/global';
 import PrimaryButton from '../../components/PrimaryButton';
 import { SignupObject } from '../../models/SignupObject';
+import { signUpAsync } from '../../store/authSlice';
+import { getCurrentUserAsync } from '../../store/userSlice';
 interface Props {
   navigation: any;
 };
@@ -17,6 +19,10 @@ const SignIn: React.FC<Props> = ({ navigation }) => {
   const [signupObject, setSignupObject] = useState<SignupObject>();
   const [pwError, setPwError] = useState('');
   const [matchingPW, setMatchingPW] = useState('');
+  const [pwMatchError, setPwMatchError] = useState('');
+  const [firstNameError, setFirstNameError] = useState('');
+  const [lastNameError, setLastNameError] = useState('');
+  const [emailError, setEmailError] = useState('');
   const scrollViewRef = useRef<KeyboardAwareScrollView|null>(null);
   const dispatch = useAppDispatch();
 
@@ -28,6 +34,7 @@ const SignIn: React.FC<Props> = ({ navigation }) => {
         matchingPw: false,
         firstName: '',
         lastName: '',
+        losenord: '',
       });
     }
   }, []);
@@ -44,22 +51,44 @@ const SignIn: React.FC<Props> = ({ navigation }) => {
   };
 
   const checkMatch = () => {
+    let submit = true;
     if (signupObject) {
       if (matchingPW !== signupObject.password) {
         setSignupObject({ ...signupObject, matchingPw: false });
-        return 'Passwords do not match'
+        setPwMatchError('Passwords do not match.');
+        submit = false;
       } else {
-        setSignupObject({ ...signupObject, matchingPw: true });
-        return '';
+        setSignupObject({ ...signupObject, matchingPw: true, losenord: signupObject.password });
+        setPwMatchError('');
       }
+      if (!signupObject.firstName) {
+        setFirstNameError('First name is required.');
+        submit = false;
+      }
+      if (!signupObject.lastName) {
+        setLastNameError('Last name is required.');
+        submit = false;
+      }
+      if (!signupObject.email) {
+        setEmailError('Email is required.');
+        submit = false;
+      } else if (!signupObject.email.match(/^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/)) {
+        setEmailError('Invalid email address.')
+        submit = false;
+      }
+    } else {
+      submit = false;
     }
+    return submit;
   };
 
-  const submitNewUser = () => {
-    if (checkMatch()) {
-      console.log('match');
-    } else {
-      console.log('no match')
+  const submitNewUser = async () => {
+    if (
+      checkMatch()
+      && signupObject
+    ) {
+      await dispatch(signUpAsync(signupObject))
+      dispatch(getCurrentUserAsync());
     }
   };
 
@@ -86,12 +115,26 @@ const SignIn: React.FC<Props> = ({ navigation }) => {
             <View style={[inputStyle.fullWidthInputContainer]}>
               <TextInput
                 value={signupObject?.firstName || ''}
-                onChangeText={(t) => setSignupObject({ ...signupObject, firstName: t})}
+                textContentType='givenName'
+                onChangeText={(t) => {
+                  if (firstNameError) {
+                    setFirstNameError('');
+                  }
+                  setSignupObject({ ...signupObject, firstName: t})}
+                }
                 placeholder='First Name'
                 autoCorrect={false}
                 style={[inputStyle.fullWidthInput]}
               />
             </View>
+            {
+              firstNameError
+              && (
+                <View style={[layoutStyles.mt_1]}>
+                  <CustomText style={[globalStyles.redLink]}>{firstNameError}</CustomText>
+                </View>
+              )
+            }
           </View>
           <View style={[layoutStyles.mt_2]}>
             <CustomText style={[layoutStyles.mb_1]}>
@@ -100,12 +143,26 @@ const SignIn: React.FC<Props> = ({ navigation }) => {
             <View style={[inputStyle.fullWidthInputContainer]}>
               <TextInput
                 value={signupObject?.lastName || ''}
-                onChangeText={(t) => setSignupObject({ ...signupObject, lastName: t})}
+                textContentType='familyName'
+                onChangeText={(t) => {
+                  if (lastNameError) {
+                    setLastNameError('');
+                  }
+                  setSignupObject({ ...signupObject, lastName: t})}
+                }
                 placeholder='Last Name'
                 autoCorrect={false}
                 style={[inputStyle.fullWidthInput]}
               />
             </View>
+            {
+              lastNameError
+              && (
+                <View style={[layoutStyles.mt_1]}>
+                  <CustomText style={[globalStyles.redLink]}>{lastNameError}</CustomText>
+                </View>
+              )
+            }
           </View>
           <View style={[layoutStyles.mt_2]}>
             <CustomText style={[layoutStyles.mb_1]}>
@@ -121,6 +178,14 @@ const SignIn: React.FC<Props> = ({ navigation }) => {
                 style={[inputStyle.fullWidthInput]}
               />
             </View>
+            {
+              emailError
+              && (
+                <View style={[layoutStyles.mt_1]}>
+                  <CustomText style={[globalStyles.redLink]}>{emailError}</CustomText>
+                </View>
+              )
+            }
           </View>
           <View style={[layoutStyles.mt_2]}>
             <CustomText style={[layoutStyles.mb_1]}>
@@ -136,6 +201,14 @@ const SignIn: React.FC<Props> = ({ navigation }) => {
                 secureTextEntry={passwordVisible}
               />
             </View>
+            {
+              pwError
+              && (
+                <View style={[layoutStyles.mt_1]}>
+                  <CustomText style={[globalStyles.redLink]}>{pwError}</CustomText>
+                </View>
+              )
+            }
           </View>
           <View style={[layoutStyles.mt_2, layoutStyles.mb_3]}>
             <CustomText style={[layoutStyles.mb_1]}>
@@ -151,6 +224,14 @@ const SignIn: React.FC<Props> = ({ navigation }) => {
                 secureTextEntry={passwordVisible}
               />
             </View>
+            {
+              pwMatchError
+              && (
+                <View style={[layoutStyles.mt_1]}>
+                  <CustomText style={[globalStyles.redLink]}>{pwMatchError}</CustomText>
+                </View>
+              )
+            }
           </View>
           <View>
             <PrimaryButton
