@@ -32,7 +32,6 @@ const signUpAsync = createAsyncThunk(
         accessToken: null,
       }
       if (response.data.accessToken) {
-        console.log(response.data.accessToken);
         await SecureStore.setItemAsync('accessToken', response.data.accessToken);
         response.data.accessToken = null;
         newUserAuth.accessToken = response.data.accessToken;
@@ -40,7 +39,6 @@ const signUpAsync = createAsyncThunk(
         newUserAuth.email = response.data.email;
       }
       if (response.data.refreshToken) {
-        console.log(response.data.refreshToken);
         await SecureStore.setItemAsync('refreshToken', response.data.refreshToken);
         response.data.refreshToken = null;
       }
@@ -59,15 +57,23 @@ const signInAsync = createAsyncThunk(
   async (signInObject: {email: string, password: string}, { rejectWithValue }) => {
     try {
       const response: any = await login(signInObject);
-      if (response.data.access_token) {
-        SecureStore.setItemAsync('accessToken', response.data.access_token);
-        response.data.access_token = null;
+      const newUserAuth: AuthState = {
+        loggedIn: false,
+        email: '',
+        accessToken: null,
+      }
+      if (response.data.accessToken) {
+        await SecureStore.setItemAsync('accessToken', response.data.accessToken);
+        response.data.accessToken = null;
+        newUserAuth.accessToken = response.data.accessToken;
+        newUserAuth.loggedIn = true;
+        newUserAuth.email = response.data.email;
       }
       if (response.data.refreshToken) {
-        SecureStore.setItemAsync('refreshToken', response.data.refreshToken);
+        await SecureStore.setItemAsync('refreshToken', response.data.refreshToken);
         response.data.refreshToken = null;
       }
-      return response.data;
+      return newUserAuth;
     } catch (err: any) {
       return rejectWithValue({
         name: err.name,

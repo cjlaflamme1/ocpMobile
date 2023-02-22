@@ -6,16 +6,37 @@ import inputStyle from '../../styles/componentStyles/inputBar';
 import layoutStyles from '../../styles/layout';
 import globalStyles from '../../styles/global';
 import PrimaryButton from '../../components/PrimaryButton';
+import { SigninObject } from '../../models/SigninObject';
+import { signInAsync } from '../../store/authSlice';
 interface Props {
   navigation: any;
 };
 
 const SignIn: React.FC<Props> = ({ navigation }) => {
   const [passwordVisible, setPasswordVisible] = useState(true);
+  const [signinError, setSigninError] = useState('');
+  const [signinObject, setSigninObject] = useState<SigninObject>()
   const dispatch = useAppDispatch();
   useEffect(() => {
+    if (!signinObject) {
+      setSigninObject({
+        email: '',
+        password: '',
+      })
+    }
   }, [])
   const imageUri = "../../assets/favicon.png";
+
+  const submitLogin = async() => {
+    if (signinObject && signinObject.email && signinObject.password) {
+      const res = await dispatch(signInAsync(signinObject));
+      console.log(res.payload);
+    }
+  }
+
+  if (!signinObject) {
+    return (<View />);
+  }
   return (
     <View style={[layoutStyles.screenContainer]}>
       <View style={[layoutStyles.mt_3]}>
@@ -27,7 +48,11 @@ const SignIn: React.FC<Props> = ({ navigation }) => {
         </CustomText>
         <View style={[inputStyle.fullWidthInputContainer]}>
           <TextInput
+            value={signinObject?.email || ''}
+            onChangeText={(t) => setSigninObject({ ...signinObject, email: t})}
+            textContentType='emailAddress'
             placeholder='Enter email'
+            autoCorrect={false}
             style={[inputStyle.fullWidthInput]}
           />
         </View>
@@ -38,6 +63,9 @@ const SignIn: React.FC<Props> = ({ navigation }) => {
         </CustomText>
         <View style={[inputStyle.fullWidthInputContainer]}>
           <TextInput
+            onChangeText={(text) => setSigninObject({ ...signinObject, password: text})}
+            autoCorrect={false}
+            textContentType='password'
             placeholder='Enter password'
             style={[inputStyle.fullWidthInput]}
             secureTextEntry={passwordVisible}
@@ -47,7 +75,7 @@ const SignIn: React.FC<Props> = ({ navigation }) => {
       <View>
         <PrimaryButton
           buttonText='Sign in'
-          callback={() => console.log('signin')}
+          callback={() => submitLogin()}
         />
       </View>
       <View style={[layoutStyles.mt_3]}>

@@ -6,6 +6,8 @@ import globalStyles from '../../styles/global';
 import imageStyles from '../../styles/images';
 import layoutStyles from '../../styles/layout';
 import profileLandingStyles from '../../styles/screenStyles/profileLanding';
+import { logoutAction } from '../../store/authSlice';
+import { useAppDispatch } from '../../store/hooks';
 
 interface Props {
   navigation: any
@@ -13,6 +15,7 @@ interface Props {
 
 const ProfileLanding: React.FC<Props> = ({ navigation }) => {
   const [refreshing, setRefreshing] = useState(false);
+  const dispatch = useAppDispatch();
   const onRefresh = () => {
     setRefreshing(true);
     // Refresh functions here
@@ -42,7 +45,7 @@ const ProfileLanding: React.FC<Props> = ({ navigation }) => {
         <View>
           <View style={[layoutStyles.flexRow, layoutStyles.jBetween]}>
             <CustomText h4 bold>User Activities</CustomText>
-            <Pressable>
+            <Pressable onPress={() => dispatch(logoutAction())}>
               <CustomText style={[globalStyles.redLink]}>+ Add Activity</CustomText>
             </Pressable>
           </View>

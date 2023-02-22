@@ -58,7 +58,7 @@ const SignIn: React.FC<Props> = ({ navigation }) => {
         setPwMatchError('Passwords do not match.');
         submit = false;
       } else {
-        setSignupObject({ ...signupObject, matchingPw: true, losenord: signupObject.password });
+        setSignupObject({ ...signupObject, matchingPw: true });
         setPwMatchError('');
       }
       if (!signupObject.firstName) {
