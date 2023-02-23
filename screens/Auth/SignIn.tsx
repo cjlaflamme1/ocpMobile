@@ -30,7 +30,6 @@ const SignIn: React.FC<Props> = ({ navigation }) => {
   const submitLogin = async() => {
     if (signinObject && signinObject.email && signinObject.password) {
       const res = await dispatch(signInAsync(signinObject));
-      console.log(res.payload);
     }
   }
 

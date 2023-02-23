@@ -11,7 +11,6 @@ const api = axios.create({
 });
 
 api.interceptors.request.use(async (req) => {
-  console.log(await SecureStore.getItemAsync('accessToken'));
   req.headers = req.headers || {};
   req.headers.Authorization = `Bearer ${await SecureStore.getItemAsync('accessToken')}`;
   return req;
