@@ -7,9 +7,11 @@ import imageStyles from '../../styles/images';
 import layoutStyles from '../../styles/layout';
 import profileLandingStyles from '../../styles/screenStyles/profileLanding';
 import { logoutAction } from '../../store/authSlice';
-import { useAppDispatch } from '../../store/hooks';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from "expo-file-system";
+import { postPresignedUrl, putImageOnS3 } from '../../api/s3API';
+import { updateCurrentUserAsync } from '../../store/userSlice';
 
 interface Props {
   navigation: any
@@ -17,11 +19,19 @@ interface Props {
 
 const ProfileLanding: React.FC<Props> = ({ navigation }) => {
   const [refreshing, setRefreshing] = useState(false);
+  const currentState = useAppSelector((state) => ({
+    userState: state.userState,
+  }));
   const dispatch = useAppDispatch();
   const onRefresh = () => {
     setRefreshing(true);
     // Refresh functions here
     setRefreshing(false);
+  }
+
+  const { currentUser } = currentState.userState;
+  if (!currentUser) {
+    return (<View />);
   }
 
   const pickImage = async () => {
@@ -34,23 +44,23 @@ const ProfileLanding: React.FC<Props> = ({ navigation }) => {
       quality: 0,
     });
 
-    if (result.canceled === false) {
+    if ((result.canceled === false) && result.assets.length > 0 && result.assets[0].base64) {
       console.log(result);
-      // const imageExt = result.uri.split('.').pop();
-      // const imageFileName = currentUser.email.split('@')[0];
+      const imageExt = result.assets[0].uri.split('.').pop();
+      const imageFileName = currentUser.email.split('@')[0];
       // const base64 = await FileSystem.readAsStringAsync(result.uri, {
       //   encoding: FileSystem.EncodingType.Base64,
       // });
-      // const buff = Buffer.from(base64, "base64");
-      // const preAuthPostUrl = await postPresignedUrl({ fileName: imageFileName, fileType: `${result.type}/${imageExt}`}).then((response) => response).catch((e) => {
-      //   return e;
-      // });
-      // if (preAuthPostUrl.status === 201 && preAuthPostUrl.data) {
-      //   // await putImageOnS3(preAuthPostUrl.data, buff, `${result.type}/${imageExt}`).catch((e) => console.log(e));
-      //   // dispatch(updateCurrentUserAsync({ id: currentUser.id, updateBody: {
-      //   //   profilePhoto: imageFileName,
-      //   // }}))
-      // }
+      const buff = Buffer.from(result.assets[0].base64, "base64");
+      const preAuthPostUrl = await postPresignedUrl({ fileName: imageFileName, fileType: `profile-image/${imageExt}`}).then((response) => response).catch((e) => {
+        return e;
+      });
+      if (preAuthPostUrl.status === 201 && preAuthPostUrl.data) {
+        await putImageOnS3(preAuthPostUrl.data, buff, `${result.type}/${imageExt}`).catch((e) => console.log(e));
+        dispatch(updateCurrentUserAsync({ id: currentUser.id, updateBody: {
+          profilePhoto: imageFileName,
+        }}));
+      }
     };
   };
   return (
