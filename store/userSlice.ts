@@ -10,6 +10,7 @@ export interface User {
   expoPushToken: string | null;
   createdAt: Date;
   updatedAt: Date;
+  imageGetUrl?: string;
 }
 
 interface UserState {

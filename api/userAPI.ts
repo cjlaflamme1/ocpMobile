@@ -5,7 +5,7 @@ import { User } from '../store/userSlice';
 export function getCurrentUser() {
   return new Promise<AxiosPromise>((resolve, reject) => {
     try {
-      api.get('/user')
+      api.get('/user/current')
         .then((response: any) => {
           resolve(response);
         })

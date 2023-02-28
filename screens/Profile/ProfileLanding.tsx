@@ -12,23 +12,45 @@ import * as ImagePicker from 'expo-image-picker';
 import {Buffer} from "buffer";
 import * as FileSystem from "expo-file-system";
 import { postPresignedUrl, putImageOnS3 } from '../../api/s3API';
-import { updateCurrentUserAsync } from '../../store/userSlice';
+import { getCurrentUserAsync, updateCurrentUserAsync } from '../../store/userSlice';
+import { NavigationProp } from '@react-navigation/native';
 
 interface Props {
-  navigation: any
+  navigation: NavigationProp<any, any>
 };
 
 const ProfileLanding: React.FC<Props> = ({ navigation }) => {
   const [refreshing, setRefreshing] = useState(false);
+  const [editMode, setEditMode] = useState(false);
   const currentState = useAppSelector((state) => ({
     userState: state.userState,
   }));
   const dispatch = useAppDispatch();
-  const onRefresh = () => {
+  const onRefresh = async () => {
     setRefreshing(true);
     // Refresh functions here
+      await dispatch(getCurrentUserAsync());
     setRefreshing(false);
   }
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <Pressable
+          style={[layoutStyles.flexRow, layoutStyles.alignItemCenter]}
+          onPress={() => setEditMode((editMode) => !editMode)}
+        >
+          <Image
+            source={require('../../assets/icons/Edit.png')}
+            style={[{ height: 16, width: 16, resizeMode: 'contain'}, layoutStyles.mr_1]}
+          />
+          <CustomText>
+            Edit Profile
+          </CustomText>
+        </Pressable>
+      )
+    })
+  }, [navigation])
 
   const { currentUser } = currentState.userState;
   if (!currentUser) {
@@ -48,10 +70,8 @@ const ProfileLanding: React.FC<Props> = ({ navigation }) => {
     if ((result.canceled === false) && result.assets.length > 0 && result.assets[0].base64) {
       console.log(result);
       const imageExt = result.assets[0].uri.split('.').pop();
-      const imageFileName = currentUser.email.split('@')[0];
-      // const base64 = await FileSystem.readAsStringAsync(result.uri, {
-      //   encoding: FileSystem.EncodingType.Base64,
-      // });
+      const imageFileName = currentUser.id;
+
       const buff = Buffer.from(result.assets[0].base64, "base64");
       const preAuthPostUrl = await postPresignedUrl({ fileName: imageFileName, fileType: `${result.assets[0].type}/${imageExt}`, fileDirectory: 'profileImage'}).then((response) => response).catch((e) => {
         return e;
@@ -59,7 +79,7 @@ const ProfileLanding: React.FC<Props> = ({ navigation }) => {
       if (preAuthPostUrl.status === 201 && preAuthPostUrl.data) {
         await putImageOnS3(preAuthPostUrl.data, buff, `${result.assets[0].type}/${imageExt}`).catch((e) => console.log(e));
         dispatch(updateCurrentUserAsync({ id: currentUser.id, updateBody: {
-          profilePhoto: imageFileName,
+          profilePhoto: `profileImage/${imageFileName}`,
         }}));
       }
     };
@@ -72,18 +92,27 @@ const ProfileLanding: React.FC<Props> = ({ navigation }) => {
           <View style={[imageStyles.profileImageContainer]}>
             <View>
               <Image
-                source={require("../../assets/profilePhotos/testProfile.jpg")}
+                source={
+                  currentUser.imageGetUrl ?
+                    { uri: currentUser.imageGetUrl }
+                    : require("../../assets/profilePhotos/testProfile.jpg")
+                }
                 style={[imageStyles.profileImage]}
               />
-              <Pressable
-                onPress={pickImage}
-                style={[{ position: 'absolute', right: 0, bottom: 0, backgroundColor: 'white', borderRadius: 10}]}
-              >
-                <Image
-                  source={require("../../assets/icons/Plus.png")}
-                  style={[{ height: 35, width: 35, resizeMode: 'contain'}]}
-                />
-              </Pressable>
+              {
+                editMode
+                && (
+                  <Pressable
+                    onPress={pickImage}
+                    style={[profileLandingStyles.editImagePressable]}
+                  >
+                    <Image
+                      source={require("../../assets/icons/CameraWhite.png")}
+                      style={[profileLandingStyles.editImageIcon]}
+                    />
+                  </Pressable>
+                )
+              }
             </View>
           </View>
           <CustomText h2 bold center>
