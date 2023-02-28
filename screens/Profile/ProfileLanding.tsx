@@ -52,7 +52,7 @@ const ProfileLanding: React.FC<Props> = ({ navigation }) => {
       //   encoding: FileSystem.EncodingType.Base64,
       // });
       const buff = Buffer.from(result.assets[0].base64, "base64");
-      const preAuthPostUrl = await postPresignedUrl({ fileName: imageFileName, fileType: `profile-image/${imageExt}`}).then((response) => response).catch((e) => {
+      const preAuthPostUrl = await postPresignedUrl({ fileName: imageFileName, fileType: `${result.assets[0].type}/${imageExt}`, fileDirectory: 'profileImage'}).then((response) => response).catch((e) => {
         return e;
       });
       if (preAuthPostUrl.status === 201 && preAuthPostUrl.data) {
@@ -63,6 +63,7 @@ const ProfileLanding: React.FC<Props> = ({ navigation }) => {
       }
     };
   };
+
   return (
     <View style={[layoutStyles.screenContainer]}>
       <ScrollView showsVerticalScrollIndicator={false}  refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
@@ -85,7 +86,7 @@ const ProfileLanding: React.FC<Props> = ({ navigation }) => {
             </View>
           </View>
           <CustomText h2 bold center>
-            Chad Laflamme
+            {`${currentUser.firstName} ${currentUser.lastName}`}
           </CustomText>
           <View style={[layoutStyles.flexRow, layoutStyles.jCenter, layoutStyles.m_1]}>
             <Image 

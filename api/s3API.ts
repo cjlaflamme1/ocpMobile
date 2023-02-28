@@ -1,7 +1,7 @@
 import api from './api';
 import axios, { AxiosPromise } from 'axios';
 const s3Api = axios.create();
-export function getPresignedUrl(fileName: string) {
+export function getPresignedUrl(fileName: string, fileDirectory: string) {
   return new Promise<AxiosPromise>((resolve, reject) => {
     try {
       api.get(`/image/${fileName}`)
@@ -17,7 +17,7 @@ export function getPresignedUrl(fileName: string) {
   })
 }
 
-export function postPresignedUrl(imageData: { fileName: string; fileType: string}) {
+export function postPresignedUrl(imageData: { fileName: string; fileType: string; fileDirectory: string }) {
   return new Promise<AxiosPromise>((resolve, reject) => {
     try {
       api.post('/image', imageData)
