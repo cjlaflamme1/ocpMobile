@@ -9,6 +9,7 @@ import profileLandingStyles from '../../styles/screenStyles/profileLanding';
 import { logoutAction } from '../../store/authSlice';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import * as ImagePicker from 'expo-image-picker';
+import {Buffer} from "buffer";
 import * as FileSystem from "expo-file-system";
 import { postPresignedUrl, putImageOnS3 } from '../../api/s3API';
 import { updateCurrentUserAsync } from '../../store/userSlice';
@@ -56,7 +57,7 @@ const ProfileLanding: React.FC<Props> = ({ navigation }) => {
         return e;
       });
       if (preAuthPostUrl.status === 201 && preAuthPostUrl.data) {
-        await putImageOnS3(preAuthPostUrl.data, buff, `${result.type}/${imageExt}`).catch((e) => console.log(e));
+        await putImageOnS3(preAuthPostUrl.data, buff, `${result.assets[0].type}/${imageExt}`).catch((e) => console.log(e));
         dispatch(updateCurrentUserAsync({ id: currentUser.id, updateBody: {
           profilePhoto: imageFileName,
         }}));

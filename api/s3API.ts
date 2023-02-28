@@ -4,7 +4,7 @@ const s3Api = axios.create();
 export function getPresignedUrl(fileName: string, fileDirectory: string) {
   return new Promise<AxiosPromise>((resolve, reject) => {
     try {
-      api.get(`/image/${fileName}`)
+      api.get(`/image/${encodeURI(fileName)}`)
         .then((response: any) => {
           resolve(response);
         })
