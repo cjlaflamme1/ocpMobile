@@ -1,6 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { ScrollView, View, Image, RefreshControl, AppState, Text, Button, Pressable, FlatList } from 'react-native';
-import { FlashList } from "@shopify/flash-list";
+import React, { useState } from 'react';
+import { ScrollView, View, Image, RefreshControl } from 'react-native';
 import CustomText from '../../components/CustomText';
 import layoutStyles from '../../styles/layout';
 

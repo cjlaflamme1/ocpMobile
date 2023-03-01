@@ -43,6 +43,11 @@ const globalStyles = StyleSheet.create({
   },
   mutedText: {
     color: '#8A8A8A',
+  },
+  hr: {
+    borderBottomColor: '#A3ACB1',
+    borderBottomWidth: 1,
+    width: '100%'
   }
 });
 

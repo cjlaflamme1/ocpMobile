@@ -1,8 +1,11 @@
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { Button, Image, Pressable } from 'react-native';
 import ProfileLanding from '../screens/Profile/ProfileLanding';
 import globalStyles from '../styles/global';
 import ActivityDescription from '../screens/Profile/ActivityDescription';
+import CustomText from '../components/CustomText';
+import layoutStyles from '../styles/layout';
 
 
 
@@ -18,6 +21,18 @@ const ProfileNavigation: React.FC = () => {
           options={
             {
               contentStyle: globalStyles.navigationStackScreen,
+              headerTitle: '',
+              headerRight: () => (
+                <Pressable style={[layoutStyles.flexRow, layoutStyles.alignItemCenter]}>
+                  <Image
+                    source={require('../assets/icons/Edit.png')}
+                    style={[{ height: 16, width: 16, resizeMode: 'contain'}, layoutStyles.mr_1]}
+                  />
+                  <CustomText>
+                    Edit Profile
+                  </CustomText>
+                </Pressable>
+              )
             }
           }
         />
@@ -27,6 +42,9 @@ const ProfileNavigation: React.FC = () => {
           options={
             {
               contentStyle: globalStyles.navigationStackScreen,
+              headerRight: () => (
+                <Button title="Edit" />
+              )
             }
           }
         />

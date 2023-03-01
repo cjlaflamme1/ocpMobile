@@ -26,11 +26,23 @@ const signUpAsync = createAsyncThunk(
   async (newUser: SignupObject, { rejectWithValue }) => {
     try {
       const response: any = await signUp(newUser);
-      if (response.data.access_token) {
-        SecureStore.setItemAsync('jwt', response.data.access_token);
-        response.data.access_token = null;
+      const newUserAuth: AuthState = {
+        loggedIn: false,
+        email: '',
+        accessToken: null,
       }
-      return response.data;
+      if (response.data.accessToken) {
+        await SecureStore.setItemAsync('accessToken', response.data.accessToken);
+        response.data.accessToken = null;
+        newUserAuth.accessToken = response.data.accessToken;
+        newUserAuth.loggedIn = true;
+        newUserAuth.email = response.data.email;
+      }
+      if (response.data.refreshToken) {
+        await SecureStore.setItemAsync('refreshToken', response.data.refreshToken);
+        response.data.refreshToken = null;
+      }
+      return newUserAuth;
      } catch (err: any) {
        return rejectWithValue({
          name: err.name,
@@ -45,11 +57,23 @@ const signInAsync = createAsyncThunk(
   async (signInObject: {email: string, password: string}, { rejectWithValue }) => {
     try {
       const response: any = await login(signInObject);
-      if (response.data.access_token) {
-        SecureStore.setItemAsync('jwt', response.data.access_token);
-        response.data.access_token = null;
+      const newUserAuth: AuthState = {
+        loggedIn: false,
+        email: '',
+        accessToken: null,
       }
-      return response.data;
+      if (response.data.accessToken) {
+        await SecureStore.setItemAsync('accessToken', response.data.accessToken);
+        response.data.accessToken = null;
+        newUserAuth.accessToken = response.data.accessToken;
+        newUserAuth.loggedIn = true;
+        newUserAuth.email = response.data.email;
+      }
+      if (response.data.refreshToken) {
+        await SecureStore.setItemAsync('refreshToken', response.data.refreshToken);
+        response.data.refreshToken = null;
+      }
+      return newUserAuth;
     } catch (err: any) {
       return rejectWithValue({
         name: err.name,
