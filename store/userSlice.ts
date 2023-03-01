@@ -6,6 +6,7 @@ export interface User {
   email: string;
   firstName: string;
   lastName: string;
+  location: string;
   profilePhoto: string | null;
   expoPushToken: string | null;
   createdAt: Date;
