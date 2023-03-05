@@ -1,16 +1,18 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { getUserActivities } from '../api/userActivityAPI';
+import { getOneUserActivity, getUserActivities } from '../api/userActivityAPI';
 import { createUserActivity } from '../api/userAPI';
 import { CreateUserActivityDTO, UserActivity } from './userSlice';
 
 interface UserActivityState {
   userActivities: UserActivity[] | null;
+  selectedUserActivity: UserActivity | null;
   status: 'idle' | 'loading' | 'failed';
   error: any;
 }
 
 const initialState: UserActivityState = {
   userActivities: null,
+  selectedUserActivity: null,
   status: 'idle',
   error: null,
 }
@@ -45,12 +47,30 @@ const getUserActivitiesAsync = createAsyncThunk(
   },
 );
 
+const getOneUserActivityAsync = createAsyncThunk(
+  'userActivity/getOne',
+  async (id: string, { rejectWithValue }) => {
+    try {
+      const response: any = await getOneUserActivity(id);
+      return response.data;
+    } catch (err: any) {
+      rejectWithValue({
+        name: err.name,
+        message: err.message,
+      });
+    }
+  }
+)
+
 const userActivitySlice = createSlice({
   name: 'userActivity',
   initialState,
   reducers: {
-    clearUserActivity(state) {
+    clearUserActivities(state) {
       state.userActivities = null;
+    },
+    clearSelectedUserActivity(state) {
+      state.selectedUserActivity = null;
     }
   },
   extraReducers: (builder) => {
@@ -78,15 +98,29 @@ const userActivitySlice = createSlice({
     .addCase(createUserActivityAsync.rejected, (state, action) => {
       state.status = 'failed';
       state.error = action.payload;
+    })
+    .addCase(getOneUserActivityAsync.pending, (state) => {
+      state.status = 'loading';
+    })
+    .addCase(getOneUserActivityAsync.fulfilled, (state, action) => {
+      state.status = 'idle';
+      state.selectedUserActivity = action.payload;
+      state.error = null;
+    })
+    .addCase(getOneUserActivityAsync.rejected, (state, action) => {
+      state.status = 'failed';
+      state.selectedUserActivity = null;
+      state.error = action.payload;
     });
   }
 })
 
-export const { clearUserActivity } = userActivitySlice.actions;
+export const { clearUserActivities, clearSelectedUserActivity } = userActivitySlice.actions;
 
 export default userActivitySlice.reducer;
 
 export {
   createUserActivityAsync,
   getUserActivitiesAsync,
+  getOneUserActivityAsync,
 }

@@ -33,3 +33,19 @@ export function getUserActivities() {
     }
   }) 
 }
+
+export function getOneUserActivity(id: string) {
+  return new Promise<AxiosPromise>((resolve, reject) => {
+    try {
+      api.get(`/users-activity/${id}`)
+        .then((response: any) => {
+          resolve(response);
+        })
+        .catch((e: Error) => {
+          reject(e);
+        })
+    } catch (e) {
+      reject(e);
+    }
+  }) 
+}

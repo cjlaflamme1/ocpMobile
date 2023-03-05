@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { ScrollView, View, Image, RefreshControl } from 'react-native';
 import CustomText from '../../components/CustomText';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { getOneUserActivityAsync } from '../../store/userActivitySlice';
 import layoutStyles from '../../styles/layout';
 
 interface Props {
@@ -9,35 +11,40 @@ interface Props {
 
 const ActivityDescription: React.FC<Props> = ({ navigation }) => {
   const [refreshing, setRefreshing] = useState(false);
-  const onRefresh = () => {
+  const currentState = useAppSelector((state) => ({
+    userActivityState: state.userActivityState,
+  }));
+  const dispatch = useAppDispatch();
+  const { selectedUserActivity } = currentState.userActivityState;
+  const onRefresh = async () => {
     setRefreshing(true);
-    // Refresh functions here
+      if (selectedUserActivity) {
+        await dispatch(getOneUserActivityAsync(selectedUserActivity.id));
+      }
     setRefreshing(false);
   }
-  const exampleList = [
-    {
-      text: 'The Troll Peninsula'
-    },
-    {
-      text: 'Sogndal, Norway'
-    },
-    {
-      text: 'Mt Washington, NH'
-    }
-  ]
+
+  if (!selectedUserActivity) {
+    return (<View />)
+  }
+
   return (
     <View style={[layoutStyles.screenContainer]}>
       <ScrollView showsVerticalScrollIndicator={false}  refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
         <View style={[layoutStyles.mb_3]}>
           <View style={[layoutStyles.mt_2]}>
-            <Image
-              source={require('../../assets/profilePhotos/testSportImage.jpg')}
-              style={[{ width: '100%', height: 200, borderRadius: 25}]}
-            />
+            {
+              selectedUserActivity.getImageUrl && (
+                <Image
+                  source={{ uri: selectedUserActivity.getImageUrl }}
+                  style={[{ width: '100%', height: 200, borderRadius: 25}]}
+                />
+              )
+            }
           </View>
           <View style={[layoutStyles.mt_2]}>
             <CustomText h1 bold>
-              Backcountry Skiing
+              {selectedUserActivity.activityType?.activityTitle || 'Activity type not selected.'}
             </CustomText>
           </View>
           <View style={[layoutStyles.mt_2]}>
@@ -45,47 +52,47 @@ const ActivityDescription: React.FC<Props> = ({ navigation }) => {
               Information
             </CustomText>
             <CustomText>
-              Lorem ipsum dolor sit amet consectetur. Orci iaculis tristique facilisis tortor eu euismod purus lobortis. Leo maecenas tellus justo vel laoreet gravida.
+              {selectedUserActivity.information}
             </CustomText>
           </View>
           <View style={[layoutStyles.mt_2]}>
             <CustomText bold h4 style={[layoutStyles.mb_1]}>
               Favorite Locations
             </CustomText>
-            <View style={[layoutStyles.ml_2]}>
-              {
-                exampleList &&
-                exampleList.length > 0 &&
-                exampleList.map((item, index) => {
-                  return <CustomText key={`${index}-${item.text}`} style={[layoutStyles.ml_2, layoutStyles.mb_1]}>{item.text}</CustomText>
-                })
-              }
-            </View>
+            <CustomText>{selectedUserActivity.favoriteLocations}</CustomText>
           </View>
           <View style={[layoutStyles.mt_2]}>
             <CustomText bold h4 style={[layoutStyles.mb_1]}>
               Years Participating
             </CustomText>
             <CustomText>
-              2 Years
+              {selectedUserActivity.yearsParticipating}
             </CustomText>
           </View>
-          <View style={[layoutStyles.mt_2]}>
-            <CustomText bold h4 style={[layoutStyles.mb_1]}>
-              Mentorship Needs
-            </CustomText>
-            <CustomText>
-              I would love to find a ski partner who can help me develop in....
-            </CustomText>
-          </View>
-          <View style={[layoutStyles.mt_2]}>
-            <CustomText bold h4 style={[layoutStyles.mb_1]}>
-              Mentorship Availability
-            </CustomText>
-            <CustomText>
-              I'm happy to offer tips on how to ski horrendous New England conditions to skiers of any ability.
-            </CustomText>
-          </View>
+          {
+            selectedUserActivity.seekingMentor && (
+              <View style={[layoutStyles.mt_2]}>
+                <CustomText bold h4 style={[layoutStyles.mb_1]}>
+                  Mentorship Needs
+                </CustomText>
+                <CustomText>
+                  {selectedUserActivity.mentorNeedsDetails}
+                </CustomText>
+              </View>
+            )
+          }
+          {
+            selectedUserActivity.offeringMentorship && (
+              <View style={[layoutStyles.mt_2]}>
+                <CustomText bold h4 style={[layoutStyles.mb_1]}>
+                  Mentorship Availability
+                </CustomText>
+                <CustomText>
+                  {selectedUserActivity.provideMentorshipDetails}
+                </CustomText>
+              </View>
+            )
+          }
         </View>
       </ScrollView>
     </View>

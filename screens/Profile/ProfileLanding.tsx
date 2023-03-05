@@ -15,7 +15,7 @@ import { postPresignedUrl, putImageOnS3 } from '../../api/s3API';
 import { getCurrentUserAsync, updateCurrentUserAsync } from '../../store/userSlice';
 import { NavigationProp } from '@react-navigation/native';
 import inputStyle from '../../styles/componentStyles/inputBar';
-import { getUserActivitiesAsync } from '../../store/userActivitySlice';
+import { getOneUserActivityAsync, getUserActivitiesAsync } from '../../store/userActivitySlice';
 
 interface Props {
   navigation: NavigationProp<any, any>
@@ -113,6 +113,14 @@ const ProfileLanding: React.FC<Props> = ({ navigation }) => {
         }}));
       }
     };
+  };
+
+  const viewUserActivity = async (id: string) => {
+    const activity = await dispatch(getOneUserActivityAsync(id));
+    console.log(activity);
+    if (activity && activity.meta.requestStatus === 'fulfilled') {
+      navigation.navigate("Activity Description");
+    }
   };
 
   return (
@@ -245,7 +253,7 @@ const ProfileLanding: React.FC<Props> = ({ navigation }) => {
                   userActivities.length > 0 ?
                   userActivities.map((activity) => (
                     <View key={activity.id} style={[profileLandingStyles.cardColumn]}>
-                      <Pressable onPress={() => navigation.navigate('Activity Description')}>
+                      <Pressable onPress={() => viewUserActivity(activity.id)}>
                         <ProfileActivityCard
                           imageSource={
                             activity.getImageUrl ?
