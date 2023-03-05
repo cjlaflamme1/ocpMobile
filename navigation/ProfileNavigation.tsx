@@ -6,6 +6,7 @@ import globalStyles from '../styles/global';
 import ActivityDescription from '../screens/Profile/ActivityDescription';
 import CustomText from '../components/CustomText';
 import layoutStyles from '../styles/layout';
+import CreateActivity from '../screens/Profile/CreateActivity';
 
 
 
@@ -45,6 +46,16 @@ const ProfileNavigation: React.FC = () => {
               headerRight: () => (
                 <Button title="Edit" />
               )
+            }
+          }
+        />
+        <RootStack.Screen
+          name="Create Activity"
+          component={CreateActivity}
+          options={
+            {
+              contentStyle: globalStyles.navigationStackScreen,
+              headerTitle: '',
             }
           }
         />

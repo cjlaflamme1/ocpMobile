@@ -57,6 +57,9 @@ const inputStyle = StyleSheet.create({
   radioText: {
     padding: 10,
   },
+  multilineInput: {
+    height: 'auto'
+  }
 });
 
 export default inputStyle;
