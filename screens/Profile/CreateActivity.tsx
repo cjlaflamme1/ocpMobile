@@ -60,12 +60,9 @@ const CreateActivity: React.FC<Props> = ({ navigation }) => {
   }
 
   const submitNewActivity = async () => {
-    console.log(newActivity);
-    console.log(currentUser);
     if (newActivity && currentUser) {
       const activityDTO: CreateUserActivityDTO = {...newActivity};
       if (selectedImage && selectedImage.base64) {
-        console.log('image selected');
         const imageExt = selectedImage.uri.split('.').pop();
         const imageFileName = `${currentUser.id}/${activityDTO.activityTypeId}`;
   
@@ -117,7 +114,6 @@ const CreateActivity: React.FC<Props> = ({ navigation }) => {
       quality: 0,
     });
     if ((result.canceled === false) && result.assets.length > 0 && result.assets[0].base64) {
-      console.log(result);
       const currentFile = result.assets[0];
       setSelectedImage(currentFile);
     };

@@ -99,7 +99,6 @@ const ProfileLanding: React.FC<Props> = ({ navigation }) => {
     });
 
     if ((result.canceled === false) && result.assets.length > 0 && result.assets[0].base64) {
-      console.log(result);
       const imageExt = result.assets[0].uri.split('.').pop();
       const imageFileName = currentUser.id;
 
@@ -268,27 +267,6 @@ const ProfileLanding: React.FC<Props> = ({ navigation }) => {
                     </View>
                   )
                 }
-                {/* <View style={[profileLandingStyles.cardColumn]}>
-                  <Pressable onPress={() => console.log('pressed')}>
-                    <ProfileActivityCard imageSource={require('../../assets/profilePhotos/testSportImage.jpg')}>
-                      Skiing again
-                    </ProfileActivityCard>
-                  </Pressable>
-                </View>
-                <View style={[profileLandingStyles.cardColumn]}>
-                  <Pressable onPress={() => console.log('pressed')}>
-                    <ProfileActivityCard imageSource={require('../../assets/profilePhotos/testSportImage.jpg')}>
-                      Skiing again
-                    </ProfileActivityCard>
-                  </Pressable>
-                </View>
-                <View style={[profileLandingStyles.cardColumn]}>
-                  <Pressable onPress={() => console.log('pressed')}>
-                    <ProfileActivityCard imageSource={require('../../assets/profilePhotos/testSportImage.jpg')}>
-                      Skiing again
-                    </ProfileActivityCard>
-                  </Pressable>
-                </View> */}
               </View>
             </View>
           )
