@@ -1,5 +1,34 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { getCurrentUser, updateCurrentUser } from '../api/userAPI';
+import { createUserActivity, getCurrentUser, updateCurrentUser } from '../api/userAPI';
+import { ActivityType } from './activityTypeSlice';
+
+export interface CreateUserActivityDTO {
+  information: string;
+  favoriteLocations: string;
+  yearsParticipating: string;
+  preferredGroupDetails: string;
+  seekingMentor: boolean;
+  mentorNeedsDetails: string;
+  offeringMentorship: boolean;
+  provideMentorshipDetails: string;
+  activityTypeId: string;
+  coverPhoto: string;
+}
+
+export interface UserActivity {
+  id: string;
+  information: string;
+  favoriteLocations: string;
+  yearsParticipating: string;
+  preferredGroupDetails: string;
+  seekingMentor: boolean;
+  mentorNeedsDetails: string;
+  offeringMentorship: boolean;
+  provideMentorshipDetails: string;
+  activityType: ActivityType;
+  coverPhoto: string;
+  getImageUrl: string | null;
+}
 
 export interface User {
   id: string;
@@ -12,6 +41,7 @@ export interface User {
   createdAt: Date;
   updatedAt: Date;
   imageGetUrl?: string;
+  activities: UserActivity[] | null;
 }
 
 interface UserState {
@@ -56,6 +86,21 @@ const updateCurrentUserAsync = createAsyncThunk(
   },
 );
 
+const createUserActivityAsync = createAsyncThunk(
+  'user/createUserActivity',
+  async (arg: CreateUserActivityDTO, { rejectWithValue }) => {
+    try {
+      const response: any = await createUserActivity(arg);
+      return response.data;
+    } catch (err: any) {
+      rejectWithValue({
+        name: err.name,
+        message: err.message,
+      });
+    }
+  }
+)
+
 const userSlice = createSlice({
   name: 'user',
   initialState,
@@ -91,6 +136,17 @@ const userSlice = createSlice({
         state.status = 'failed';
         state.currentUser = null;
         state.error = action.payload;
+      })
+      .addCase(createUserActivityAsync.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(createUserActivityAsync.fulfilled, (state) => {
+        state.status = 'idle';
+        state.error = null;
+      })
+      .addCase(createUserActivityAsync.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.payload;
       });
   }
 })
@@ -102,4 +158,5 @@ export default userSlice.reducer;
 export {
   getCurrentUserAsync,
   updateCurrentUserAsync,
+  createUserActivityAsync,
 }

@@ -1,11 +1,11 @@
 import api from './api';
 import { AxiosPromise } from 'axios';
-import { CreateUserActivityDTO, User } from '../store/userSlice';
+import { CreateUserActivityDTO } from '../store/userSlice';
 
-export function getCurrentUser() {
+export function createUserActivity(body: CreateUserActivityDTO) {
   return new Promise<AxiosPromise>((resolve, reject) => {
     try {
-      api.get('/user/current')
+      api.post('/users-activity', body)
         .then((response: any) => {
           resolve(response);
         })
@@ -15,35 +15,37 @@ export function getCurrentUser() {
     } catch (e) {
       reject(e);
     }
-  })
+  }) 
 }
 
-export function updateCurrentUser(id: string, updateBody: Partial<User>) {
+export function getUserActivities() {
   return new Promise<AxiosPromise>((resolve, reject) => {
     try {
-      api.patch(`/user/${id}`, updateBody)
+      api.get('/users-activity')
         .then((response: any) => {
           resolve(response);
-        }).catch((e: Error) => {
+        })
+        .catch((e: Error) => {
           reject(e);
         })
     } catch (e) {
       reject(e);
     }
-  })
+  }) 
 }
 
-export function createUserActivity(body: CreateUserActivityDTO) {
+export function getOneUserActivity(id: string) {
   return new Promise<AxiosPromise>((resolve, reject) => {
     try {
-      api.post(`/users-activity`, body)
+      api.get(`/users-activity/${id}`)
         .then((response: any) => {
           resolve(response);
-        }).catch((e: Error) => {
+        })
+        .catch((e: Error) => {
           reject(e);
         })
     } catch (e) {
       reject(e);
     }
-  })
+  }) 
 }

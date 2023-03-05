@@ -15,6 +15,7 @@ import { postPresignedUrl, putImageOnS3 } from '../../api/s3API';
 import { getCurrentUserAsync, updateCurrentUserAsync } from '../../store/userSlice';
 import { NavigationProp } from '@react-navigation/native';
 import inputStyle from '../../styles/componentStyles/inputBar';
+import { getOneUserActivityAsync, getUserActivitiesAsync } from '../../store/userActivitySlice';
 
 interface Props {
   navigation: NavigationProp<any, any>
@@ -28,12 +29,14 @@ const ProfileLanding: React.FC<Props> = ({ navigation }) => {
   const [debounceLNHandle, setDebounceLNHandle] = useState<any>();
   const currentState = useAppSelector((state) => ({
     userState: state.userState,
+    userActivityState: state.userActivityState,
   }));
   const dispatch = useAppDispatch();
   const onRefresh = async () => {
     setRefreshing(true);
     // Refresh functions here
       await dispatch(getCurrentUserAsync());
+      await dispatch(getUserActivitiesAsync());
     setRefreshing(false);
   }
 
@@ -53,10 +56,12 @@ const ProfileLanding: React.FC<Props> = ({ navigation }) => {
           </CustomText>
         </Pressable>
       )
-    })
+    });
+    dispatch(getUserActivitiesAsync());
   }, [navigation])
 
   const { currentUser } = currentState.userState;
+  const { userActivities } = currentState.userActivityState;
   if (!currentUser) {
     return (<View />);
   }
@@ -94,7 +99,6 @@ const ProfileLanding: React.FC<Props> = ({ navigation }) => {
     });
 
     if ((result.canceled === false) && result.assets.length > 0 && result.assets[0].base64) {
-      console.log(result);
       const imageExt = result.assets[0].uri.split('.').pop();
       const imageFileName = currentUser.id;
 
@@ -109,6 +113,14 @@ const ProfileLanding: React.FC<Props> = ({ navigation }) => {
         }}));
       }
     };
+  };
+
+  const viewUserActivity = async (id: string) => {
+    const activity = await dispatch(getOneUserActivityAsync(id));
+    console.log(activity);
+    if (activity && activity.meta.requestStatus === 'fulfilled') {
+      navigation.navigate("Activity Description");
+    }
   };
 
   return (
@@ -231,39 +243,38 @@ const ProfileLanding: React.FC<Props> = ({ navigation }) => {
             <View>
               <View style={[layoutStyles.flexRow, layoutStyles.jBetween]}>
                 <CustomText h4 bold>User Activities</CustomText>
-                <Pressable onPress={() => dispatch(logoutAction())}>
+                <Pressable onPress={() => navigation.navigate("Create Activity")}>
                   <CustomText style={[globalStyles.redLink]}>+ Add Activity</CustomText>
                 </Pressable>
               </View>
               <View style={[profileLandingStyles.cardRow]}>
-                <View style={[profileLandingStyles.cardColumn]}>
-                  <Pressable onPress={() => navigation.navigate('Activity Description')}>
-                    <ProfileActivityCard imageSource={require('../../assets/profilePhotos/testSportImage.jpg')}>
-                      Skiing
-                    </ProfileActivityCard>
-                  </Pressable>
-                </View>
-                <View style={[profileLandingStyles.cardColumn]}>
-                  <Pressable onPress={() => console.log('pressed')}>
-                    <ProfileActivityCard imageSource={require('../../assets/profilePhotos/testSportImage.jpg')}>
-                      Skiing again
-                    </ProfileActivityCard>
-                  </Pressable>
-                </View>
-                <View style={[profileLandingStyles.cardColumn]}>
-                  <Pressable onPress={() => console.log('pressed')}>
-                    <ProfileActivityCard imageSource={require('../../assets/profilePhotos/testSportImage.jpg')}>
-                      Skiing again
-                    </ProfileActivityCard>
-                  </Pressable>
-                </View>
-                <View style={[profileLandingStyles.cardColumn]}>
-                  <Pressable onPress={() => console.log('pressed')}>
-                    <ProfileActivityCard imageSource={require('../../assets/profilePhotos/testSportImage.jpg')}>
-                      Skiing again
-                    </ProfileActivityCard>
-                  </Pressable>
-                </View>
+                {
+                  userActivities &&
+                  userActivities.length > 0 ?
+                  userActivities.map((activity) => (
+                    <View key={activity.id} style={[profileLandingStyles.cardColumn]}>
+                      <Pressable onPress={() => viewUserActivity(activity.id)}>
+                        <ProfileActivityCard
+                          imageSource={
+                            activity.getImageUrl ?
+                              { uri: activity.getImageUrl } :
+                              require('../../assets/profilePhotos/testSportImage.jpg')
+                          }
+                        >
+                          {activity.activityType ? activity.activityType.activityTitle : 'No Activity Type'}
+                        </ProfileActivityCard>
+                      </Pressable>
+                    </View>
+                  )) : (
+                    <View style={[profileLandingStyles.cardColumn]}>
+                      <Pressable onPress={() => navigation.navigate("Create Activity")}>
+                        <ProfileActivityCard imageSource={require('../../assets/profilePhotos/testSportImage.jpg')}>
+                          Add activities to your profile!
+                        </ProfileActivityCard>
+                      </Pressable>
+                    </View>
+                  )
+                }
               </View>
             </View>
           )
