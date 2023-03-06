@@ -117,7 +117,6 @@ const ProfileLanding: React.FC<Props> = ({ navigation }) => {
 
   const viewUserActivity = async (id: string) => {
     const activity = await dispatch(getOneUserActivityAsync(id));
-    console.log(activity);
     if (activity && activity.meta.requestStatus === 'fulfilled') {
       navigation.navigate("Activity Description");
     }
