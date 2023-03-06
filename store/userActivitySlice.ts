@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { getOneUserActivity, getUserActivities } from '../api/userActivityAPI';
+import { deleteUserActivity, getOneUserActivity, getUserActivities, updateUserActivity } from '../api/userActivityAPI';
 import { createUserActivity } from '../api/userAPI';
 import { CreateUserActivityDTO, UserActivity } from './userSlice';
 
@@ -32,6 +32,21 @@ const createUserActivityAsync = createAsyncThunk(
   },
 );
 
+const updateUserActivityAsync = createAsyncThunk(
+  'userActivity/update',
+  async (arg: { id: string, body: Partial<UserActivity> }, { rejectWithValue }) => {
+    try {
+      const response: any = await updateUserActivity(arg.id, arg.body);
+      return response.data;
+    } catch (err: any) {
+      rejectWithValue({
+        name: err.name,
+        message: err.message,
+      });
+    }
+  }
+)
+
 const getUserActivitiesAsync = createAsyncThunk(
   'userActivity/get',
   async (arg, { rejectWithValue }) => {
@@ -59,8 +74,23 @@ const getOneUserActivityAsync = createAsyncThunk(
         message: err.message,
       });
     }
-  }
-)
+  },
+);
+
+const deleteUserActivityAsync = createAsyncThunk(
+  'userActivity/delete',
+  async (id: string, { rejectWithValue }) => {
+    try {
+      const response: any = await deleteUserActivity(id);
+      return response.data;
+    } catch (err: any) {
+      rejectWithValue({
+        name: err.name,
+        message: err.message,
+      });
+    }
+  },
+);
 
 const userActivitySlice = createSlice({
   name: 'userActivity',
@@ -111,6 +141,29 @@ const userActivitySlice = createSlice({
       state.status = 'failed';
       state.selectedUserActivity = null;
       state.error = action.payload;
+    })
+    .addCase(updateUserActivityAsync.pending, (state) => {
+      state.status = 'loading';
+    })
+    .addCase(updateUserActivityAsync.fulfilled, (state, action) => {
+      state.status = 'idle';
+      state.selectedUserActivity = action.payload;
+      state.error = null;
+    })
+    .addCase(updateUserActivityAsync.rejected, (state, action) => {
+      state.status = 'failed';
+      state.error = action.payload;
+    })
+    .addCase(deleteUserActivityAsync.pending, (state) => {
+      state.status = 'loading';
+    })
+    .addCase(deleteUserActivityAsync.fulfilled, (state) => {
+      state.status = 'idle';
+      state.error = null;
+    })
+    .addCase(deleteUserActivityAsync.rejected, (state, action) => {
+      state.status = 'failed';
+      state.error = action.payload;
     });
   }
 })
@@ -123,4 +176,6 @@ export {
   createUserActivityAsync,
   getUserActivitiesAsync,
   getOneUserActivityAsync,
+  updateUserActivityAsync,
+  deleteUserActivityAsync,
 }

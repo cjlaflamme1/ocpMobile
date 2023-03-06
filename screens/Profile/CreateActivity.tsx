@@ -13,6 +13,7 @@ import layoutStyles from '../../styles/layout';
 import createActivityStyles from '../../styles/screenStyles/profile/createActivity';
 import { postPresignedUrl, putImageOnS3 } from '../../api/s3API';
 import { getUserActivitiesAsync } from '../../store/userActivitySlice';
+import PrimaryButton from '../../components/PrimaryButton';
 
 interface Props {
   navigation: any
@@ -336,7 +337,7 @@ const CreateActivity: React.FC<Props> = ({ navigation }) => {
             )
           }
           <View style={[layoutStyles.mt_2, layoutStyles.mb_2]}>
-            <Pressable
+            {/* <Pressable
               style={[layoutStyles.flexRow, layoutStyles.alignItemCenter]}
               onPress={submitNewActivity}
             >
@@ -347,7 +348,11 @@ const CreateActivity: React.FC<Props> = ({ navigation }) => {
               <CustomText>
                 Save Activity
               </CustomText>
-            </Pressable>
+            </Pressable> */}
+            <PrimaryButton
+              buttonText='Save Activity'
+              callback={() => submitNewActivity()}
+            />
           </View>
         </View>
       </KeyboardAwareScrollView>
