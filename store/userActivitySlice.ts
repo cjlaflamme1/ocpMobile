@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { getOneUserActivity, getUserActivities, updateUserActivity } from '../api/userActivityAPI';
+import { deleteUserActivity, getOneUserActivity, getUserActivities, updateUserActivity } from '../api/userActivityAPI';
 import { createUserActivity } from '../api/userAPI';
 import { CreateUserActivityDTO, UserActivity } from './userSlice';
 
@@ -74,8 +74,23 @@ const getOneUserActivityAsync = createAsyncThunk(
         message: err.message,
       });
     }
-  }
-)
+  },
+);
+
+const deleteUserActivityAsync = createAsyncThunk(
+  'userActivity/delete',
+  async (id: string, { rejectWithValue }) => {
+    try {
+      const response: any = await deleteUserActivity(id);
+      return response.data;
+    } catch (err: any) {
+      rejectWithValue({
+        name: err.name,
+        message: err.message,
+      });
+    }
+  },
+);
 
 const userActivitySlice = createSlice({
   name: 'userActivity',
@@ -138,6 +153,17 @@ const userActivitySlice = createSlice({
     .addCase(updateUserActivityAsync.rejected, (state, action) => {
       state.status = 'failed';
       state.error = action.payload;
+    })
+    .addCase(deleteUserActivityAsync.pending, (state) => {
+      state.status = 'loading';
+    })
+    .addCase(deleteUserActivityAsync.fulfilled, (state) => {
+      state.status = 'idle';
+      state.error = null;
+    })
+    .addCase(deleteUserActivityAsync.rejected, (state, action) => {
+      state.status = 'failed';
+      state.error = action.payload;
     });
   }
 })
@@ -151,4 +177,5 @@ export {
   getUserActivitiesAsync,
   getOneUserActivityAsync,
   updateUserActivityAsync,
+  deleteUserActivityAsync,
 }

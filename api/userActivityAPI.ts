@@ -65,3 +65,19 @@ export function getOneUserActivity(id: string) {
     }
   }) 
 }
+
+export function deleteUserActivity(id: string) {
+  return new Promise<AxiosPromise>((resolve, reject) => {
+    try {
+      api.delete(`/users-activity/${id}`)
+        .then((response: any) => {
+          resolve(response);
+        })
+        .catch((e: Error) => {
+          reject(e);
+        })
+    } catch (e) {
+      reject(e);
+    }
+  }) 
+}

@@ -1,11 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { ScrollView, View, Image, RefreshControl, Pressable, TextInput, Switch } from 'react-native';
+import { ScrollView, View, Image, RefreshControl, Pressable, TextInput, Switch, Alert } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import * as ImagePicker from 'expo-image-picker';
 import {Buffer} from "buffer";
 import CustomText from '../../components/CustomText';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { getOneUserActivityAsync, updateUserActivityAsync } from '../../store/userActivitySlice';
+import { clearSelectedUserActivity, deleteUserActivityAsync, getOneUserActivityAsync, getUserActivitiesAsync, updateUserActivityAsync } from '../../store/userActivitySlice';
 import { UserActivity } from '../../store/userSlice';
 import inputStyle from '../../styles/componentStyles/inputBar';
 import layoutStyles from '../../styles/layout';
@@ -86,6 +86,13 @@ const ActivityDescription: React.FC<Props> = ({ navigation }) => {
     }
   };
 
+  const deleteActivity = async (id: string) => {
+    await dispatch(deleteUserActivityAsync(id));
+    dispatch(getUserActivitiesAsync());
+    navigation.goBack();
+    dispatch(clearSelectedUserActivity());
+  }
+
   useEffect(() => {
     navigation.setOptions({
       headerRight: () => (
@@ -98,7 +105,7 @@ const ActivityDescription: React.FC<Props> = ({ navigation }) => {
             style={[{ height: 16, width: 16, resizeMode: 'contain'}, layoutStyles.mr_1]}
           />
           <CustomText>
-            Edit Profile
+            Edit Activity
           </CustomText>
         </Pressable>
       )
@@ -313,7 +320,18 @@ const ActivityDescription: React.FC<Props> = ({ navigation }) => {
                 <PrimaryButton
                   buttonText='Delete Activity'
                   callback={() => {
-                    console.log('delete info here')
+                    Alert.alert('Warning',
+                      'Are you sure you want to delete this activity?',
+                      [
+                        {
+                          text: 'Delete', onPress: () => deleteActivity(selectedUserActivity.id),
+                        },
+                        {
+                          text: 'Cancel'
+                        }
+                      ]
+                    )
+                      // deleteActivity(selectedUserActivity.id);
                     }
                   }
                   outline
