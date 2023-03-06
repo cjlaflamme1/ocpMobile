@@ -8,14 +8,26 @@ import CustomText from './CustomText';
 interface Props {
   buttonText: string,
   callback: Function,
+  outline?: boolean,
 };
 
 const PrimaryButton: React.FC<Props> = (props: Props) => {
   const {
     buttonText,
     callback,
+    outline,
   } = props;
 
+  if (outline) {
+    return (
+      <Pressable
+        style={[inputStyle.primaryButton, inputStyle.outlineButton]}
+        onPress={() => callback()}
+      >
+        <CustomText bold style={[{ color: '#CB1406' }]}>{buttonText}</CustomText>
+      </Pressable>
+    )
+  }
   return (
     <Pressable
       style={[inputStyle.primaryButton]}
@@ -28,6 +40,10 @@ const PrimaryButton: React.FC<Props> = (props: Props) => {
 
 export default PrimaryButton;
 
+PrimaryButton.defaultProps = {
+  outline: false,
+}
+
 import { StyleSheet } from 'react-native';
 
 const inputStyle = StyleSheet.create({
@@ -39,5 +55,10 @@ const inputStyle = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 16,
+  },
+  outlineButton: {
+    backgroundColor: '#FAFAFA',
+    borderColor: '#CB1406',
+    borderWidth: 1,
   }
 });

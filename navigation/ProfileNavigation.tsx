@@ -43,8 +43,17 @@ const ProfileNavigation: React.FC = () => {
           options={
             {
               contentStyle: globalStyles.navigationStackScreen,
+              headerTitle: '',
               headerRight: () => (
-                <Button title="Edit" />
+                <Pressable style={[layoutStyles.flexRow, layoutStyles.alignItemCenter]}>
+                  <Image
+                    source={require('../assets/icons/Edit.png')}
+                    style={[{ height: 16, width: 16, resizeMode: 'contain'}, layoutStyles.mr_1]}
+                  />
+                  <CustomText>
+                    Edit Activity
+                  </CustomText>
+                </Pressable>
               )
             }
           }
