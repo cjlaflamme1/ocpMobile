@@ -101,8 +101,8 @@ const SignIn: React.FC<Props> = ({ navigation }) => {
       <KeyboardAwareScrollView
         showsVerticalScrollIndicator={false}
         ref={scrollViewRef}
-        onLayout={() => scrollViewRef?.current?.scrollToEnd()}
-        onContentSizeChange={() => scrollViewRef?.current?.scrollToEnd()}
+        // onLayout={() => scrollViewRef?.current?.scrollToEnd()}
+        // onContentSizeChange={() => scrollViewRef?.current?.scrollToEnd()}
       >
         <View style={[layoutStyles.mb_3]}>
           <View style={[layoutStyles.mt_3]}>
