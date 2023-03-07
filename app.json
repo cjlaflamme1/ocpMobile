@@ -37,10 +37,7 @@
     "ios": {
       "bundleIdentifier": "com.outdoorcommunityproject",
       "supportsTablet": false,
-      "backgroundColor": "#FAFAFA",
-      "config": {
-        "usesNonExemptEncryption": false
-      }
+      "backgroundColor": "#FAFAFA"
       // "backgroundColor": "#9DBDC6"
     },
     "android": {
