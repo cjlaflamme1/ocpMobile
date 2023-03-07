@@ -16,6 +16,7 @@ import { getCurrentUserAsync, updateCurrentUserAsync } from '../../store/userSli
 import { NavigationProp } from '@react-navigation/native';
 import inputStyle from '../../styles/componentStyles/inputBar';
 import { getOneUserActivityAsync, getUserActivitiesAsync } from '../../store/userActivitySlice';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 interface Props {
   navigation: NavigationProp<any, any>
@@ -26,6 +27,7 @@ const ProfileLanding: React.FC<Props> = ({ navigation }) => {
   const [editMode, setEditMode] = useState(false);
   const [debounceHandle, setDebounceHandle] = useState<any>();
   const [debounceFNHandle, setDebounceFNHandle] = useState<any>();
+  const scrollViewRef = useRef<KeyboardAwareScrollView|null>(null);
   const [debounceLNHandle, setDebounceLNHandle] = useState<any>();
   const currentState = useAppSelector((state) => ({
     userState: state.userState,
@@ -124,7 +126,13 @@ const ProfileLanding: React.FC<Props> = ({ navigation }) => {
 
   return (
     <View style={[layoutStyles.screenContainer]}>
-      <ScrollView showsVerticalScrollIndicator={false}  refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
+      <KeyboardAwareScrollView
+        showsVerticalScrollIndicator={false}
+        ref={scrollViewRef}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+        // onLayout={() => scrollViewRef?.current?.scrollToEnd()}
+        // onContentSizeChange={() => scrollViewRef?.current?.scrollToEnd()}
+      >
         <View style={[layoutStyles.m_1, layoutStyles.mt_3, layoutStyles.mb_3]}>
           <View style={[imageStyles.profileImageContainer]}>
             <View>
@@ -132,7 +140,7 @@ const ProfileLanding: React.FC<Props> = ({ navigation }) => {
                 source={
                   currentUser.imageGetUrl ?
                     { uri: currentUser.imageGetUrl }
-                    : require("../../assets/profilePhotos/testProfile.jpg")
+                    : require("../../assets/150x150.png")
                 }
                 style={[imageStyles.profileImage]}
               />
@@ -278,7 +286,7 @@ const ProfileLanding: React.FC<Props> = ({ navigation }) => {
             </View>
           )
         }
-      </ScrollView>
+      </KeyboardAwareScrollView>
     </View>
   );
 };
