@@ -3,6 +3,7 @@ import {
 } from '@reduxjs/toolkit';
 import activityTypeSlice from './activityTypeSlice';
 import authSlice from './authSlice';
+import groupSlice from './groupSlice';
 import userActivitySlice from './userActivitySlice';
 import userSlice from './userSlice';
 
@@ -11,6 +12,7 @@ const reducer = combineReducers({
   userState: userSlice,
   activityTypeState: activityTypeSlice,
   userActivityState: userActivitySlice,
+  groupState: groupSlice,
 });
 
 export const store = configureStore({
