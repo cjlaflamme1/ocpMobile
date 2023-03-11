@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { View, Image, ScrollView, RefreshControl, Pressable, TextInput } from 'react-native';
 import CustomText from '../../components/CustomText';
+import * as ImagePicker from 'expo-image-picker';
+import {Buffer} from "buffer";
 import GroupCard from '../../components/GroupCard';
 import PrimaryButton from '../../components/PrimaryButton';
 import UserIconSmall from '../../components/UserIconSmall';
@@ -9,6 +11,7 @@ import globalStyles from '../../styles/global';
 import layoutStyles from '../../styles/layout';
 import createGroupStyles from '../../styles/screenStyles/groups/createGroup';
 import groupsLandingStyle from '../../styles/screenStyles/groups/groupsLanding';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 interface Props {
   navigation: any
@@ -16,35 +19,74 @@ interface Props {
 
 const CreateGroup: React.FC<Props> = ({ navigation }) => {
   const [refreshing, setRefreshing] = useState(false);
-  const onRefresh = () => {
-    setRefreshing(true);
-    // Refresh functions here
-    setRefreshing(false);
-  }
+  const [selectedImage, setSelectedImage] = useState<ImagePicker.ImagePickerAsset>();
+  const scrollViewRef = useRef<KeyboardAwareScrollView|null>(null);
+
+  const pickImage = async () => {
+    // No permissions request is necessary for launching the image library
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      base64: true,
+      aspect: [4, 3],
+      quality: 0,
+    });
+    if ((result.canceled === false) && result.assets.length > 0 && result.assets[0].base64) {
+      const currentFile = result.assets[0];
+      setSelectedImage(currentFile);
+    };
+  };
+
   return (
     <View style={[layoutStyles.screenContainer]}>
-      <ScrollView showsVerticalScrollIndicator={false} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
+      <KeyboardAwareScrollView
+        showsVerticalScrollIndicator={false}
+        ref={scrollViewRef}
+        // onLayout={() => scrollViewRef?.current?.scrollToEnd()}
+        // onContentSizeChange={() => scrollViewRef?.current?.scrollToEnd()}
+      >
         <View style={[layoutStyles.mb_3]}>
           <View style={[layoutStyles.mt_2]}>
             <CustomText h1 bold>Create Group</CustomText>
           </View>
-          <View style={[createGroupStyles.addImageContainer, layoutStyles.mt_3]}>
-            <Pressable
-              // style={[createGroupStyles.addImagePressable]}
-              style={({pressed}) => {
-                if (pressed) {
-                  return [createGroupStyles.addImagePressable, createGroupStyles.pressed]
-                } else {
-                  return [createGroupStyles.addImagePressable]
-                }
-              }}
-            >
-              <Image 
-                source={require('../../assets/icons/Camera.png')}
-                style={[{width: 24, height: 24}]}
-              />
-            </Pressable>
-          </View>
+          {
+            selectedImage ?
+            (
+              <View style={[layoutStyles.mt_2]}>
+                <Image
+                  source={{uri: selectedImage.uri}}
+                  style={[{ width: '100%', height: 200, borderRadius: 25}]}
+                />
+                <Pressable
+                    onPress={pickImage}
+                    style={[createGroupStyles.editImagePressable]}
+                  >
+                    <Image
+                      source={require("../../assets/icons/CameraWhite.png")}
+                      style={[createGroupStyles.editImageIcon]}
+                    />
+                  </Pressable>
+              </View>
+            ) : (
+              <View style={[createGroupStyles.addImageContainer, layoutStyles.mt_3]}>
+                <Pressable
+                  style={({pressed}) => {
+                    if (pressed) {
+                      return [createGroupStyles.addImagePressable, createGroupStyles.pressed]
+                    } else {
+                      return [createGroupStyles.addImagePressable]
+                    }
+                  }}
+                  onPress={pickImage}
+                >
+                  <Image 
+                    source={require('../../assets/icons/Camera.png')}
+                    style={[{width: 24, height: 24}]}
+                  />
+                </Pressable>
+              </View>
+            )
+          }
           <View style={[layoutStyles.mt_2]}>
             <CustomText style={[layoutStyles.mb_1]}>
               Group Name
@@ -136,7 +178,7 @@ const CreateGroup: React.FC<Props> = ({ navigation }) => {
             />
           </View>
         </View>
-      </ScrollView>
+      </KeyboardAwareScrollView>
     </View>
   );
 };
