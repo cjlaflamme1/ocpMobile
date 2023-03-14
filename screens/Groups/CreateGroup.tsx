@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { View, Image, ScrollView, RefreshControl, Pressable, TextInput } from 'react-native';
 import CustomText from '../../components/CustomText';
 import * as ImagePicker from 'expo-image-picker';
@@ -12,15 +12,90 @@ import layoutStyles from '../../styles/layout';
 import createGroupStyles from '../../styles/screenStyles/groups/createGroup';
 import groupsLandingStyle from '../../styles/screenStyles/groups/groupsLanding';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { createGroupAsync, CreateGroupDto } from '../../store/groupSlice';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { postPresignedUrl, putImageOnS3 } from '../../api/s3API';
+import { getAllUsersAsync } from '../../store/userSlice';
 
 interface Props {
   navigation: any
 };
 
 const CreateGroup: React.FC<Props> = ({ navigation }) => {
-  const [refreshing, setRefreshing] = useState(false);
+  const [newGroupObj, setNewGroupObj] = useState<CreateGroupDto>();
+  const [debounceHandle, setDebounceHandle] = useState<any>();
   const [selectedImage, setSelectedImage] = useState<ImagePicker.ImagePickerAsset>();
   const scrollViewRef = useRef<KeyboardAwareScrollView|null>(null);
+  const dispatch = useAppDispatch();
+  const currentState = useAppSelector((state) => ({
+    userState: state.userState,
+  }));
+
+  const { currentUser, userList } = currentState.userState;
+
+  useEffect(() => {
+    if (!newGroupObj) {
+      setNewGroupObj({
+        coverPhoto: '',
+        title: '',
+        description: '',
+        groupAdminIds: [],
+        pendingInvitationUserIds: [],
+      });
+    }
+    if (!userList || userList.count === 0) {
+      dispatch(getAllUsersAsync({
+        pagination: {
+          skip: 0,
+          take: 8,
+        },
+      }));
+    }
+  }, [navigation]);
+
+  if (!currentUser || !newGroupObj) {
+    return (<View />);
+  }
+
+  const submitUserSearch = (nameSearch: string) => {
+    dispatch(getAllUsersAsync({
+      pagination: {
+          skip: 0,
+          take: 8,
+      },
+      filters: [
+        {
+          name: 'firstName',
+          value: nameSearch,
+        },
+        {
+          name: 'lastName',
+          value: nameSearch,
+        }
+      ],
+    }))
+  }
+
+  const submitNewGroup = async () => {
+    let newCoverImage = '';
+    if (selectedImage && selectedImage.base64) {
+      const imageExt = selectedImage.uri.split('.').pop();
+      const imageFileName = `${newGroupObj.title}-${selectedImage.fileName}`;
+
+      const buff = Buffer.from(selectedImage.base64, "base64");
+      const preAuthPostUrl = await postPresignedUrl({ fileName: imageFileName, fileType: `${selectedImage.type}/${imageExt}`, fileDirectory: 'groupImages'}).then((response) => response).catch((e) => {
+        return e;
+      });
+      if (preAuthPostUrl.status === 201 && preAuthPostUrl.data) {
+        await putImageOnS3(preAuthPostUrl.data, buff, `${selectedImage.type}/${imageExt}`).catch((e) => console.log(e));
+        newCoverImage = `groupImages/${imageFileName}`;
+      }
+    }
+    await dispatch(createGroupAsync({
+      ...newGroupObj,
+      coverPhoto: newCoverImage,
+    }))
+  };
 
   const pickImage = async () => {
     // No permissions request is necessary for launching the image library
@@ -95,6 +170,12 @@ const CreateGroup: React.FC<Props> = ({ navigation }) => {
               <TextInput
                 placeholder='Enter group name'
                 style={[inputStyle.fullWidthInput]}
+                onChangeText={(e) => {
+                  setNewGroupObj({
+                    ...newGroupObj,
+                    title: e,
+                  })
+                }}
               />
             </View>
           </View>
@@ -107,6 +188,12 @@ const CreateGroup: React.FC<Props> = ({ navigation }) => {
                 placeholder='Enter group description'
                 style={[inputStyle.fullWidthInput]}
                 multiline
+                onChangeText={(e) => {
+                  setNewGroupObj({
+                    ...newGroupObj,
+                    description: e,
+                  })
+                }}
               />
             </View>
           </View>
@@ -118,6 +205,14 @@ const CreateGroup: React.FC<Props> = ({ navigation }) => {
               <TextInput
                 placeholder='Enter name'
                 style={[inputStyle.fullWidthInput]}
+                autoCorrect={false}
+                onChangeText={(e) => {
+                  if (debounceHandle) {
+                    clearTimeout(debounceHandle);
+                  }
+                  const handle = setTimeout(() => submitUserSearch(e), 750);
+                  setDebounceHandle(handle);
+                }}
               />
             </View>
           </View>

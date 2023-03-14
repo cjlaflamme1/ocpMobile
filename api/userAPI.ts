@@ -1,6 +1,7 @@
 import api from './api';
 import { AxiosPromise } from 'axios';
 import { CreateUserActivityDTO, User } from '../store/userSlice';
+import { QueryObject } from '../models/QueryObject';
 
 export function getCurrentUser() {
   return new Promise<AxiosPromise>((resolve, reject) => {
@@ -12,6 +13,24 @@ export function getCurrentUser() {
         .catch((e: Error) => {
           reject(e);
         })
+    } catch (e) {
+      reject(e);
+    }
+  })
+}
+
+export function getAllUsers(query: QueryObject) {
+  return new Promise<AxiosPromise>((resolve, reject) => {
+    try {
+      api.get('/user', {
+        params: {
+          dataSource: JSON.stringify(query),
+        },
+      }).then((response: any) => {
+        resolve(response);
+      }).catch((e: Error) => {
+        reject(e);
+      })
     } catch (e) {
       reject(e);
     }

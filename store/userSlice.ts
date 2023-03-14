@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { createUserActivity, getCurrentUser, updateCurrentUser } from '../api/userAPI';
+import { createUserActivity, getAllUsers, getCurrentUser, updateCurrentUser } from '../api/userAPI';
+import { QueryObject } from '../models/QueryObject';
 import { ActivityType } from './activityTypeSlice';
 
 export interface CreateUserActivityDTO {
@@ -46,12 +47,20 @@ export interface User {
 
 interface UserState {
   currentUser: User | null;
+  userList: {
+    users: User[] | null;
+    count: number;
+  };
   status: 'idle' | 'loading' | 'failed';
   error: any;
 }
 
 const initialState: UserState = {
   currentUser: null,
+  userList: {
+    users: null,
+    count: 0,
+  },
   status: 'idle',
   error: null,
 }
@@ -61,6 +70,21 @@ const getCurrentUserAsync = createAsyncThunk(
   async (arg, { rejectWithValue }) => {
     try {
       const response: any = await getCurrentUser();
+      return response.data;
+    } catch (err: any) {
+      rejectWithValue({
+        name: err.name,
+        message: err.message,
+      });
+    }
+  },
+);
+
+const getAllUsersAsync = createAsyncThunk(
+  'user/getAll',
+  async (arg: QueryObject, { rejectWithValue }) => {
+    try {
+      const response: any = await getAllUsers(arg);
       return response.data;
     } catch (err: any) {
       rejectWithValue({
@@ -147,6 +171,22 @@ const userSlice = createSlice({
       .addCase(createUserActivityAsync.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.payload;
+      })
+      .addCase(getAllUsersAsync.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(getAllUsersAsync.fulfilled, (state, action) => {
+        state.status = 'idle';
+        state.userList = action.payload;
+        state.error = null;
+      })
+      .addCase(getAllUsersAsync.rejected, (state, action) => {
+        state.status = 'failed';
+        state.userList = {
+          users: null,
+          count: 0,
+        };
+        state.error = action.payload;
       });
   }
 })
@@ -159,4 +199,5 @@ export {
   getCurrentUserAsync,
   updateCurrentUserAsync,
   createUserActivityAsync,
+  getAllUsersAsync,
 }
