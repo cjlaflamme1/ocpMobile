@@ -21,5 +21,6 @@ export interface OrderBy {
 export interface QueryObject {
   pagination?: Pagination | null | undefined;
   filters?: Filter[] | null | undefined;
+  filteredWithOr?: boolean;
   orderBy?: OrderBy | null | undefined;
 }

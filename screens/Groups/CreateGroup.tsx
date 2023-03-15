@@ -73,6 +73,7 @@ const CreateGroup: React.FC<Props> = ({ navigation }) => {
           value: nameSearch,
         }
       ],
+      filteredWithOr: true,
     }))
   }
 
