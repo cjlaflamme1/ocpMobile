@@ -15,7 +15,9 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import { createGroupAsync, CreateGroupDto } from '../../store/groupSlice';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { postPresignedUrl, putImageOnS3 } from '../../api/s3API';
-import { clearUserList, getAllUsersAsync } from '../../store/userSlice';
+import { clearUserList, getAllUsersAsync, User } from '../../store/userSlice';
+import DropdownSelect, { DropdownData } from '../../components/DropdownSelect';
+import UserSearchDropdown from '../../components/UserSearchDropdown';
 
 interface Props {
   navigation: any
@@ -23,7 +25,7 @@ interface Props {
 
 const CreateGroup: React.FC<Props> = ({ navigation }) => {
   const [newGroupObj, setNewGroupObj] = useState<CreateGroupDto>();
-  const [debounceHandle, setDebounceHandle] = useState<any>();
+  const [selectedUserIds, setSelectedUserIds] = useState<Partial<User>[]>([]);
   const [selectedImage, setSelectedImage] = useState<ImagePicker.ImagePickerAsset>();
   const scrollViewRef = useRef<KeyboardAwareScrollView|null>(null);
   const dispatch = useAppDispatch();
@@ -31,7 +33,7 @@ const CreateGroup: React.FC<Props> = ({ navigation }) => {
     userState: state.userState,
   }));
 
-  const { currentUser, userList } = currentState.userState;
+  const { currentUser } = currentState.userState;
 
   useEffect(() => {
     if (!newGroupObj) {
@@ -43,41 +45,10 @@ const CreateGroup: React.FC<Props> = ({ navigation }) => {
         pendingInvitationUserIds: [],
       });
     }
-    if (!userList || userList.count === 0) {
-      dispatch(getAllUsersAsync({
-        pagination: {
-          skip: 0,
-          take: 8,
-        },
-      }));
-    }
-    return () => {
-      dispatch(clearUserList());
-    };
   }, [navigation]);
 
   if (!currentUser || !newGroupObj) {
     return (<View />);
-  }
-
-  const submitUserSearch = (nameSearch: string) => {
-    dispatch(getAllUsersAsync({
-      pagination: {
-          skip: 0,
-          take: 8,
-      },
-      filters: [
-        {
-          name: 'firstName',
-          value: nameSearch,
-        },
-        {
-          name: 'lastName',
-          value: nameSearch,
-        }
-      ],
-      filteredWithOr: true,
-    }))
   }
 
   const submitNewGroup = async () => {
@@ -205,70 +176,31 @@ const CreateGroup: React.FC<Props> = ({ navigation }) => {
             <CustomText style={[layoutStyles.mb_1]}>
               Invite Members
             </CustomText>
-            <View style={[inputStyle.fullWidthInputContainer]}>
-              <TextInput
-                placeholder='Enter name'
-                style={[inputStyle.fullWidthInput]}
-                autoCorrect={false}
-                onChangeText={(e) => {
-                  if (debounceHandle) {
-                    clearTimeout(debounceHandle);
-                  }
-                  const handle = setTimeout(() => submitUserSearch(e), 750);
-                  setDebounceHandle(handle);
-                }}
-              />
-            </View>
+            <UserSearchDropdown
+              testID='123455'
+              testIDDropdown='lkjfsodijfe'
+              placeholder='Search for users...'
+              setSelected={(e) => {
+                setSelectedUserIds([...selectedUserIds, e]);
+              }}
+              selected={selectedUserIds}
+            />
           </View>
           <View style={[layoutStyles.flexRow, { flexWrap: 'wrap'}, layoutStyles.mt_2]}>
-            <Pressable>
-              <UserIconSmall
-                imageSource={require('../../assets/profilePhotos/testProfile.jpg')}
-                userName='Chad Laflamme'
-              />
-            </Pressable>
-            <Pressable>
-              <UserIconSmall
-                imageSource={require('../../assets/profilePhotos/testProfile.jpg')}
-                userName='Chad Laflamme'
-              />
-            </Pressable>
-            <Pressable>
-              <UserIconSmall
-                imageSource={require('../../assets/profilePhotos/testProfile.jpg')}
-                userName='Chad Laflamme'
-              />
-            </Pressable>
-            <Pressable>
-              <UserIconSmall
-                imageSource={require('../../assets/profilePhotos/testProfile.jpg')}
-                userName='Chad Laflamme'
-              />
-            </Pressable>
-            <Pressable>
-              <UserIconSmall
-                imageSource={require('../../assets/profilePhotos/testProfile.jpg')}
-                userName='Chad Laflamme'
-              />
-            </Pressable>
-            <Pressable>
-              <UserIconSmall
-                imageSource={require('../../assets/profilePhotos/testProfile.jpg')}
-                userName='Chad Laflamme'
-              />
-            </Pressable>
-            <Pressable>
-              <UserIconSmall
-                imageSource={require('../../assets/profilePhotos/testProfile.jpg')}
-                userName='Chad Laflamme'
-              />
-            </Pressable>
-            <Pressable>
-              <UserIconSmall
-                imageSource={require('../../assets/profilePhotos/testProfile.jpg')}
-                userName='Chad Laflamme'
-              />
-            </Pressable>
+            {
+              selectedUserIds
+              && selectedUserIds.length > 0
+              ? selectedUserIds.map((user) => (
+                <Pressable key={`selectedUser-${user.id}`}>
+                  <UserIconSmall
+                    imageSource={{ uri: user.imageGetUrl }}
+                    userName={`${user.firstName} ${user.lastName}`}
+                  />
+                </Pressable>
+              )) : (
+                <CustomText>No users selected for invite.</CustomText>
+              )
+            }
           </View>
           <View style={[layoutStyles.mt_3]}>
             <PrimaryButton
