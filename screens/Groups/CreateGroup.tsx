@@ -15,7 +15,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import { createGroupAsync, CreateGroupDto } from '../../store/groupSlice';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { postPresignedUrl, putImageOnS3 } from '../../api/s3API';
-import { getAllUsersAsync } from '../../store/userSlice';
+import { clearUserList, getAllUsersAsync } from '../../store/userSlice';
 
 interface Props {
   navigation: any
@@ -51,6 +51,9 @@ const CreateGroup: React.FC<Props> = ({ navigation }) => {
         },
       }));
     }
+    return () => {
+      dispatch(clearUserList());
+    };
   }, [navigation]);
 
   if (!currentUser || !newGroupObj) {

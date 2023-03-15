@@ -131,7 +131,13 @@ const userSlice = createSlice({
   reducers: {
     clearUserState(state) {
       state.currentUser = null;
-    }
+    },
+    clearUserList(state) {
+      state.userList = {
+        users: null,
+        count: 0,
+      };
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -191,7 +197,7 @@ const userSlice = createSlice({
   }
 })
 
-export const { clearUserState } = userSlice.actions;
+export const { clearUserState, clearUserList } = userSlice.actions;
 
 export default userSlice.reducer;
 
