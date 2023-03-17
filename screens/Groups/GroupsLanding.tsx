@@ -48,7 +48,7 @@ const GroupsLanding: React.FC<Props> = ({ navigation }) => {
           }
         })),
         dispatch(getAllInvitationsAsync()),
-    ],
+      ],
     )
     setRefreshing(false);
   }

@@ -77,7 +77,7 @@ const SearchLanding: React.FC<Props> = ({ navigation }) => {
             searchForGroups.groups &&
             searchForGroups.groups.length > 0 ?
             searchForGroups.groups.map((group) => (
-              <Pressable key={`userGroupCard-${group.id}`} onPress={() => navigation.navigate('View Group')}>
+              <Pressable key={`userGroupCard-${group.id}`} onPress={() => console.log('review group screen, whatev')}>
                 <GroupCard
                   groupTitle={group.title}
                   numberOfMembers={group.users ? group.users.length : 0}
