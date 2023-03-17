@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { createGroup, getAllGroups, getUserGroups } from '../api/groupAPI';
+import { createGroup, getAllGroups, getOneGroup, getUserGroups } from '../api/groupAPI';
+import { getAllInvitations } from '../api/groupInvitationAPI';
 import { QueryObject } from '../models/QueryObject';
 import { User } from './userSlice';
 
@@ -48,6 +49,7 @@ interface GroupState {
     groups: Group[] | null;
     count: number;
   };
+  allInvitations: GroupInvitation[] | null;
   selectedGroup: Group | null;
   status: 'idle' | 'loading' | 'failed';
   error: any;
@@ -62,6 +64,7 @@ const initialState: GroupState = {
     groups: null,
     count: 0,
   },
+  allInvitations: null,
   selectedGroup: null,
   status: 'idle',
   error: null,
@@ -111,6 +114,36 @@ const getAllUserGroupsAsync = createAsyncThunk(
     }
   },
 );
+
+const getOneGroupAsync = createAsyncThunk(
+  'group/getOneGroup',
+  async (id: string, { rejectWithValue }) => {
+    try {
+      const response: any = await getOneGroup(id);
+      return response.data;
+    } catch (err: any) {
+      rejectWithValue({
+        name: err.name,
+        message: err.message,
+      });
+    }
+  },
+);
+
+const getAllInvitationsAsync = createAsyncThunk(
+  'group/getAllInvitations',
+  async (arg, { rejectWithValue }) => {
+    try {
+      const response: any = await getAllInvitations();
+      return response.data;
+    } catch (err: any) {
+      rejectWithValue({
+        name: err.name,
+        message: err.message,
+      });
+    }
+  }
+)
 
 const groupSlice = createSlice({
   name: 'group',
@@ -172,6 +205,32 @@ const groupSlice = createSlice({
         state.status = 'failed';
         state.selectedGroup = null;
         state.error = action.payload;
+      })
+      .addCase(getOneGroupAsync.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(getOneGroupAsync.fulfilled, (state, action) => {
+        state.status = 'idle';
+        state.selectedGroup = action.payload;
+        state.error = null;
+      })
+      .addCase(getOneGroupAsync.rejected, (state, action) => {
+        state.status = 'failed';
+        state.selectedGroup = null;
+        state.error = action.payload;
+      })
+      .addCase(getAllInvitationsAsync.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(getAllInvitationsAsync.fulfilled, (state, action) => {
+        state.status = 'idle';
+        state.allInvitations = action.payload;
+        state.error = null;
+      })
+      .addCase(getAllInvitationsAsync.rejected, (state, action) => {
+        state.status = 'failed';
+        state.allInvitations = null;
+        state.error = action.payload;
       });
   }
 })
@@ -184,4 +243,6 @@ export {
   getAllGroupsAsync,
   createGroupAsync,
   getAllUserGroupsAsync,
+  getOneGroupAsync,
+  getAllInvitationsAsync,
 }

@@ -56,3 +56,19 @@ export function getUserGroups(query: QueryObject) {
     }
   })
 }
+
+export function getOneGroup(id: string) {
+  return new Promise<AxiosPromise>((resolve, reject) => {
+    try {
+      api.get(`/group/${id}`)
+        .then((response: any) => {
+          resolve(response);
+        })
+        .catch((e: Error) => {
+          reject(e);
+        })
+    } catch (e) {
+      reject(e);
+    }
+  })
+}

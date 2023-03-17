@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { View, Image, ScrollView, RefreshControl, Pressable, TextInput } from 'react-native';
 import CustomText from '../../components/CustomText';
 import GroupCard from '../../components/GroupCard';
-import { getAllGroupsAsync, getAllUserGroupsAsync } from '../../store/groupSlice';
+import PrimaryButton from '../../components/PrimaryButton';
+import { getAllGroupsAsync, getAllInvitationsAsync, getAllUserGroupsAsync, getOneGroupAsync } from '../../store/groupSlice';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import globalStyles from '../../styles/global';
 import layoutStyles from '../../styles/layout';
@@ -14,13 +15,13 @@ interface Props {
 
 const GroupsLanding: React.FC<Props> = ({ navigation }) => {
   const [refreshing, setRefreshing] = useState(false);
-  const [exploreGroups, setExploreGroups] = useState(false);
+  const [exploreInvitations, setExploreInvitations] = useState(false);
   const [radioSelector, setRadioSelector] = useState(0);
   const dispatch = useAppDispatch();
   const currentState = useAppSelector((state) => ({
     groupState: state.groupState,
   }));
-  const { allGroups, searchForGroups } = currentState.groupState;
+  const { allGroups, allInvitations } = currentState.groupState;
 
   useEffect(() => {
     if (allGroups && allGroups.count <= 0) {
@@ -31,25 +32,32 @@ const GroupsLanding: React.FC<Props> = ({ navigation }) => {
         }
       }))
     }
-    if (searchForGroups && searchForGroups.count <= 0) {
-      dispatch(getAllGroupsAsync({
-        pagination: {
-          take: 8,
-          skip: 0,
-        }
-      }));
+    if (!allInvitations || allInvitations.length <= 0) {
+      dispatch(getAllInvitationsAsync());
     }
   }, [navigation]);
 
   const onRefresh = async () => {
     setRefreshing(true);
-    await dispatch(getAllUserGroupsAsync({
-      pagination: {
-        take: 8,
-        skip: 0,
-      }
-    }))
+    await Promise.all(
+      [
+        dispatch(getAllUserGroupsAsync({
+          pagination: {
+            take: 8,
+            skip: 0,
+          }
+        })),
+        dispatch(getAllInvitationsAsync()),
+    ],
+    )
     setRefreshing(false);
+  }
+
+  const viewUserGroup = async (id: string) => {
+    const res = await dispatch(getOneGroupAsync(id));
+    if (res.meta.requestStatus === 'fulfilled') {
+      navigation.navigate('View Group');
+    };
   }
   return (
     <View style={[layoutStyles.screenContainer]}>
@@ -88,34 +96,38 @@ const GroupsLanding: React.FC<Props> = ({ navigation }) => {
           />
         </View>
         <View style={[groupsLandingStyle.radioTextContainer]}>
-          <Pressable onPress={() => setExploreGroups(false)} style={[(!exploreGroups && groupsLandingStyle.bottomBorder)]}>
-            <CustomText bold style={[groupsLandingStyle.radioText, (exploreGroups && globalStyles.mutedText)]}>Your Groups</CustomText>
+          <Pressable onPress={() => setExploreInvitations(false)} style={[(!exploreInvitations && groupsLandingStyle.bottomBorder)]}>
+            <CustomText bold style={[groupsLandingStyle.radioText, (exploreInvitations && globalStyles.mutedText)]}>Your Groups</CustomText>
           </Pressable>
-          <Pressable onPress={() => setExploreGroups(true)} style={[(exploreGroups && groupsLandingStyle.bottomBorder)]}>
-            <CustomText style={[groupsLandingStyle.radioText, (!exploreGroups && globalStyles.mutedText)]}>Explore Groups</CustomText>
+          <Pressable onPress={() => setExploreInvitations(true)} style={[(exploreInvitations && groupsLandingStyle.bottomBorder)]}>
+            <CustomText style={[groupsLandingStyle.radioText, (!exploreInvitations && globalStyles.mutedText)]}>Your Invitations</CustomText>
           </Pressable>
         </View>
         {
-          exploreGroups ?
+          exploreInvitations ?
           (
             <View style={[layoutStyles.mb_3]}>
               {
-                searchForGroups &&
-                searchForGroups.groups &&
-                searchForGroups.groups.length > 0 ?
-                searchForGroups.groups.map((group) => (
-                  <Pressable key={`userGroupCard-${group.id}`} onPress={() => navigation.navigate('View Group')}>
+                allInvitations &&
+                allInvitations.length > 0 ?
+                allInvitations.map((invite) => (
+                  <Pressable key={`inviteCard-${invite.id}`}>
                     <GroupCard
-                      groupTitle={group.title}
-                      numberOfMembers={group.users ? group.users.length : 0}
-                      imageSource={group.imageGetUrl ? {
-                        uri: group.imageGetUrl
+                      groupTitle={invite.group.title}
+                      numberOfMembers={invite.group.users ? invite.group.users.length : 0}
+                      imageSource={invite.group.imageGetUrl ? {
+                        uri: invite.group.imageGetUrl
                       } : require('../../assets/150x150.png')}
                     />
                   </Pressable>
                 )) : (
                   <View style={[layoutStyles.alignItemCenter, layoutStyles.mt_3]}>
-                    <CustomText>No results, try other parameters.</CustomText>
+                    <CustomText style={[layoutStyles.mb_3]}>You don't have any invitations.</CustomText>
+                    <PrimaryButton
+                      outline
+                      buttonText='Search For Groups'
+                      callback={() => navigation.navigate('Search', { screen: 'Search Landing' })}
+                    />
                   </View>
                 )
               }
@@ -127,7 +139,7 @@ const GroupsLanding: React.FC<Props> = ({ navigation }) => {
                 allGroups.groups &&
                 allGroups.groups.length > 0 ?
                 allGroups.groups.map((group) => (
-                  <Pressable key={`userGroupCard-${group.id}`} onPress={() => navigation.navigate('View Group')}>
+                  <Pressable key={`userGroupCard-${group.id}`} onPress={() => viewUserGroup(group.id)}>
                     <GroupCard
                       groupTitle={group.title}
                       numberOfMembers={group.users ? group.users.length : 0}
@@ -138,7 +150,12 @@ const GroupsLanding: React.FC<Props> = ({ navigation }) => {
                   </Pressable>
                 )) : (
                   <View style={[layoutStyles.alignItemCenter, layoutStyles.mt_3]}>
-                    <CustomText>You haven't joined any groups yet.</CustomText>
+                    <CustomText style={[layoutStyles.mb_3]}>You haven't joined any groups yet.</CustomText>
+                    <PrimaryButton
+                      outline
+                      buttonText='Search For Groups'
+                      callback={() => navigation.navigate('Search', { screen: 'Search Landing' })}
+                    />
                   </View>
                 )
               }
