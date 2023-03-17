@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Image, ScrollView, RefreshControl, Pressable, TextInput } from 'react-native';
 import CustomText from '../../components/CustomText';
 import GroupCard from '../../components/GroupCard';
+import { getAllGroupsAsync, getAllUserGroupsAsync } from '../../store/groupSlice';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import globalStyles from '../../styles/global';
 import layoutStyles from '../../styles/layout';
 import groupsLandingStyle from '../../styles/screenStyles/groups/groupsLanding';
@@ -12,10 +14,41 @@ interface Props {
 
 const GroupsLanding: React.FC<Props> = ({ navigation }) => {
   const [refreshing, setRefreshing] = useState(false);
+  const [exploreGroups, setExploreGroups] = useState(false);
   const [radioSelector, setRadioSelector] = useState(0);
-  const onRefresh = () => {
+  const dispatch = useAppDispatch();
+  const currentState = useAppSelector((state) => ({
+    groupState: state.groupState,
+  }));
+  const { allGroups, searchForGroups } = currentState.groupState;
+
+  useEffect(() => {
+    if (allGroups && allGroups.count <= 0) {
+      dispatch(getAllUserGroupsAsync({
+        pagination: {
+          take: 8,
+          skip: 0,
+        }
+      }))
+    }
+    if (searchForGroups && searchForGroups.count <= 0) {
+      dispatch(getAllGroupsAsync({
+        pagination: {
+          take: 8,
+          skip: 0,
+        }
+      }));
+    }
+  }, [navigation]);
+
+  const onRefresh = async () => {
     setRefreshing(true);
-    // Refresh functions here
+    await dispatch(getAllUserGroupsAsync({
+      pagination: {
+        take: 8,
+        skip: 0,
+      }
+    }))
     setRefreshing(false);
   }
   return (
@@ -55,33 +88,63 @@ const GroupsLanding: React.FC<Props> = ({ navigation }) => {
           />
         </View>
         <View style={[groupsLandingStyle.radioTextContainer]}>
-          <Pressable onPress={() => setRadioSelector(0)} style={[(radioSelector <= 0 && groupsLandingStyle.bottomBorder)]}>
-            <CustomText bold style={[groupsLandingStyle.radioText, (radioSelector > 0 && globalStyles.mutedText)]}>Your Groups</CustomText>
+          <Pressable onPress={() => setExploreGroups(false)} style={[(!exploreGroups && groupsLandingStyle.bottomBorder)]}>
+            <CustomText bold style={[groupsLandingStyle.radioText, (exploreGroups && globalStyles.mutedText)]}>Your Groups</CustomText>
           </Pressable>
-          <Pressable onPress={() => setRadioSelector(1)} style={[(radioSelector > 0 && groupsLandingStyle.bottomBorder)]}>
-            <CustomText style={[groupsLandingStyle.radioText, (radioSelector <= 0 && globalStyles.mutedText)]}>Explore Groups</CustomText>
+          <Pressable onPress={() => setExploreGroups(true)} style={[(exploreGroups && groupsLandingStyle.bottomBorder)]}>
+            <CustomText style={[groupsLandingStyle.radioText, (!exploreGroups && globalStyles.mutedText)]}>Explore Groups</CustomText>
           </Pressable>
         </View>
-        <View style={[layoutStyles.mb_3]}>
-          {/* Search result widgets */}
-          <Pressable onPress={() => navigation.navigate('View Group')}>
-            <GroupCard
-              groupTitle='MWV Backgrountry Skiing'
-              numberOfMembers={12}
-              imageSource={require('../../assets/profilePhotos/testSportImage.jpg')}
-            />
-          </Pressable>
-          <GroupCard
-            groupTitle='MWV Backgrountry Skiing'
-            numberOfMembers={12}
-            imageSource={require('../../assets/profilePhotos/testSportImage.jpg')}
-          />
-          <GroupCard
-            groupTitle='MWV Backgrountry Skiing'
-            numberOfMembers={12}
-            imageSource={require('../../assets/profilePhotos/testSportImage.jpg')}
-          />
-        </View>
+        {
+          exploreGroups ?
+          (
+            <View style={[layoutStyles.mb_3]}>
+              {
+                searchForGroups &&
+                searchForGroups.groups &&
+                searchForGroups.groups.length > 0 ?
+                searchForGroups.groups.map((group) => (
+                  <Pressable key={`userGroupCard-${group.id}`} onPress={() => navigation.navigate('View Group')}>
+                    <GroupCard
+                      groupTitle={group.title}
+                      numberOfMembers={group.users ? group.users.length : 0}
+                      imageSource={group.imageGetUrl ? {
+                        uri: group.imageGetUrl
+                      } : require('../../assets/150x150.png')}
+                    />
+                  </Pressable>
+                )) : (
+                  <View style={[layoutStyles.alignItemCenter, layoutStyles.mt_3]}>
+                    <CustomText>No results, try other parameters.</CustomText>
+                  </View>
+                )
+              }
+            </View>
+          ) : (
+            <View style={[layoutStyles.mb_3]}>
+              {
+                allGroups &&
+                allGroups.groups &&
+                allGroups.groups.length > 0 ?
+                allGroups.groups.map((group) => (
+                  <Pressable key={`userGroupCard-${group.id}`} onPress={() => navigation.navigate('View Group')}>
+                    <GroupCard
+                      groupTitle={group.title}
+                      numberOfMembers={group.users ? group.users.length : 0}
+                      imageSource={group.imageGetUrl ? {
+                        uri: group.imageGetUrl
+                      } : require('../../assets/150x150.png')}
+                    />
+                  </Pressable>
+                )) : (
+                  <View style={[layoutStyles.alignItemCenter, layoutStyles.mt_3]}>
+                    <CustomText>You haven't joined any groups yet.</CustomText>
+                  </View>
+                )
+              }
+            </View>
+          )
+        }
       </ScrollView>
     </View>
   );

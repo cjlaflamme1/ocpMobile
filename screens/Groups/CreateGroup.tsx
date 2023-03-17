@@ -12,7 +12,7 @@ import layoutStyles from '../../styles/layout';
 import createGroupStyles from '../../styles/screenStyles/groups/createGroup';
 import groupsLandingStyle from '../../styles/screenStyles/groups/groupsLanding';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { createGroupAsync, CreateGroupDto } from '../../store/groupSlice';
+import { createGroupAsync, CreateGroupDto, getAllGroupsAsync, getAllUserGroupsAsync } from '../../store/groupSlice';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { postPresignedUrl, putImageOnS3 } from '../../api/s3API';
 import { clearUserList, getAllUsersAsync, User } from '../../store/userSlice';
@@ -66,10 +66,22 @@ const CreateGroup: React.FC<Props> = ({ navigation }) => {
         newCoverImage = `groupImages/${imageFileName}`;
       }
     }
-    await dispatch(createGroupAsync({
-      ...newGroupObj,
-      coverPhoto: newCoverImage,
-    }))
+    if (newGroupObj.title && newGroupObj.description) {
+      await dispatch(createGroupAsync({
+        ...newGroupObj,
+        coverPhoto: newCoverImage,
+        pendingInvitationUserIds: (selectedUserIds && selectedUserIds.length > 0) ?
+          selectedUserIds.map((user) => user.id ? user.id : '') :
+          [],
+      }));
+      dispatch(getAllUserGroupsAsync({
+        pagination: {
+          take: 8,
+          skip: 0,
+        }
+      }));
+      navigation.navigate('Groups Landing');
+    }
   };
 
   const pickImage = async () => {
@@ -205,7 +217,8 @@ const CreateGroup: React.FC<Props> = ({ navigation }) => {
           <View style={[layoutStyles.mt_3]}>
             <PrimaryButton
               buttonText='Create'
-              callback={() => console.log('clicky')}
+              disabled={!newGroupObj.title || !newGroupObj.description}
+              callback={submitNewGroup}
             />
           </View>
         </View>

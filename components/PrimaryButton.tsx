@@ -9,6 +9,7 @@ interface Props {
   buttonText: string,
   callback: Function,
   outline?: boolean,
+  disabled?: boolean,
 };
 
 const PrimaryButton: React.FC<Props> = (props: Props) => {
@@ -16,12 +17,14 @@ const PrimaryButton: React.FC<Props> = (props: Props) => {
     buttonText,
     callback,
     outline,
+    disabled,
   } = props;
 
   if (outline) {
     return (
       <Pressable
         // style={[inputStyle.primaryButton, inputStyle.outlineButton]}
+        disabled={disabled}
         style={({ pressed }) => {
           if (pressed) {
             return [inputStyle.primaryButton, inputStyle.outlineButton, inputStyle.pressed];
@@ -38,6 +41,7 @@ const PrimaryButton: React.FC<Props> = (props: Props) => {
   return (
     <Pressable
       // style={[inputStyle.primaryButton]}
+      disabled={disabled}
       style={({ pressed }) => {
         if (pressed) {
           return [inputStyle.primaryButton, inputStyle.pressed];
@@ -56,6 +60,7 @@ export default PrimaryButton;
 
 PrimaryButton.defaultProps = {
   outline: false,
+  disabled: false,
 }
 
 import { StyleSheet } from 'react-native';

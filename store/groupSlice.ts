@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { createGroup, getAllGroups } from '../api/groupAPI';
+import { createGroup, getAllGroups, getUserGroups } from '../api/groupAPI';
+import { QueryObject } from '../models/QueryObject';
 import { User } from './userSlice';
 
 export interface CreateGroupInviteDto {
@@ -35,17 +36,32 @@ export interface Group {
   groupAdmins: User[];
   users: User[];
   pendingInvitations: GroupInvitation[];
+  imageGetUrl?: string;
 }
 
 interface GroupState {
-  allGroups: Group[] | null;
+  allGroups: {
+    groups: Group[] | null;
+    count: number;
+  };
+  searchForGroups: {
+    groups: Group[] | null;
+    count: number;
+  };
   selectedGroup: Group | null;
   status: 'idle' | 'loading' | 'failed';
   error: any;
 }
 
 const initialState: GroupState = {
-  allGroups: null,
+  allGroups: {
+    groups: null,
+    count: 0,
+  },
+  searchForGroups: {
+    groups: null,
+    count: 0,
+  },
   selectedGroup: null,
   status: 'idle',
   error: null,
@@ -68,9 +84,24 @@ const createGroupAsync = createAsyncThunk(
 
 const getAllGroupsAsync = createAsyncThunk(
   'group/getAll',
-  async (arg, { rejectWithValue }) => {
+  async (arg: QueryObject, { rejectWithValue }) => {
     try {
-      const response: any = await getAllGroups();
+      const response: any = await getAllGroups(arg);
+      return response.data;
+    } catch (err: any) {
+      rejectWithValue({
+        name: err.name,
+        message: err.message,
+      });
+    }
+  },
+);
+
+const getAllUserGroupsAsync = createAsyncThunk(
+  'group/getUserGroups',
+  async (arg: QueryObject, { rejectWithValue }) => {
+    try {
+      const response: any = await getUserGroups(arg);
       return response.data;
     } catch (err: any) {
       rejectWithValue({
@@ -86,7 +117,10 @@ const groupSlice = createSlice({
   initialState,
   reducers: {
     clearGroupList(state) {
-      state.allGroups = [];
+      state.allGroups = {
+        groups: [],
+        count: 0,
+      };
     },
     clearSelectedGroup(state) {
       state.selectedGroup = null;
@@ -99,12 +133,31 @@ const groupSlice = createSlice({
       })
       .addCase(getAllGroupsAsync.fulfilled, (state, action) => {
         state.status = 'idle';
-        state.allGroups = action.payload;
+        state.searchForGroups = action.payload;
         state.error = null;
       })
       .addCase(getAllGroupsAsync.rejected, (state, action) => {
         state.status = 'failed';
-        state.allGroups = null;
+        state.searchForGroups = {
+          groups: [],
+          count: 0,
+        };
+        state.error = action.payload;
+      })
+      .addCase(getAllUserGroupsAsync.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(getAllUserGroupsAsync.fulfilled, (state, action) => {
+        state.status = 'idle';
+        state.allGroups = action.payload;
+        state.error = null;
+      })
+      .addCase(getAllUserGroupsAsync.rejected, (state, action) => {
+        state.status = 'failed';
+        state.allGroups = {
+          groups: [],
+          count: 0,
+        };
         state.error = action.payload;
       })
       .addCase(createGroupAsync.pending, (state) => {
@@ -130,4 +183,5 @@ export default groupSlice.reducer;
 export {
   getAllGroupsAsync,
   createGroupAsync,
+  getAllUserGroupsAsync,
 }
