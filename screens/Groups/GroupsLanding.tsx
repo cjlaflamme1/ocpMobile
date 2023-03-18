@@ -4,7 +4,7 @@ import CustomText from '../../components/CustomText';
 import GroupCard from '../../components/GroupCard';
 import InviteModal from '../../components/groups/InviteModal';
 import PrimaryButton from '../../components/PrimaryButton';
-import { getAllGroupsAsync, getAllInvitationsAsync, getAllUserGroupsAsync, getOneGroupAsync } from '../../store/groupSlice';
+import { getAllGroupsAsync, getAllInvitationsAsync, getAllUserGroupsAsync, getOneGroupAsync, updateGroupInviteAsync } from '../../store/groupSlice';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import globalStyles from '../../styles/global';
 import layoutStyles from '../../styles/layout';
@@ -60,6 +60,23 @@ const GroupsLanding: React.FC<Props> = ({ navigation }) => {
     if (res.meta.requestStatus === 'fulfilled') {
       navigation.navigate('View Group');
     };
+  }
+
+  const inviteResponse = async (inviteId: string, accept: boolean) => {
+    await dispatch(updateGroupInviteAsync({
+      id: inviteId,
+      body: {
+        accepted: accept,
+      },
+    }))
+    dispatch(getAllInvitationsAsync());
+    dispatch(getAllUserGroupsAsync({
+      pagination: {
+        take: 8,
+        skip: 0,
+      }
+    }))
+    setSelectedInvite('');
   }
   return (
     <View style={[layoutStyles.screenContainer]}>
@@ -125,8 +142,8 @@ const GroupsLanding: React.FC<Props> = ({ navigation }) => {
                       invite={invite}
                       closeModal={() => setSelectedInvite('')}
                       isVisible={selectedInvite === invite.id}
-                      acceptAction={() => setSelectedInvite('')}
-                      rejectAction={() => setSelectedInvite('')}
+                      acceptAction={() => inviteResponse(invite.id, true)}
+                      rejectAction={() => inviteResponse(invite.id, false)}
                     />
                   </Pressable>
                 )) : (

@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { createGroup, getAllGroups, getOneGroup, getUserGroups } from '../api/groupAPI';
-import { getAllInvitations } from '../api/groupInvitationAPI';
+import { getAllInvitations, updateGroupInvite } from '../api/groupInvitationAPI';
 import { QueryObject } from '../models/QueryObject';
 import { User } from './userSlice';
 
@@ -142,8 +142,23 @@ const getAllInvitationsAsync = createAsyncThunk(
         message: err.message,
       });
     }
-  }
-)
+  },
+);
+
+const updateGroupInviteAsync = createAsyncThunk(
+  'group/updateInvitation',
+  async (arg: { id: string, body: Partial<GroupInvitation>}, { rejectWithValue }) => {
+    try {
+      const response: any = await updateGroupInvite(arg.id, arg.body);
+      return response.data;
+    } catch (err: any) {
+      rejectWithValue({
+        name: err.name,
+        message: err.message,
+      });
+    }
+  },
+);
 
 const groupSlice = createSlice({
   name: 'group',
@@ -231,6 +246,17 @@ const groupSlice = createSlice({
         state.status = 'failed';
         state.allInvitations = null;
         state.error = action.payload;
+      })
+      .addCase(updateGroupInviteAsync.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(updateGroupInviteAsync.fulfilled, (state) => {
+        state.status = 'idle';
+        state.error = null;
+      })
+      .addCase(updateGroupInviteAsync.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.payload;
       });
   }
 })
@@ -245,4 +271,5 @@ export {
   getAllUserGroupsAsync,
   getOneGroupAsync,
   getAllInvitationsAsync,
+  updateGroupInviteAsync,
 }

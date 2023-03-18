@@ -22,7 +22,6 @@ const InviteModal: React.FC<Props> = (props: Props) => {
     acceptAction,
     rejectAction,
   } = props;
-  const [modalVisible, setModalVisible] = useState(false);
   return (
     <Modal
       animationType="slide"
