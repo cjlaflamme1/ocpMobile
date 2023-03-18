@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Image, ScrollView, RefreshControl, Pressable, TextInput } from 'react-native';
 import CustomText from '../../components/CustomText';
 import GroupCard from '../../components/GroupCard';
+import InviteModal from '../../components/groups/InviteModal';
 import PrimaryButton from '../../components/PrimaryButton';
 import { getAllGroupsAsync, getAllInvitationsAsync, getAllUserGroupsAsync, getOneGroupAsync } from '../../store/groupSlice';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
@@ -15,6 +16,7 @@ interface Props {
 
 const GroupsLanding: React.FC<Props> = ({ navigation }) => {
   const [refreshing, setRefreshing] = useState(false);
+  const [selectedInvite, setSelectedInvite] = useState('');
   const [exploreInvitations, setExploreInvitations] = useState(false);
   const [radioSelector, setRadioSelector] = useState(0);
   const dispatch = useAppDispatch();
@@ -111,13 +113,20 @@ const GroupsLanding: React.FC<Props> = ({ navigation }) => {
                 allInvitations &&
                 allInvitations.length > 0 ?
                 allInvitations.map((invite) => (
-                  <Pressable key={`inviteCard-${invite.id}`}>
+                  <Pressable key={`inviteCard-${invite.id}`} onPress={() => setSelectedInvite(invite.id)}>
                     <GroupCard
                       groupTitle={invite.group.title}
                       numberOfMembers={invite.group.users ? invite.group.users.length : 0}
                       imageSource={invite.group.imageGetUrl ? {
                         uri: invite.group.imageGetUrl
                       } : require('../../assets/150x150.png')}
+                    />
+                    <InviteModal
+                      invite={invite}
+                      closeModal={() => setSelectedInvite('')}
+                      isVisible={selectedInvite === invite.id}
+                      acceptAction={() => setSelectedInvite('')}
+                      rejectAction={() => setSelectedInvite('')}
                     />
                   </Pressable>
                 )) : (

@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Image, ImageSourcePropType, Pressable } from 'react-native';
+import { View, Image, ImageSourcePropType, Pressable, ViewStyle, StyleProp } from 'react-native';
 import globalStyles from '../styles/global';
 import layoutStyles from '../styles/layout';
 import groupCardStyles from '../styles/screenStyles/groups/groupCard';
@@ -10,6 +10,7 @@ interface Props {
   callback: Function,
   outline?: boolean,
   disabled?: boolean,
+  styles?: StyleProp<ViewStyle>,
 };
 
 const PrimaryButton: React.FC<Props> = (props: Props) => {
@@ -18,6 +19,7 @@ const PrimaryButton: React.FC<Props> = (props: Props) => {
     callback,
     outline,
     disabled,
+    styles,
   } = props;
 
   if (outline) {
@@ -27,9 +29,9 @@ const PrimaryButton: React.FC<Props> = (props: Props) => {
         disabled={disabled}
         style={({ pressed }) => {
           if (pressed) {
-            return [inputStyle.primaryButton, inputStyle.outlineButton, inputStyle.pressed];
+            return [inputStyle.primaryButton, inputStyle.outlineButton, inputStyle.pressed, styles];
           } else {
-            return [inputStyle.primaryButton, inputStyle.outlineButton];
+            return [inputStyle.primaryButton, inputStyle.outlineButton, styles];
           }
         }}
         onPress={() => callback()}
@@ -44,9 +46,9 @@ const PrimaryButton: React.FC<Props> = (props: Props) => {
       disabled={disabled}
       style={({ pressed }) => {
         if (pressed) {
-          return [inputStyle.primaryButton, inputStyle.pressed];
+          return [inputStyle.primaryButton, inputStyle.pressed, styles];
         } else {
-          return [inputStyle.primaryButton];
+          return [inputStyle.primaryButton, styles];
         }
       }}
       onPress={() => callback()}
@@ -61,6 +63,7 @@ export default PrimaryButton;
 PrimaryButton.defaultProps = {
   outline: false,
   disabled: false,
+  styles: undefined,
 }
 
 import { StyleSheet } from 'react-native';
