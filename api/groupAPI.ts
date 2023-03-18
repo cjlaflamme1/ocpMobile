@@ -1,12 +1,30 @@
 import api from './api';
 import { AxiosPromise } from 'axios';
-import { CreateUserActivityDTO, User } from '../store/userSlice';
 import { QueryObject } from '../models/QueryObject';
 
-export function getCurrentUser() {
+export function createGroup(body: any) {
   return new Promise<AxiosPromise>((resolve, reject) => {
     try {
-      api.get('/user/current')
+      api.post(`/group`, body)
+        .then((response: any) => {
+          resolve(response);
+        }).catch((e: Error) => {
+          reject(e);
+        })
+    } catch (e) {
+      reject(e);
+    }
+  })
+}
+
+export function getAllGroups(query: QueryObject) {
+  return new Promise<AxiosPromise>((resolve, reject) => {
+    try {
+      api.get('/group', {
+        params: {
+          dataSource: JSON.stringify(query),
+        }
+      })
         .then((response: any) => {
           resolve(response);
         })
@@ -19,31 +37,18 @@ export function getCurrentUser() {
   })
 }
 
-export function getAllUsers(query: QueryObject) {
+export function getUserGroups(query: QueryObject) {
   return new Promise<AxiosPromise>((resolve, reject) => {
     try {
-      api.get('/user', {
+      api.get('/group/current', {
         params: {
           dataSource: JSON.stringify(query),
-        },
-      }).then((response: any) => {
-        resolve(response);
-      }).catch((e: Error) => {
-        reject(e);
+        }
       })
-    } catch (e) {
-      reject(e);
-    }
-  })
-}
-
-export function updateCurrentUser(id: string, updateBody: Partial<User>) {
-  return new Promise<AxiosPromise>((resolve, reject) => {
-    try {
-      api.patch(`/user/${id}`, updateBody)
         .then((response: any) => {
           resolve(response);
-        }).catch((e: Error) => {
+        })
+        .catch((e: Error) => {
           reject(e);
         })
     } catch (e) {
@@ -52,13 +57,14 @@ export function updateCurrentUser(id: string, updateBody: Partial<User>) {
   })
 }
 
-export function createUserActivity(body: CreateUserActivityDTO) {
+export function getOneGroup(id: string) {
   return new Promise<AxiosPromise>((resolve, reject) => {
     try {
-      api.post(`/users-activity`, body)
+      api.get(`/group/${id}`)
         .then((response: any) => {
           resolve(response);
-        }).catch((e: Error) => {
+        })
+        .catch((e: Error) => {
           reject(e);
         })
     } catch (e) {

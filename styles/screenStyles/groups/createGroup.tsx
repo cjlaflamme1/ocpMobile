@@ -16,6 +16,20 @@ const createGroupStyles = StyleSheet.create({
   },
   pressed: {
     backgroundColor: 'grey',
+  },
+  editImageIcon: {
+    height: 30,
+    width: 30,
+    resizeMode: 'contain',
+    padding: 10,
+  },
+  editImagePressable: {
+    position: 'absolute',
+    right: 0,
+    bottom: 0,
+    padding: 6,
+    backgroundColor: '#CB1406',
+    borderRadius: 50,
   }
 });
 

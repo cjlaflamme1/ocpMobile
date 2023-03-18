@@ -41,7 +41,7 @@ const groupsLandingStyle = StyleSheet.create({
   },
   radioText: {
     padding: 10,
-  },
+  }
 });
 
 export default groupsLandingStyle;

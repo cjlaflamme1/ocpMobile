@@ -11,6 +11,7 @@ import RootNavigation from './navigation/RootNavigation';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 import { Manrope_400Regular, Manrope_600SemiBold, Manrope_800ExtraBold } from '@expo-google-fonts/manrope';
+import { StatusBar } from 'expo-status-bar';
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -103,6 +104,7 @@ export default function App() {
         <Provider store={store}>
           <RootNavigation expoPushToken={expoPushToken} />
         </Provider>
+        <StatusBar style="dark" />
       </SafeAreaView>
     </NavigationContainer>
   );
