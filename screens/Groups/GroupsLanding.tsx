@@ -18,7 +18,6 @@ const GroupsLanding: React.FC<Props> = ({ navigation }) => {
   const [refreshing, setRefreshing] = useState(false);
   const [selectedInvite, setSelectedInvite] = useState('');
   const [exploreInvitations, setExploreInvitations] = useState(false);
-  const [radioSelector, setRadioSelector] = useState(0);
   const dispatch = useAppDispatch();
   const currentState = useAppSelector((state) => ({
     groupState: state.groupState,

@@ -8,6 +8,7 @@ import globalStyles from '../../styles/global';
 import PrimaryButton from '../../components/PrimaryButton';
 import { SigninObject } from '../../models/SigninObject';
 import { signInAsync } from '../../store/authSlice';
+import { getCurrentUserAsync } from '../../store/userSlice';
 interface Props {
   navigation: any;
 };
@@ -30,6 +31,9 @@ const SignIn: React.FC<Props> = ({ navigation }) => {
   const submitLogin = async() => {
     if (signinObject && signinObject.email && signinObject.password) {
       const res = await dispatch(signInAsync(signinObject));
+      if (res.meta.requestStatus === 'fulfilled') {
+        dispatch(getCurrentUserAsync());
+      };
     }
   }
 
