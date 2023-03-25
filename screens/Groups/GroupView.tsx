@@ -8,6 +8,7 @@ import PostMessageCard from '../../components/groups/PostMessage';
 import MessageCard from '../../components/groups/MessageCard';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { getOneGroupAsync } from '../../store/groupSlice';
+import { createGroupPostAsync, CreateGroupPostDto, getAllGroupPostsAsync } from '../../store/groupPostSlice';
 
 interface Props {
   navigation: any
@@ -19,8 +20,18 @@ const GroupView: React.FC<Props> = ({ navigation }) => {
   const dispatch = useAppDispatch();
   const currentState = useAppSelector((state) => ({
     groupState: state.groupState,
+    groupPostState: state.groupPostState,
   }));
   const { selectedGroup } = currentState.groupState;
+  const { currentGroupsPosts } = currentState.groupPostState;
+
+  useEffect(() => {
+    if (selectedGroup) {
+      if (!currentGroupsPosts || currentGroupsPosts.count <= 0) {
+        dispatch(getAllGroupPostsAsync(selectedGroup.id));
+      }
+    }
+  }, [navigation]);
 
   if (!selectedGroup) {
     return (<View />);
@@ -30,7 +41,15 @@ const GroupView: React.FC<Props> = ({ navigation }) => {
   const onRefresh = async () => {
     setRefreshing(true);
       await dispatch(getOneGroupAsync(selectedGroup.id));
+      await dispatch(getAllGroupPostsAsync(selectedGroup.id));
     setRefreshing(false);
+  }
+
+  const submitNewPost = async (post: CreateGroupPostDto) => {
+    const newPost = await dispatch(createGroupPostAsync(post));
+    if (newPost && newPost.meta.requestStatus === 'fulfilled') {
+      dispatch(getAllGroupPostsAsync(selectedGroup.id));
+    }
   }
 
   return (
@@ -61,38 +80,41 @@ const GroupView: React.FC<Props> = ({ navigation }) => {
               <CustomText style={[groupViewStyle.radioText, (radioSelector <= 0 && globalStyles.mutedText)]}>Events</CustomText>
             </Pressable>
           </View>
-          <View style={[layoutStyles.mt_2, layoutStyles.mb_2]}>
-            <PostMessageCard
-              buttonText='Submit'
-              placeholderText='Write post here.'
-              groupId='12345'
-            />
-          </View>
-          <View style={[layoutStyles.mb_2]}>
-            <MessageCard
-              userPosted={{
-                name: 'Chad Laflamme',
-                profile: require('../../assets/profilePhotos/testProfile.jpg')
-              }}
-              postId={{
-                postText: 'We are hosting a new ski tour this weekend!',
-                postImage: require('../../assets/profilePhotos/testSportImage.jpg')
-              }}
-              groupId={'1235677'}
-            />
-          </View>
-          <View style={[layoutStyles.mb_2]}>
-            <MessageCard
-              userPosted={{
-                name: 'Chad Laflamme',
-                profile: require('../../assets/profilePhotos/testProfile.jpg')
-              }}
-              postId={{
-                postText: 'Who is excited???  We are hosting a new ski tought coming up this weekend!!!  Get ready for the big announcement.',
-              }}
-              groupId={'1235677876'}
-            />
-          </View>
+          {
+            radioSelector === 0 &&
+            (
+              <View>
+                <View style={[layoutStyles.mt_2, layoutStyles.mb_2]}>
+                  <PostMessageCard
+                    buttonText='Submit'
+                    placeholderText='Write post here.'
+                    groupId={selectedGroup.id}
+                    handleSubmit={(post) => submitNewPost(post)}
+                  />
+                </View>
+                {
+                  currentGroupsPosts &&
+                  currentGroupsPosts.count > 0 &&
+                  currentGroupsPosts.groupPosts?.map((post) => (
+                    <View style={[layoutStyles.mb_2]}>
+                      <MessageCard
+                        userPosted={{
+                          name: `${post.author.firstName} ${post.author.lastName}`,
+                          profile: post.authorImageUrl ? { uri: post.authorImageUrl } : require('../../assets/150x150.png'),
+                        }}
+                        postId={{
+                          postText: post.postText,
+                          postImage: post.imageGetUrl ? { uri: post.imageGetUrl } : undefined,
+                          createdAt: post.createdAt,
+                        }}
+                        groupId={selectedGroup.id}
+                      />
+                    </View>
+                  ))
+                }
+              </View>
+            )
+          }
         </View>
       </ScrollView>
     </View>

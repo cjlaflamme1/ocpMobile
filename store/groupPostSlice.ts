@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { createGroupPost } from '../api/groupPostAPI';
+import { createGroupPost, getAllGroupPosts } from '../api/groupPostAPI';
 import { Group } from './groupSlice';
 import { User } from './userSlice';
 
@@ -16,17 +16,25 @@ export interface GroupPost {
   group?: Group;
   author: User;
   createdAt: Date;
+  authorImageUrl?: string;
+  imageGetUrl?: string;
 }
 
 interface GroupPostState {
-  currentGroupsPosts: GroupPost[] | null;
+  currentGroupsPosts: {
+    groupPosts: GroupPost[] | null;
+    count: number;
+  };
   selectedPost: GroupPost | null;
   status: 'idle' | 'loading' | 'failed';
   error: any;
 }
 
 const initialState: GroupPostState = {
-  currentGroupsPosts: null,
+  currentGroupsPosts: {
+    groupPosts: [],
+    count: 0,
+  },
   selectedPost: null,
   status: 'idle',
   error: null,
@@ -47,12 +55,30 @@ const createGroupPostAsync = createAsyncThunk(
   },
 );
 
+const getAllGroupPostsAsync = createAsyncThunk(
+  'groupPost/getAll',
+  async (groupId: string, { rejectWithValue }) => {
+    try {
+      const response: any = await getAllGroupPosts(groupId);
+      return response.data;
+    } catch (err: any) {
+      rejectWithValue({
+        name: err.name,
+        message: err.message,
+      });
+    }
+  },
+);
+
 const groupPostSlice = createSlice({
   name: 'groupPost',
   initialState,
   reducers: {
     clearPosts(state) {
-      state.currentGroupsPosts = [];
+      state.currentGroupsPosts = {
+        groupPosts: [],
+        count: 0,
+      };
       state.selectedPost = null;
     },
   },
@@ -69,6 +95,22 @@ const groupPostSlice = createSlice({
     .addCase(createGroupPostAsync.rejected, (state, action) => {
       state.status = 'failed';
       state.error = action.payload;
+    })
+    .addCase(getAllGroupPostsAsync.pending, (state) => {
+      state.status = 'loading';
+    })
+    .addCase(getAllGroupPostsAsync.fulfilled, (state, action) => {
+      state.status = 'idle';
+      state.currentGroupsPosts = action.payload;
+      state.error = null;
+    })
+    .addCase(getAllGroupPostsAsync.rejected, (state, action) => {
+      state.status = 'failed';
+      state.currentGroupsPosts = {
+        groupPosts: [],
+        count: 0,
+      };
+      state.error = action.payload;
     });
   }
 })
@@ -79,4 +121,5 @@ export default groupPostSlice.reducer;
 
 export {
   createGroupPostAsync,
+  getAllGroupPostsAsync
 }

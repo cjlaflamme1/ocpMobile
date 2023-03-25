@@ -3,10 +3,11 @@ import { View, Image, ImageSourcePropType, Pressable, TextInput, StyleSheet } fr
 import CustomText from '../CustomText';
 import globalStyles from '../../styles/global';
 import layoutStyles from '../../styles/layout';
+import { timeSince } from '../../services/timeAndDate';
 
 interface Props {
   userPosted: { name: string, profile: ImageSourcePropType },
-  postId: { postImage?: ImageSourcePropType, postText: string },
+  postId: { postImage?: ImageSourcePropType, postText: string, createdAt: Date },
   groupId: string,
 };
 
@@ -29,7 +30,7 @@ const MessageCard: React.FC<Props> = (props: Props) => {
         </View>
         <View>
           <CustomText style={[ globalStyles.mutedText]}>
-            1d ago
+            {timeSince(new Date(postId.createdAt))} ago
           </CustomText>
         </View>
       </View>
