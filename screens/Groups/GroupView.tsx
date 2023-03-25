@@ -7,14 +7,25 @@ import groupViewStyle from '../../styles/screenStyles/groups/groupView';
 import PostMessageCard from '../../components/groups/PostMessage';
 import MessageCard from '../../components/groups/MessageCard';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { getOneGroupAsync } from '../../store/groupSlice';
-import { createGroupPostAsync, CreateGroupPostDto, getAllGroupPostsAsync } from '../../store/groupPostSlice';
+import { clearSelectedGroup, getOneGroupAsync } from '../../store/groupSlice';
+import { clearPosts, createGroupPostAsync, CreateGroupPostDto, getAllGroupPostsAsync } from '../../store/groupPostSlice';
+import { QueryObject, SortOrder } from '../../models/QueryObject';
 
 interface Props {
   navigation: any
 };
 
 const GroupView: React.FC<Props> = ({ navigation }) => {
+  const [queryParams, setQueryParams] = useState<QueryObject>({
+    pagination: {
+      skip: 0,
+      take: 10,
+    },
+    orderBy: {
+      column: 'createdAt',
+      order: SortOrder.DESC,
+    }
+  });
   const [refreshing, setRefreshing] = useState(false);
   const [radioSelector, setRadioSelector] = useState(0);
   const dispatch = useAppDispatch();
@@ -28,8 +39,25 @@ const GroupView: React.FC<Props> = ({ navigation }) => {
   useEffect(() => {
     if (selectedGroup) {
       if (!currentGroupsPosts || currentGroupsPosts.count <= 0) {
-        dispatch(getAllGroupPostsAsync(selectedGroup.id));
+        dispatch(getAllGroupPostsAsync({
+          pagination: {
+            skip: 0,
+            take: 10,
+          },
+          orderBy: {
+            column: 'createdAt',
+            order: SortOrder.DESC,
+          },
+          filters: [{
+            name: 'group.id',
+            value: selectedGroup.id,
+          }]
+        }));
       }
+    }
+    return () => {
+      dispatch(clearPosts());
+      dispatch(clearSelectedGroup());
     }
   }, [navigation]);
 
@@ -41,14 +69,26 @@ const GroupView: React.FC<Props> = ({ navigation }) => {
   const onRefresh = async () => {
     setRefreshing(true);
       await dispatch(getOneGroupAsync(selectedGroup.id));
-      await dispatch(getAllGroupPostsAsync(selectedGroup.id));
+      await dispatch(getAllGroupPostsAsync({
+        ...queryParams,
+        filters: [{
+          name: 'group.id',
+          value: selectedGroup.id,
+        }]
+      }));
     setRefreshing(false);
   }
 
   const submitNewPost = async (post: CreateGroupPostDto) => {
     const newPost = await dispatch(createGroupPostAsync(post));
     if (newPost && newPost.meta.requestStatus === 'fulfilled') {
-      dispatch(getAllGroupPostsAsync(selectedGroup.id));
+      dispatch(getAllGroupPostsAsync({
+        ...queryParams,
+        filters: [{
+          name: 'group.id',
+          value: selectedGroup.id,
+        }]
+      }));
     }
   }
 
@@ -96,18 +136,19 @@ const GroupView: React.FC<Props> = ({ navigation }) => {
                   currentGroupsPosts &&
                   currentGroupsPosts.count > 0 &&
                   currentGroupsPosts.groupPosts?.map((post) => (
-                    <View style={[layoutStyles.mb_2]}>
+                    <View key={`grouppost-${post.id}`} style={[layoutStyles.mb_2]}>
                       <MessageCard
+                        navigation={navigation}
                         userPosted={{
                           name: `${post.author.firstName} ${post.author.lastName}`,
                           profile: post.authorImageUrl ? { uri: post.authorImageUrl } : require('../../assets/150x150.png'),
                         }}
                         postId={{
+                          id: post.id,
                           postText: post.postText,
                           postImage: post.imageGetUrl ? { uri: post.imageGetUrl } : undefined,
                           createdAt: post.createdAt,
                         }}
-                        groupId={selectedGroup.id}
                       />
                     </View>
                   ))

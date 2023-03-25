@@ -4,7 +4,7 @@ const cardStyles = StyleSheet.create({
   cardBackground: {
     backgroundColor: 'white',
     width: '100%',
-    borderRadius: 10,
+    borderRadius: 20,
   },
   imageContainer: {
     padding: 10,

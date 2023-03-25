@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { createGroupPost, getAllGroupPosts } from '../api/groupPostAPI';
+import { createGroupPost, getAllGroupPosts, getOneGroupPost } from '../api/groupPostAPI';
+import { QueryObject } from '../models/QueryObject';
 import { Group } from './groupSlice';
 import { User } from './userSlice';
 
@@ -57,9 +58,24 @@ const createGroupPostAsync = createAsyncThunk(
 
 const getAllGroupPostsAsync = createAsyncThunk(
   'groupPost/getAll',
-  async (groupId: string, { rejectWithValue }) => {
+  async (params: QueryObject, { rejectWithValue }) => {
     try {
-      const response: any = await getAllGroupPosts(groupId);
+      const response: any = await getAllGroupPosts(params);
+      return response.data;
+    } catch (err: any) {
+      rejectWithValue({
+        name: err.name,
+        message: err.message,
+      });
+    }
+  },
+);
+
+const getOneGroupPostAsync = createAsyncThunk(
+  'groupPost/getOne',
+  async (postId: string, { rejectWithValue }) => {
+    try {
+      const response: any = await getOneGroupPost(postId);
       return response.data;
     } catch (err: any) {
       rejectWithValue({
@@ -111,6 +127,18 @@ const groupPostSlice = createSlice({
         count: 0,
       };
       state.error = action.payload;
+    })
+    .addCase(getOneGroupPostAsync.pending, (state) => {
+      state.status = 'loading';
+    })
+    .addCase(getOneGroupPostAsync.fulfilled, (state, action) => {
+      state.status = 'idle';
+      state.selectedPost = action.payload;
+      state.error = null;
+    })
+    .addCase(getOneGroupPostAsync.rejected, (state, action) => {
+      state.status = 'failed';
+      state.error = action.payload;
     });
   }
 })
@@ -121,5 +149,6 @@ export default groupPostSlice.reducer;
 
 export {
   createGroupPostAsync,
-  getAllGroupPostsAsync
+  getAllGroupPostsAsync,
+  getOneGroupPostAsync,
 }
