@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { ScrollView, View, Image, RefreshControl, AppState, Text, Button, Pressable, FlatList } from 'react-native';
+import { StyleSheet, ScrollView, View, Image, RefreshControl, AppState, Text, Button, Pressable, FlatList, KeyboardAvoidingView, Platform } from 'react-native';
 import CustomText from '../../components/CustomText';
 import layoutStyles from '../../styles/layout';
 import globalStyles from '../../styles/global';
@@ -12,6 +12,8 @@ import { clearPosts, createGroupPostAsync, CreateGroupPostDto, getAllGroupPostsA
 import { QueryObject, SortOrder } from '../../models/QueryObject';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { useRoute } from '@react-navigation/native';
+import CommentResponse from '../../components/groups/CommentResponse';
+import { timeSince } from '../../services/timeAndDate';
 
 interface Props {
   navigation: any
@@ -29,13 +31,11 @@ const ViewGroupMessage: React.FC<Props> = ({ navigation }) => {
     }
   });
   const [refreshing, setRefreshing] = useState(false);
-  const scrollViewRef = useRef<KeyboardAwareScrollView|null>(null);
   const dispatch = useAppDispatch();
+  const scrollViewRef = useRef<KeyboardAwareScrollView|null>(null);
   const currentState = useAppSelector((state) => ({
-    groupState: state.groupState,
     groupPostState: state.groupPostState,
   }));
-  const { selectedGroup } = currentState.groupState;
   const { selectedPost } = currentState.groupPostState;
 
   useEffect(() => {
@@ -58,14 +58,14 @@ const ViewGroupMessage: React.FC<Props> = ({ navigation }) => {
   }
 
   return (
-    <View style={[layoutStyles.screenContainer]}>
+    <View style={[layoutStyles.screenContainer, { display: 'flex', flexDirection: 'column', justifyContent: 'space-between', flexGrow: 1}]}>
       <KeyboardAwareScrollView
         showsVerticalScrollIndicator={false}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
         ref={scrollViewRef}
       >
         <View style={[layoutStyles.mb_3]}>
-          <View style={[layoutStyles.mb_2]}>
+          <View style={[layoutStyles.mt_2]}>
             <MessageCard
               userPosted={{
                 name: `${selectedPost.author.firstName} ${selectedPost.author.lastName}`,
@@ -80,11 +80,31 @@ const ViewGroupMessage: React.FC<Props> = ({ navigation }) => {
               navigation
             />
           </View>
-          <View>
-            <CustomText>This is where the responses go to</CustomText>
+          <View style={[layoutStyles.mb_3]}>
+            <CommentResponse
+              buttonText='Submit Response'
+              placeholderText='Enter response here...'
+              handleSubmit={() => console.log('boom')}
+            />
           </View>
           <View>
-            <CustomText>The respond widget goes here.</CustomText>
+            <View style={[layoutStyles.flexRow, layoutStyles.jBetween, layoutStyles.mt_1, layoutStyles.mb_1]}>
+              <View style={[layoutStyles.flexRow, layoutStyles.alignItemCenter]}>
+                <Image
+                  source={require('../../assets/profilePhotos/testProfile.jpg')}
+                  style={[messageStyle.postProfileImage, layoutStyles.mr_2]}
+                />
+                <CustomText>Chad Laflamme</CustomText>
+              </View>
+            </View>
+            <View style={[messageStyle.cardContainer]}>
+              <CustomText>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse vitae vulputate nisl. Pellentesque eget diam a velit convallis consectetur sed ut ex. Nullam viverra, sem quis aliquam suscipit, nunc quam lacinia purus, in rutrum nibh velit in tortor. Nulla semper leo et fermentum lacinia. Maecenas et mauris ligula.</CustomText>
+            </View>
+            <View style={[layoutStyles.mt_1, layoutStyles.mb_1, layoutStyles.alignItemEnd]}>
+              <CustomText style={[ globalStyles.mutedText]}>
+                {timeSince(new Date())} ago
+              </CustomText>
+            </View>
           </View>
         </View>
       </KeyboardAwareScrollView>
@@ -93,3 +113,22 @@ const ViewGroupMessage: React.FC<Props> = ({ navigation }) => {
 };
 
 export default ViewGroupMessage;
+
+const messageStyle = StyleSheet.create({
+  cardContainer: {
+    backgroundColor: 'white',
+    padding: 10,
+    borderRadius: 16,
+  },
+  postProfileImage: {
+    width: 32,
+    height: 32,
+    borderRadius: 25,
+    resizeMode: 'contain',
+  },
+  iconStyle: {
+    height: 25,
+    width: 25,
+    resizeMode: 'contain',
+  }
+});
