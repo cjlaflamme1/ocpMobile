@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Image, ImageSourcePropType, Pressable, TextInput, StyleSheet } from 'react-native';
 import inputStyle from '../../styles/componentStyles/inputBar';
 import layoutStyles from '../../styles/layout';
@@ -10,52 +10,42 @@ import {Buffer} from "buffer";
 interface Props {
   placeholderText: string,
   buttonText: string,
-  handleSubmit: (newPost: CreateGroupPostDto) => void;
+  handleSubmit: (newPost: string) => Promise<boolean>;
+  navigation: any
 };
 
 const CommentResponse: React.FC<Props> = (props: Props) => {
   const [postContent, setPostContent] = useState('');
-  const [selectedImage, setSelectedImage] = useState<ImagePicker.ImagePickerAsset>();
   const [submitting, setSubmitting] = useState(false);
   const {
     placeholderText,
     buttonText,
     handleSubmit,
+    navigation
   } = props;
 
-  const pickImage = async () => {
-    // No permissions request is necessary for launching the image library
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      base64: true,
-      aspect: [4, 3],
-      quality: 0,
-    });
-    if ((result.canceled === false) && result.assets.length > 0 && result.assets[0].base64) {
-      const currentFile = result.assets[0];
-      setSelectedImage(currentFile);
-    };
-  };
-
   const clearPost = () => {
-    setSelectedImage(undefined);
     setPostContent('');
   }
 
+  useEffect(() => {
+    return () => {
+      clearPost();
+    }
+  }, [navigation])
+
+  const submitPost = async () => {
+    setSubmitting(true);
+    const success = await handleSubmit(postContent);
+    if (success) {
+      clearPost();
+    }
+    setSubmitting(false);
+  }
+
+
   return (
     <View style={[postMessageStyle.cardContainer]}>
-      {
-        selectedImage &&
-        (
-          <View>
-            <Image
-              source={{ uri: selectedImage.uri }}
-              style={[{ width: '100%', height: 150, borderRadius: 25, marginBottom: 10}]}
-            />
-          </View>
-        )
-      }
       <View style={[inputStyle.fullWidthInputContainer]}>
         <TextInput
           placeholder={placeholderText}
@@ -75,7 +65,7 @@ const CommentResponse: React.FC<Props> = (props: Props) => {
                 return [postMessageStyle.postButton];
               }
             }}
-            onPress={() => console.log('respond')}
+            onPress={submitPost}
             disabled={submitting}
           >
             <CustomText bold style={[{ color: 'white' }]}>{buttonText}</CustomText>

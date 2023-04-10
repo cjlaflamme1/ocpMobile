@@ -1,5 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { createGroupPost, getAllGroupPosts, getOneGroupPost } from '../api/groupPostAPI';
+import { createGroupPost, createPostResponse, getAllGroupPosts, getOneGroupPost } from '../api/groupPostAPI';
+import { getPresignedUrl } from '../api/s3API';
+import { getOneUser } from '../api/userAPI';
 import { QueryObject } from '../models/QueryObject';
 import { Group } from './groupSlice';
 import { User } from './userSlice';
@@ -8,6 +10,18 @@ export interface CreateGroupPostDto {
   image?: string;
   postText?: string;
   groupId: string;
+}
+
+export interface CreatePostResponsDto {
+  responseText: string;
+  groupPostId: string;
+}
+
+export interface PostResponse {
+  id: string;
+  responseText: string;
+  author: User;
+  createdAt: Date;
 }
 
 export interface GroupPost {
@@ -19,6 +33,7 @@ export interface GroupPost {
   createdAt: Date;
   authorImageUrl?: string;
   imageGetUrl?: string;
+  responses?: PostResponse[];
 }
 
 interface GroupPostState {
@@ -56,6 +71,21 @@ const createGroupPostAsync = createAsyncThunk(
   },
 );
 
+const createPostResponseAsync = createAsyncThunk(
+  'groupPostResponse/create',
+  async (arg: CreatePostResponsDto, { rejectWithValue }) => {
+    try {
+      const response: any = await createPostResponse(arg);
+      return response.data;
+    } catch (err: any) {
+      rejectWithValue({
+        name: err.name,
+        message: err.message,
+      });
+    }
+  },
+);
+
 const getAllGroupPostsAsync = createAsyncThunk(
   'groupPost/getAll',
   async (params: QueryObject, { rejectWithValue }) => {
@@ -76,6 +106,25 @@ const getOneGroupPostAsync = createAsyncThunk(
   async (postId: string, { rejectWithValue }) => {
     try {
       const response: any = await getOneGroupPost(postId);
+      if (response.data && response.data.responses && response.data.responses.length > 0) {
+        const userList: User[] = [];
+        response.data.responses = await Promise.all(
+          response.data.responses.map(async (response: PostResponse) => {
+            console.log(response);
+            if (response.author) {
+              const foundUser = userList.find((ul) => ul.id === response.author.id);
+              if (foundUser) {
+                response.author = foundUser;
+              } else {
+                const res = await getOneUser(response.author.id);
+                response.author = res.data;
+                userList.push(res.data);
+              }
+              return response;
+            }
+          })
+        )
+      }
       return response.data;
     } catch (err: any) {
       rejectWithValue({
@@ -95,6 +144,9 @@ const groupPostSlice = createSlice({
         groupPosts: [],
         count: 0,
       };
+      state.selectedPost = null;
+    },
+    clearSelectedPost(state) {
       state.selectedPost = null;
     },
   },
@@ -139,11 +191,22 @@ const groupPostSlice = createSlice({
     .addCase(getOneGroupPostAsync.rejected, (state, action) => {
       state.status = 'failed';
       state.error = action.payload;
+    })
+    .addCase(createPostResponseAsync.pending, (state) => {
+      state.status = 'loading';
+    })
+    .addCase(createPostResponseAsync.fulfilled, (state) => {
+      state.status = 'idle';
+      state.error = null;
+    })
+    .addCase(createPostResponseAsync.rejected, (state, action) => {
+      state.status = 'failed';
+      state.error = action.payload;
     });
   }
 })
 
-export const { clearPosts } = groupPostSlice.actions;
+export const { clearPosts, clearSelectedPost } = groupPostSlice.actions;
 
 export default groupPostSlice.reducer;
 
@@ -151,4 +214,5 @@ export {
   createGroupPostAsync,
   getAllGroupPostsAsync,
   getOneGroupPostAsync,
+  createPostResponseAsync,
 }

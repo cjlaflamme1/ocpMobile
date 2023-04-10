@@ -8,7 +8,7 @@ import PostMessageCard from '../../components/groups/PostMessage';
 import MessageCard from '../../components/groups/MessageCard';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { clearSelectedGroup, getOneGroupAsync } from '../../store/groupSlice';
-import { clearPosts, createGroupPostAsync, CreateGroupPostDto, getAllGroupPostsAsync } from '../../store/groupPostSlice';
+import { clearPosts, clearSelectedPost, createGroupPostAsync, CreateGroupPostDto, createPostResponseAsync, getAllGroupPostsAsync, getOneGroupPostAsync } from '../../store/groupPostSlice';
 import { QueryObject, SortOrder } from '../../models/QueryObject';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { useRoute } from '@react-navigation/native';
@@ -39,11 +39,8 @@ const ViewGroupMessage: React.FC<Props> = ({ navigation }) => {
   const { selectedPost } = currentState.groupPostState;
 
   useEffect(() => {
-    if (selectedPost) {
-      console.log('get post responses');
-    }
     return () => {
-      console.log('clear selected posts')
+      dispatch(clearSelectedPost());
     }
   }, [navigation]);
 
@@ -55,6 +52,19 @@ const ViewGroupMessage: React.FC<Props> = ({ navigation }) => {
     setRefreshing(true);
       console.log('refreshing');
     setRefreshing(false);
+  }
+
+  const submitPostResponse = async (postBody: string) => {
+    const res = await dispatch(createPostResponseAsync({
+      responseText: postBody,
+      groupPostId: selectedPost.id,
+    }));
+    if (res.meta.requestStatus === 'fulfilled') {
+      await dispatch(getOneGroupPostAsync(selectedPost.id));
+      return true;
+    } else {
+      return false;
+    }
   }
 
   return (
@@ -84,28 +94,41 @@ const ViewGroupMessage: React.FC<Props> = ({ navigation }) => {
             <CommentResponse
               buttonText='Submit Response'
               placeholderText='Enter response here...'
-              handleSubmit={() => console.log('boom')}
+              handleSubmit={(e) => submitPostResponse(e)}
+              navigation
             />
           </View>
-          <View>
-            <View style={[layoutStyles.flexRow, layoutStyles.jBetween, layoutStyles.mt_1, layoutStyles.mb_1]}>
-              <View style={[layoutStyles.flexRow, layoutStyles.alignItemCenter]}>
-                <Image
-                  source={require('../../assets/profilePhotos/testProfile.jpg')}
-                  style={[messageStyle.postProfileImage, layoutStyles.mr_2]}
-                />
-                <CustomText>Chad Laflamme</CustomText>
+          {
+            selectedPost.responses &&
+            selectedPost.responses.length > 0 ?
+            selectedPost.responses.map((postResponse) => (
+              <View key={`postResponse-${postResponse.id}`}>
+                <View style={[layoutStyles.flexRow, layoutStyles.jBetween, layoutStyles.mt_1, layoutStyles.mb_1]}>
+                  <View style={[layoutStyles.flexRow, layoutStyles.alignItemCenter]}>
+                    <Image
+                      source={require('../../assets/profilePhotos/testProfile.jpg')}
+                      style={[messageStyle.postProfileImage, layoutStyles.mr_2]}
+                    />
+                    <CustomText>{`${postResponse.author.firstName} ${postResponse.author.lastName}`}</CustomText>
+                  </View>
+                </View>
+                <View style={[messageStyle.cardContainer]}>
+                  <CustomText>{postResponse.responseText}</CustomText>
+                </View>
+                <View style={[layoutStyles.mt_1, layoutStyles.mb_1, layoutStyles.alignItemEnd]}>
+                  <CustomText style={[ globalStyles.mutedText]}>
+                    {timeSince(new Date(postResponse.createdAt))} ago
+                  </CustomText>
+                </View>
               </View>
-            </View>
-            <View style={[messageStyle.cardContainer]}>
-              <CustomText>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse vitae vulputate nisl. Pellentesque eget diam a velit convallis consectetur sed ut ex. Nullam viverra, sem quis aliquam suscipit, nunc quam lacinia purus, in rutrum nibh velit in tortor. Nulla semper leo et fermentum lacinia. Maecenas et mauris ligula.</CustomText>
-            </View>
-            <View style={[layoutStyles.mt_1, layoutStyles.mb_1, layoutStyles.alignItemEnd]}>
-              <CustomText style={[ globalStyles.mutedText]}>
-                {timeSince(new Date())} ago
-              </CustomText>
-            </View>
-          </View>
+            )) : (
+              <View>
+                <View style={[messageStyle.cardContainer]}>
+                  <CustomText>No responses yet.</CustomText>
+                </View>
+              </View>
+            )
+          }
         </View>
       </KeyboardAwareScrollView>
     </View>
@@ -117,7 +140,7 @@ export default ViewGroupMessage;
 const messageStyle = StyleSheet.create({
   cardContainer: {
     backgroundColor: 'white',
-    padding: 10,
+    padding: 20,
     borderRadius: 16,
   },
   postProfileImage: {
