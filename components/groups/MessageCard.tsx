@@ -1,21 +1,34 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { View, Image, ImageSourcePropType, Pressable, TextInput, StyleSheet } from 'react-native';
 import CustomText from '../CustomText';
 import globalStyles from '../../styles/global';
 import layoutStyles from '../../styles/layout';
+import { timeSince } from '../../services/timeAndDate';
+import { useAppDispatch } from '../../store/hooks';
+import { getOneGroupPostAsync } from '../../store/groupPostSlice';
+import { useRoute } from '@react-navigation/native';
 
 interface Props {
   userPosted: { name: string, profile: ImageSourcePropType },
-  postId: { postImage?: ImageSourcePropType, postText: string },
-  groupId: string,
+  postId: { id: string, postImage?: ImageSourcePropType, postText: string, createdAt: Date },
+  navigation: any,
 };
 
 const MessageCard: React.FC<Props> = (props: Props) => {
   const {
     userPosted,
     postId,
-    groupId,
+    navigation,
   } = props;
+  const dispatch = useAppDispatch();
+  const route = useRoute();
+
+  const viewResponses = async (id: string) => {
+    const post = await dispatch(getOneGroupPostAsync(id));
+    if (post && post.meta.requestStatus === 'fulfilled') {
+      navigation.navigate('View Comment');
+    }
+  }
 
   return (
     <View style={[messageStyle.cardContainer]}>
@@ -29,7 +42,7 @@ const MessageCard: React.FC<Props> = (props: Props) => {
         </View>
         <View>
           <CustomText style={[ globalStyles.mutedText]}>
-            1d ago
+            {timeSince(new Date(postId.createdAt))} ago
           </CustomText>
         </View>
       </View>
@@ -60,15 +73,20 @@ const MessageCard: React.FC<Props> = (props: Props) => {
           </Pressable>
           <CustomText style={[globalStyles.mutedText, layoutStyles.ml_1]}>1k</CustomText>
         </View>
-        <View style={[layoutStyles.flexRow]}>
-          <Pressable onPress={() => console.log('I want to comment on it!')}>
-            <Image
-              style={[messageStyle.iconStyle]}
-              source={require('../../assets/icons/comment.png')}
-            />
-          </Pressable>
-          <CustomText style={[globalStyles.mutedText, layoutStyles.ml_1]}>1k</CustomText>
-        </View>
+        {
+          route.name !== "View Comment" &&
+          (
+            <View style={[layoutStyles.flexRow]}>
+              <Pressable onPress={() => viewResponses(postId.id)}>
+                <Image
+                  style={[messageStyle.iconStyle]}
+                  source={require('../../assets/icons/comment.png')}
+                />
+              </Pressable>
+              <CustomText style={[globalStyles.mutedText, layoutStyles.ml_1]}>1k</CustomText>
+            </View>
+          )
+        }
         <View style={[layoutStyles.flexRow]}>
           <Pressable onPress={() => console.log('I want to share it!')}>
             <Image

@@ -4,6 +4,7 @@ import GroupsLanding from '../screens/Groups/GroupsLanding';
 import globalStyles from '../styles/global';
 import CreateGroup from '../screens/Groups/CreateGroup';
 import GroupView from '../screens/Groups/GroupView';
+import ViewGroupMessage from '../screens/Groups/ViewGroupMessage';
 
 
 
@@ -34,6 +35,15 @@ const GroupsNavigation: React.FC = () => {
         <RootStack.Screen
           name="View Group"
           component={GroupView}
+          options={
+            {
+              contentStyle: globalStyles.navigationStackScreen,
+            }
+          }
+        />
+        <RootStack.Screen
+          name="View Comment"
+          component={ViewGroupMessage}
           options={
             {
               contentStyle: globalStyles.navigationStackScreen,

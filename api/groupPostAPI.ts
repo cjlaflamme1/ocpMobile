@@ -1,16 +1,15 @@
 import api from './api';
 import { AxiosPromise } from 'axios';
-import { CreateUserActivityDTO, User } from '../store/userSlice';
+import { CreateGroupPostDto, CreatePostResponsDto } from '../store/groupPostSlice';
 import { QueryObject } from '../models/QueryObject';
 
-export function getCurrentUser() {
+export function createGroupPost(body: CreateGroupPostDto) {
   return new Promise<AxiosPromise>((resolve, reject) => {
     try {
-      api.get('/user/current')
+      api.post(`/group-post`, body)
         .then((response: any) => {
           resolve(response);
-        })
-        .catch((e: Error) => {
+        }).catch((e: Error) => {
           reject(e);
         })
     } catch (e) {
@@ -19,28 +18,14 @@ export function getCurrentUser() {
   })
 }
 
-export function getAllUsers(query: QueryObject) {
+export function getAllGroupPosts(query: QueryObject) {
   return new Promise<AxiosPromise>((resolve, reject) => {
     try {
-      api.get('/user', {
+      api.get(`/group-post`, {
         params: {
           dataSource: JSON.stringify(query),
-        },
-      }).then((response: any) => {
-        resolve(response);
-      }).catch((e: Error) => {
-        reject(e);
+        }
       })
-    } catch (e) {
-      reject(e);
-    }
-  })
-}
-
-export function updateCurrentUser(id: string, updateBody: Partial<User>) {
-  return new Promise<AxiosPromise>((resolve, reject) => {
-    try {
-      api.patch(`/user/${id}`, updateBody)
         .then((response: any) => {
           resolve(response);
         }).catch((e: Error) => {
@@ -52,10 +37,10 @@ export function updateCurrentUser(id: string, updateBody: Partial<User>) {
   })
 }
 
-export function createUserActivity(body: CreateUserActivityDTO) {
+export function getOneGroupPost(postId: string) {
   return new Promise<AxiosPromise>((resolve, reject) => {
     try {
-      api.post(`/users-activity`, body)
+      api.get(`/group-post/${postId}`)
         .then((response: any) => {
           resolve(response);
         }).catch((e: Error) => {
@@ -67,14 +52,13 @@ export function createUserActivity(body: CreateUserActivityDTO) {
   })
 }
 
-export function getOneUser(id: string) {
+export function createPostResponse(body: CreatePostResponsDto) {
   return new Promise<AxiosPromise>((resolve, reject) => {
     try {
-      api.get(`/user/${id}`)
+      api.post('/response', body)
         .then((response: any) => {
           resolve(response);
-        })
-        .catch((e: Error) => {
+        }).catch((e: Error) => {
           reject(e);
         })
     } catch (e) {

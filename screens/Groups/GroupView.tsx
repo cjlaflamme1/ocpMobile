@@ -7,20 +7,59 @@ import groupViewStyle from '../../styles/screenStyles/groups/groupView';
 import PostMessageCard from '../../components/groups/PostMessage';
 import MessageCard from '../../components/groups/MessageCard';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { getOneGroupAsync } from '../../store/groupSlice';
+import { clearSelectedGroup, getOneGroupAsync } from '../../store/groupSlice';
+import { clearPosts, createGroupPostAsync, CreateGroupPostDto, getAllGroupPostsAsync } from '../../store/groupPostSlice';
+import { QueryObject, SortOrder } from '../../models/QueryObject';
 
 interface Props {
   navigation: any
 };
 
 const GroupView: React.FC<Props> = ({ navigation }) => {
+  const [queryParams, setQueryParams] = useState<QueryObject>({
+    pagination: {
+      skip: 0,
+      take: 10,
+    },
+    orderBy: {
+      column: 'createdAt',
+      order: SortOrder.DESC,
+    }
+  });
   const [refreshing, setRefreshing] = useState(false);
   const [radioSelector, setRadioSelector] = useState(0);
   const dispatch = useAppDispatch();
   const currentState = useAppSelector((state) => ({
     groupState: state.groupState,
+    groupPostState: state.groupPostState,
   }));
   const { selectedGroup } = currentState.groupState;
+  const { currentGroupsPosts } = currentState.groupPostState;
+
+  useEffect(() => {
+    if (selectedGroup) {
+      if (!currentGroupsPosts || currentGroupsPosts.count <= 0) {
+        dispatch(getAllGroupPostsAsync({
+          pagination: {
+            skip: 0,
+            take: 10,
+          },
+          orderBy: {
+            column: 'createdAt',
+            order: SortOrder.DESC,
+          },
+          filters: [{
+            name: 'group.id',
+            value: selectedGroup.id,
+          }]
+        }));
+      }
+    }
+    return () => {
+      dispatch(clearPosts());
+      dispatch(clearSelectedGroup());
+    }
+  }, [navigation]);
 
   if (!selectedGroup) {
     return (<View />);
@@ -30,7 +69,27 @@ const GroupView: React.FC<Props> = ({ navigation }) => {
   const onRefresh = async () => {
     setRefreshing(true);
       await dispatch(getOneGroupAsync(selectedGroup.id));
+      await dispatch(getAllGroupPostsAsync({
+        ...queryParams,
+        filters: [{
+          name: 'group.id',
+          value: selectedGroup.id,
+        }]
+      }));
     setRefreshing(false);
+  }
+
+  const submitNewPost = async (post: CreateGroupPostDto) => {
+    const newPost = await dispatch(createGroupPostAsync(post));
+    if (newPost && newPost.meta.requestStatus === 'fulfilled') {
+      dispatch(getAllGroupPostsAsync({
+        ...queryParams,
+        filters: [{
+          name: 'group.id',
+          value: selectedGroup.id,
+        }]
+      }));
+    }
   }
 
   return (
@@ -61,38 +120,42 @@ const GroupView: React.FC<Props> = ({ navigation }) => {
               <CustomText style={[groupViewStyle.radioText, (radioSelector <= 0 && globalStyles.mutedText)]}>Events</CustomText>
             </Pressable>
           </View>
-          <View style={[layoutStyles.mt_2, layoutStyles.mb_2]}>
-            <PostMessageCard
-              buttonText='Submit'
-              placeholderText='Write post here.'
-              groupId='12345'
-            />
-          </View>
-          <View style={[layoutStyles.mb_2]}>
-            <MessageCard
-              userPosted={{
-                name: 'Chad Laflamme',
-                profile: require('../../assets/profilePhotos/testProfile.jpg')
-              }}
-              postId={{
-                postText: 'We are hosting a new ski tour this weekend!',
-                postImage: require('../../assets/profilePhotos/testSportImage.jpg')
-              }}
-              groupId={'1235677'}
-            />
-          </View>
-          <View style={[layoutStyles.mb_2]}>
-            <MessageCard
-              userPosted={{
-                name: 'Chad Laflamme',
-                profile: require('../../assets/profilePhotos/testProfile.jpg')
-              }}
-              postId={{
-                postText: 'Who is excited???  We are hosting a new ski tought coming up this weekend!!!  Get ready for the big announcement.',
-              }}
-              groupId={'1235677876'}
-            />
-          </View>
+          {
+            radioSelector === 0 &&
+            (
+              <View>
+                <View style={[layoutStyles.mt_2, layoutStyles.mb_2]}>
+                  <PostMessageCard
+                    buttonText='Submit'
+                    placeholderText='Write post here.'
+                    groupId={selectedGroup.id}
+                    handleSubmit={(post) => submitNewPost(post)}
+                  />
+                </View>
+                {
+                  currentGroupsPosts &&
+                  currentGroupsPosts.count > 0 &&
+                  currentGroupsPosts.groupPosts?.map((post) => (
+                    <View key={`grouppost-${post.id}`} style={[layoutStyles.mb_2]}>
+                      <MessageCard
+                        navigation={navigation}
+                        userPosted={{
+                          name: `${post.author.firstName} ${post.author.lastName}`,
+                          profile: post.authorImageUrl ? { uri: post.authorImageUrl } : require('../../assets/150x150.png'),
+                        }}
+                        postId={{
+                          id: post.id,
+                          postText: post.postText,
+                          postImage: post.imageGetUrl ? { uri: post.imageGetUrl } : undefined,
+                          createdAt: post.createdAt,
+                        }}
+                      />
+                    </View>
+                  ))
+                }
+              </View>
+            )
+          }
         </View>
       </ScrollView>
     </View>
