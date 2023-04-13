@@ -7,9 +7,12 @@ import groupViewStyle from '../../styles/screenStyles/groups/groupView';
 import PostMessageCard from '../../components/groups/PostMessage';
 import MessageCard from '../../components/groups/MessageCard';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { clearSelectedGroup, getOneGroupAsync } from '../../store/groupSlice';
+import { clearSelectedGroup, createGroupInvitesAsync, getOneGroupAsync } from '../../store/groupSlice';
 import { clearPosts, createGroupPostAsync, CreateGroupPostDto, getAllGroupPostsAsync } from '../../store/groupPostSlice';
 import { QueryObject, SortOrder } from '../../models/QueryObject';
+import SendInviteModal from '../../components/groups/SendInviteModal';
+import InviteModal from '../../components/groups/InviteModal';
+import { User } from '../../store/userSlice';
 
 interface Props {
   navigation: any
@@ -26,6 +29,7 @@ const GroupView: React.FC<Props> = ({ navigation }) => {
       order: SortOrder.DESC,
     }
   });
+  const [modalVisible, setModalVisible] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [radioSelector, setRadioSelector] = useState(0);
   const dispatch = useAppDispatch();
@@ -54,6 +58,23 @@ const GroupView: React.FC<Props> = ({ navigation }) => {
           }]
         }));
       }
+      navigation.setOptions({
+        headerRight: () => (
+          <Pressable
+            style={[layoutStyles.flexRow,
+            layoutStyles.alignItemCenter]}
+            onPress={() => setModalVisible(true)}
+          >
+            <Image
+              source={require('../../assets/icons/Plus.png')}
+              style={[{ height: 20, width: 20, resizeMode: 'contain'}, layoutStyles.mr_1]}
+            />
+            <CustomText>
+              Invite Members
+            </CustomText>
+          </Pressable>
+        )
+      });
     }
     return () => {
       dispatch(clearPosts());
@@ -89,6 +110,18 @@ const GroupView: React.FC<Props> = ({ navigation }) => {
           value: selectedGroup.id,
         }]
       }));
+    }
+  }
+
+  const submitInvites = async (invites: Partial<User>[]) => {
+    console.log(invites);
+    const inviteSubmission = await dispatch(createGroupInvitesAsync({
+      groupid: selectedGroup.id,
+      userIds: invites.map((user) => user.id || ''),
+    }));
+    if (inviteSubmission.meta.requestStatus === 'fulfilled') {
+      setModalVisible(false);
+      onRefresh();
     }
   }
 
@@ -158,6 +191,15 @@ const GroupView: React.FC<Props> = ({ navigation }) => {
           }
         </View>
       </ScrollView>
+      <SendInviteModal
+        groupId={selectedGroup.id}
+        isVisible={modalVisible}
+        closeModal={() => setModalVisible(false)}
+        rejectAction={() => setModalVisible(false)}
+        acceptAction={(e) => submitInvites(e)}
+        navigation
+        selectedGroup={selectedGroup}
+      />
     </View>
   );
 };
