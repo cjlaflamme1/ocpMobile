@@ -33,3 +33,19 @@ export function updateGroupInvite(id: string, body: Partial<GroupInvitation>) {
     }
   })
 }
+
+export function createGroupInvites(body: { groupid: string, userIds: string[] }) {
+  return new Promise<AxiosPromise>((resolve, reject) => {
+    try {
+      api.post('/group-invitation', body)
+        .then((response: any) => {
+          resolve(response);
+        })
+        .catch((e: Error) => {
+          reject(e);
+        })
+    } catch (e) {
+      reject(e);
+    }
+  })
+}

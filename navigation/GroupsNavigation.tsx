@@ -1,10 +1,13 @@
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { Button, Image, Pressable } from 'react-native';
 import GroupsLanding from '../screens/Groups/GroupsLanding';
 import globalStyles from '../styles/global';
 import CreateGroup from '../screens/Groups/CreateGroup';
 import GroupView from '../screens/Groups/GroupView';
 import ViewGroupMessage from '../screens/Groups/ViewGroupMessage';
+import layoutStyles from '../styles/layout';
+import CustomText from '../components/CustomText';
 
 
 
@@ -38,6 +41,18 @@ const GroupsNavigation: React.FC = () => {
           options={
             {
               contentStyle: globalStyles.navigationStackScreen,
+              headerTitle: '',
+              headerRight: () => (
+                <Pressable style={[layoutStyles.flexRow, layoutStyles.alignItemCenter]}>
+                  <Image
+                    source={require('../assets/icons/Plus.png')}
+                    style={[{ height: 20, width: 20, resizeMode: 'contain'}, layoutStyles.mr_1]}
+                  />
+                  <CustomText>
+                    Invite Members
+                  </CustomText>
+                </Pressable>
+              )
             }
           }
         />

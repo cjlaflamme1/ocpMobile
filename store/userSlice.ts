@@ -2,6 +2,7 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { createUserActivity, getAllUsers, getCurrentUser, updateCurrentUser } from '../api/userAPI';
 import { QueryObject } from '../models/QueryObject';
 import { ActivityType } from './activityTypeSlice';
+import { Group } from './groupSlice';
 
 export interface CreateUserActivityDTO {
   information: string;
@@ -43,6 +44,8 @@ export interface User {
   updatedAt: Date;
   imageGetUrl?: string;
   activities: UserActivity[] | null;
+  groups?: Group[];
+  adminForGroups?: Group[];
 }
 
 interface UserState {
