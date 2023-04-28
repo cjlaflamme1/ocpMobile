@@ -182,6 +182,7 @@ const GroupView: React.FC<Props> = ({ navigation }) => {
                           postImage: post.imageGetUrl ? { uri: post.imageGetUrl } : undefined,
                           createdAt: post.createdAt,
                         }}
+                        responseCount={post.responses ? post.responses.length : 0}
                       />
                     </View>
                   ))
