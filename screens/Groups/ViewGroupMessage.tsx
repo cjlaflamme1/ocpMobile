@@ -88,6 +88,7 @@ const ViewGroupMessage: React.FC<Props> = ({ navigation }) => {
                 createdAt: selectedPost.createdAt,
               }}
               navigation
+              responseCount={0}
             />
           </View>
           <View style={[layoutStyles.mb_3]}>
@@ -106,7 +107,12 @@ const ViewGroupMessage: React.FC<Props> = ({ navigation }) => {
                 <View style={[layoutStyles.flexRow, layoutStyles.jBetween, layoutStyles.mt_1, layoutStyles.mb_1]}>
                   <View style={[layoutStyles.flexRow, layoutStyles.alignItemCenter]}>
                     <Image
-                      source={require('../../assets/profilePhotos/testProfile.jpg')}
+                      source={
+                          postResponse.author &&
+                          postResponse.author.imageGetUrl ?
+                           { uri: postResponse.author.imageGetUrl } :
+                            require('../../assets/150x150.png')
+                      }
                       style={[messageStyle.postProfileImage, layoutStyles.mr_2]}
                     />
                     <CustomText>{`${postResponse.author.firstName} ${postResponse.author.lastName}`}</CustomText>
