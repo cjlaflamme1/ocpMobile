@@ -13,6 +13,8 @@ import { QueryObject, SortOrder } from '../../models/QueryObject';
 import SendInviteModal from '../../components/groups/SendInviteModal';
 import InviteModal from '../../components/groups/InviteModal';
 import { User } from '../../store/userSlice';
+import PrimaryButton from '../../components/PrimaryButton';
+import { getAllGroupEventsAsync } from '../../store/groupEventSlice';
 
 interface Props {
   navigation: any
@@ -57,6 +59,20 @@ const GroupView: React.FC<Props> = ({ navigation }) => {
             value: selectedGroup.id,
           }]
         }));
+        dispatch(getAllGroupEventsAsync({
+          pagination: {
+            skip: 0,
+            take: 10,
+          },
+          orderBy: {
+            column: 'createdAt',
+            order: SortOrder.DESC,
+          },
+          filters: [{
+            name: 'group.id',
+            value: selectedGroup.id,
+          }]
+        }))
       }
       navigation.setOptions({
         headerRight: () => (
@@ -187,6 +203,19 @@ const GroupView: React.FC<Props> = ({ navigation }) => {
                     </View>
                   ))
                 }
+              </View>
+            )
+          }
+          {
+            radioSelector === 1 &&
+            (
+              <View>
+                <View style={[layoutStyles.mt_2, layoutStyles.mb_2]}>
+                  <PrimaryButton
+                    buttonText="Create New Event"
+                    callback={() => navigation.navigate('Create Group Event')}
+                  />
+                </View>
               </View>
             )
           }
