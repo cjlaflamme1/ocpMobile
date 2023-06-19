@@ -22,6 +22,7 @@ export interface GroupEvent {
   group: Group;
   attendingUsers?: User[];
   imageGetUrl?: string;
+  createdAt: Date;
 }
 
 interface GroupEventState {

@@ -15,6 +15,7 @@ import InviteModal from '../../components/groups/InviteModal';
 import { User } from '../../store/userSlice';
 import PrimaryButton from '../../components/PrimaryButton';
 import { getAllGroupEventsAsync } from '../../store/groupEventSlice';
+import EventCard from '../../components/groups/GroupEventCard';
 
 interface Props {
   navigation: any
@@ -38,9 +39,11 @@ const GroupView: React.FC<Props> = ({ navigation }) => {
   const currentState = useAppSelector((state) => ({
     groupState: state.groupState,
     groupPostState: state.groupPostState,
+    groupEventState: state.groupEventState,
   }));
   const { selectedGroup } = currentState.groupState;
   const { currentGroupsPosts } = currentState.groupPostState;
+  const { currentGroupEvents } = currentState.groupEventState;
 
   useEffect(() => {
     if (selectedGroup) {
@@ -216,6 +219,30 @@ const GroupView: React.FC<Props> = ({ navigation }) => {
                     callback={() => navigation.navigate('Create Group Event')}
                   />
                 </View>
+                {
+                  currentGroupEvents &&
+                  currentGroupEvents.groupEvents &&
+                  currentGroupEvents.groupEvents.length > 0 &&
+                  currentGroupEvents.groupEvents.map((event) => (
+                    <EventCard
+                      key={`eventCard-${event.id}`}
+                      userPosted={{
+                        name: event.creator.firstName,
+                        profile: event.creator.imageGetUrl ? { uri: event.creator.imageGetUrl } : require('../../assets/150x150.png'),
+                      }}
+                      event={{
+                        id: event.id,
+                        postImage: event.imageGetUrl ? { uri: event.imageGetUrl } : undefined,
+                        title: event.title,
+                        createdAt: event.createdAt,
+                        eventDate: event.eventDate,
+                      }}
+                      responseCount={0}
+                      joiningCount={0}
+                      navigation={navigation}
+                    />
+                  ))
+                }
               </View>
             )
           }
