@@ -17,12 +17,8 @@ const SearchLanding: React.FC<Props> = ({ navigation }) => {
   const [refreshing, setRefreshing] = useState(false);
   const [selectedPreview, setSelectedPreview] = useState('');
   const dispatch = useAppDispatch();
-  const currentState = useAppSelector((state) => ({
-    groupState: state.groupState,
-    userState: state.userState,
-  }));
-  const { searchForGroups } = currentState.groupState;
-  const { currentUser } = currentState.userState;
+  const searchForGroups = useAppSelector((state) => state.groupState.searchForGroups);
+  const currentUser = useAppSelector((state) => state.userState.currentUser);
 
   useEffect(() => {
     if (searchForGroups && searchForGroups.count <= 0) {

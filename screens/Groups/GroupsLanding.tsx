@@ -19,10 +19,8 @@ const GroupsLanding: React.FC<Props> = ({ navigation }) => {
   const [selectedInvite, setSelectedInvite] = useState('');
   const [exploreInvitations, setExploreInvitations] = useState(false);
   const dispatch = useAppDispatch();
-  const currentState = useAppSelector((state) => ({
-    groupState: state.groupState,
-  }));
-  const { allGroups, allInvitations } = currentState.groupState;
+  const allGroups = useAppSelector((state) => state.groupState.allGroups);
+  const allInvitations = useAppSelector((state) => state.groupState.allInvitations);
 
   useEffect(() => {
     if (allGroups && allGroups.count <= 0) {

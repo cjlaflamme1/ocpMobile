@@ -29,10 +29,6 @@ const ProfileLanding: React.FC<Props> = ({ navigation }) => {
   const [debounceFNHandle, setDebounceFNHandle] = useState<any>();
   const scrollViewRef = useRef<KeyboardAwareScrollView|null>(null);
   const [debounceLNHandle, setDebounceLNHandle] = useState<any>();
-  const currentState = useAppSelector((state) => ({
-    userState: state.userState,
-    userActivityState: state.userActivityState,
-  }));
   const dispatch = useAppDispatch();
   const onRefresh = async () => {
     setRefreshing(true);
@@ -62,8 +58,8 @@ const ProfileLanding: React.FC<Props> = ({ navigation }) => {
     dispatch(getUserActivitiesAsync());
   }, [navigation])
 
-  const { currentUser } = currentState.userState;
-  const { userActivities } = currentState.userActivityState;
+  const currentUser = useAppSelector((state) => state.userState.currentUser);
+  const userActivities = useAppSelector((state) => state.userActivityState.userActivities);
   if (!currentUser) {
     return (<View />);
   }
