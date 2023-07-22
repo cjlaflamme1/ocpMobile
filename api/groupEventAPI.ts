@@ -36,3 +36,33 @@ export function getAllGroupEvents(query: QueryObject) {
     }
   })
 }
+
+export function getOneGroupEvent(id: string) {
+  return new Promise<AxiosPromise>((resolve, reject) => {
+    try {
+      api.get(`/group-event/${id}`)
+        .then((response: any) => {
+          resolve(response);
+        }).catch((e: Error) => {
+          reject(e);
+        })
+    } catch (e) {
+      reject(e);
+    }
+  })
+}
+
+export function updateGroupEvent(id: string, body: any) {
+  return new Promise<AxiosPromise>((resolve, reject) => {
+    try {
+      api.patch(`/group-event/${id}`, body)
+        .then((response: any) => {
+          resolve(response);
+        }).catch((e: Error) => {
+          reject(e);
+        })
+    } catch (e) {
+      reject(e);
+    }
+  })
+}

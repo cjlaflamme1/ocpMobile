@@ -33,10 +33,7 @@ const ViewGroupMessage: React.FC<Props> = ({ navigation }) => {
   const [refreshing, setRefreshing] = useState(false);
   const dispatch = useAppDispatch();
   const scrollViewRef = useRef<KeyboardAwareScrollView|null>(null);
-  const currentState = useAppSelector((state) => ({
-    groupPostState: state.groupPostState,
-  }));
-  const { selectedPost } = currentState.groupPostState;
+  const selectedPost = useAppSelector((state) => state.groupPostState.selectedPost);
 
   useEffect(() => {
     return () => {

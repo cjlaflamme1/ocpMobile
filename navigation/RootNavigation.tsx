@@ -16,13 +16,9 @@ interface Props {
 
 const RootNavigation: React.FC<Props> = ({ expoPushToken }) => {
   const RootStack = createNativeStackNavigator();
-  const currentState = useAppSelector((state) => ({
-    authState: state.authState,
-    userState: state.userState,
-  }));
   const dispatch = useAppDispatch();
-  const { currentAuth } = currentState.authState;
-  const { currentUser } = currentState.userState;
+  const currentAuth = useAppSelector((state) => state.authState.currentAuth);
+  const currentUser = useAppSelector((state) => state.userState.currentUser);
 
   const checkUser = async () => {
     try {

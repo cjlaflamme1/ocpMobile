@@ -7,6 +7,7 @@ import { timeSince } from '../../services/timeAndDate';
 import { useAppDispatch } from '../../store/hooks';
 import { getOneGroupPostAsync } from '../../store/groupPostSlice';
 import { useRoute } from '@react-navigation/native';
+import { getOneGroupEventAsync } from '../../store/groupEventSlice';
 
 interface Props {
   userPosted: { name: string, profile: ImageSourcePropType },
@@ -27,96 +28,100 @@ const EventCard: React.FC<Props> = (props: Props) => {
   const dispatch = useAppDispatch();
   const route = useRoute();
 
-  const viewResponses = async (id: string) => {
-    const post = await dispatch(getOneGroupPostAsync(id));
+  const viewEvent = async (id: string) => {
+    const post = await dispatch(getOneGroupEventAsync(id));
     if (post && post.meta.requestStatus === 'fulfilled') {
-      // navigation.navigate('View Comment');
+      navigation.navigate('View Group Event');
     }
   }
-  // TODO: make whole event clickable.
+
   return (
     <View style={[eventStyle.cardContainer]}>
-      <View style={[layoutStyles.flexRow, layoutStyles.jBetween, layoutStyles.mt_1, layoutStyles.mb_1]}>
-        <View style={[layoutStyles.flexRow, layoutStyles.alignItemCenter]}>
-          <Image
-            source={userPosted.profile}
-            style={[eventStyle.postProfileImage, layoutStyles.mr_2]}
-          />
-          <CustomText>{userPosted.name}</CustomText>
+      <Pressable
+        onPress={() => viewEvent(event.id)}
+      >
+        <View style={[layoutStyles.flexRow, layoutStyles.jBetween, layoutStyles.mt_1, layoutStyles.mb_1]}>
+          <View style={[layoutStyles.flexRow, layoutStyles.alignItemCenter]}>
+            <Image
+              source={userPosted.profile}
+              style={[eventStyle.postProfileImage, layoutStyles.mr_2]}
+            />
+            <CustomText>{userPosted.name}</CustomText>
+          </View>
+          <View>
+            <CustomText style={[ globalStyles.mutedText]}>
+              {timeSince(new Date(event.createdAt))} ago
+            </CustomText>
+          </View>
         </View>
-        <View>
-          <CustomText style={[ globalStyles.mutedText]}>
-            {timeSince(new Date(event.createdAt))} ago
+        {
+          event &&
+          event.postImage &&
+          (
+            <View>
+              <Image
+                source={event.postImage}
+                style={[{ width: '100%', height: 150, borderRadius: 25}]}
+              />
+            </View>
+          )
+        }
+        <View style={[layoutStyles.mt_1, layoutStyles.mb_1]}>
+          <CustomText>
+            {event.title}
           </CustomText>
         </View>
-      </View>
-      {
-        event &&
-        event.postImage &&
-        (
-          <View>
-            <Image
-              source={event.postImage}
-              style={[{ width: '100%', height: 150, borderRadius: 25}]}
-            />
-          </View>
-        )
-      }
-      <View style={[layoutStyles.mt_1, layoutStyles.mb_1]}>
-        <CustomText>
-          {event.title}
-        </CustomText>
-      </View>
-      <View style={[layoutStyles.flexRow, layoutStyles.jBetween, layoutStyles.mt_2, layoutStyles.mb_1]}>
-        {/* TODO: replace 'likes' with clickable response options that are set by posting user: such as 'yes', 'no' 'maybe', whatev */}
-        {/* <View style={[layoutStyles.flexRow]}>
-          <Pressable onPress={() => console.log('I like it!')}>
-            <Image
-              style={[eventStyle.iconStyle]}
-              source={require('../../assets/icons/heartempty.png')}
-            />
-          </Pressable>
-          <CustomText style={[globalStyles.mutedText, layoutStyles.ml_1]}>1k</CustomText>
-        </View> */}
-        {
-          route.name !== "View Comment" &&
-          (
-            <View style={[layoutStyles.flexRow]}>
+        <View style={[layoutStyles.flexRow, layoutStyles.jBetween, layoutStyles.mt_2, layoutStyles.mb_1]}>
+          {/* TODO: replace 'likes' with clickable response options that are set by posting user: such as 'yes', 'no' 'maybe', whatev */}
+          {/* <View style={[layoutStyles.flexRow]}>
+            <Pressable onPress={() => console.log('I like it!')}>
               <Image
                 style={[eventStyle.iconStyle]}
-                source={require('../../assets/icons/comment.png')}
+                source={require('../../assets/icons/heartempty.png')}
               />
-              <CustomText style={[globalStyles.mutedText, layoutStyles.ml_1]}>
-                {`${responseCount} comment${(responseCount !== 1) ? 's' : ''}`}
-              </CustomText>
-            </View>
-          )
-        }
-        {
-          route.name !== "View Comment" &&
-          (
-            <View style={[layoutStyles.flexRow]}>
+            </Pressable>
+            <CustomText style={[globalStyles.mutedText, layoutStyles.ml_1]}>1k</CustomText>
+          </View> */}
+          {
+            route.name !== "View Comment" &&
+            (
+              <View style={[layoutStyles.flexRow]}>
+                <Image
+                  style={[eventStyle.iconStyle]}
+                  source={require('../../assets/icons/comment.png')}
+                />
+                <CustomText style={[globalStyles.mutedText, layoutStyles.ml_1]}>
+                  {`${responseCount} comment${(responseCount !== 1) ? 's' : ''}`}
+                </CustomText>
+              </View>
+            )
+          }
+          {
+            route.name !== "View Comment" &&
+            (
+              <View style={[layoutStyles.flexRow]}>
+                <Image
+                  style={[eventStyle.iconStyle]}
+                  source={require('../../assets/icons/GroupsUnfocused.png')}
+                />
+                <CustomText style={[globalStyles.mutedText, layoutStyles.ml_1]}>
+                  {`${joiningCount} joining`}
+                </CustomText>
+              </View>
+            )
+          }
+          {/* TODO: Share will be added when/if direct messaging exists */}
+          {/* <View style={[layoutStyles.flexRow]}>
+            <Pressable onPress={() => console.log('I want to share it!')}>
               <Image
                 style={[eventStyle.iconStyle]}
-                source={require('../../assets/icons/GroupsUnfocused.png')}
+                source={require('../../assets/icons/share.png')}
               />
-              <CustomText style={[globalStyles.mutedText, layoutStyles.ml_1]}>
-                {`${joiningCount} joining`}
-              </CustomText>
-            </View>
-          )
-        }
-        {/* TODO: Share will be added when/if direct messaging exists */}
-        {/* <View style={[layoutStyles.flexRow]}>
-          <Pressable onPress={() => console.log('I want to share it!')}>
-            <Image
-              style={[eventStyle.iconStyle]}
-              source={require('../../assets/icons/share.png')}
-            />
-          </Pressable>
-          <CustomText style={[globalStyles.mutedText, layoutStyles.ml_1]}>1k</CustomText>
-        </View> */}
-      </View>
+            </Pressable>
+            <CustomText style={[globalStyles.mutedText, layoutStyles.ml_1]}>1k</CustomText>
+          </View> */}
+        </View>
+      </Pressable>
     </View>
   );
 };

@@ -5,6 +5,7 @@ import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { QueryObject, SortOrder } from '../../models/QueryObject';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { clearSelectedEvent } from '../../store/groupEventSlice';
+import ViewEvent from '../../components/events/ViewEvent';
 
 interface Props {
   navigation: any
@@ -14,10 +15,8 @@ const ViewGroupEvent: React.FC<Props> = ({ navigation }) => {
   const [refreshing, setRefreshing] = useState(false);
   const dispatch = useAppDispatch();
   const scrollViewRef = useRef<KeyboardAwareScrollView|null>(null);
-  const currentState = useAppSelector((state) => ({
-    groupEventState: state.groupEventState,
-  }));
-  const { selectedGroupEvent } = currentState.groupEventState;
+  const selectedGroupEvent = useAppSelector((state) => state.groupEventState.selectedGroupEvent);
+  const currentUser = useAppSelector((state) => state.userState.currentUser)
 
   useEffect(() => {
     return () => {
@@ -25,7 +24,7 @@ const ViewGroupEvent: React.FC<Props> = ({ navigation }) => {
     }
   }, [navigation]);
 
-  if (!selectedGroupEvent) {
+  if (!selectedGroupEvent || !currentUser) {
     return (<View />);
   }
 
@@ -43,8 +42,8 @@ const ViewGroupEvent: React.FC<Props> = ({ navigation }) => {
         ref={scrollViewRef}
       >
         <View style={[layoutStyles.mb_3]}>
-          <View style={[layoutStyles.mt_2]}>
-            {/* Card for View Event goes here. */}
+          <View>
+            <ViewEvent navigation={navigation} event={selectedGroupEvent} currentUser={currentUser} />
           </View>
         </View>
       </KeyboardAwareScrollView>

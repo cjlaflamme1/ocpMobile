@@ -237,8 +237,8 @@ const GroupView: React.FC<Props> = ({ navigation }) => {
                         createdAt: event.createdAt,
                         eventDate: event.eventDate,
                       }}
-                      responseCount={0}
-                      joiningCount={0}
+                      responseCount={event.responses ? event.responses.length : 0}
+                      joiningCount={event.attendingUsers ? event.attendingUsers.length : 0}
                       navigation={navigation}
                     />
                   ))

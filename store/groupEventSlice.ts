@@ -1,8 +1,9 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { createGroupEvent, getAllGroupEvents } from '../api/groupEventAPI';
+import { createGroupEvent, getAllGroupEvents, getOneGroupEvent, updateGroupEvent } from '../api/groupEventAPI';
 import { QueryObject } from '../models/QueryObject';
 import { Group } from './groupSlice';
 import { User } from './userSlice';
+import { PostResponse } from './groupPostSlice';
 
 export interface CreateGroupEventDto {
   eventDate: Date;
@@ -10,6 +11,7 @@ export interface CreateGroupEventDto {
   description: string;
   groupId: string;
   coverPhoto: string;
+  attendingUserIds?: string[];
 }
 
 export interface GroupEvent {
@@ -22,6 +24,7 @@ export interface GroupEvent {
   group: Group;
   attendingUsers?: User[];
   imageGetUrl?: string;
+  responses?: PostResponse[];
   createdAt: Date;
 }
 
@@ -65,6 +68,36 @@ const getAllGroupEventsAsync = createAsyncThunk(
   async (params: QueryObject, { rejectWithValue }) => {
     try {
       const response: any = await getAllGroupEvents(params);
+      return response.data;
+    } catch (err: any) {
+      rejectWithValue({
+        name: err.name,
+        message: err.message,
+      });
+    }
+  },
+);
+
+const getOneGroupEventAsync = createAsyncThunk(
+  'groupEvent/getOne',
+  async (id: string, { rejectWithValue }) => {
+    try {
+      const response: any = await getOneGroupEvent(id);
+      return response.data;
+    } catch (err: any) {
+      rejectWithValue({
+        name: err.name,
+        message: err.message,
+      });
+    }
+  },
+);
+
+const updateGroupEventAsync = createAsyncThunk(
+  'groupEvent/updateOne',
+  async (body: { id: string, data: Partial<GroupEvent | CreateGroupEventDto>}, { rejectWithValue }) => {
+    try {
+      const response: any = await updateGroupEvent(body.id, body.data);
       return response.data;
     } catch (err: any) {
       rejectWithValue({
@@ -119,6 +152,30 @@ const groupEventSlice = createSlice({
         count: 0,
       };
       state.error = action.payload;
+    })
+    .addCase(getOneGroupEventAsync.pending, (state) => {
+      state.status = 'loading';
+    })
+    .addCase(getOneGroupEventAsync.fulfilled, (state, action) => {
+      state.status = 'idle';
+      state.selectedGroupEvent = action.payload;
+      state.error = null;
+    })
+    .addCase(getOneGroupEventAsync.rejected, (state, action) => {
+      state.status = 'failed';
+      state.selectedGroupEvent = null;
+      state.error = action.payload;
+    })
+    .addCase(updateGroupEventAsync.pending, (state) => {
+      state.status = 'loading';
+    })
+    .addCase(updateGroupEventAsync.fulfilled, (state) => {
+      state.status = 'idle';
+      state.error = null;
+    })
+    .addCase(updateGroupEventAsync.rejected, (state, action) => {
+      state.status = 'failed';
+      state.error = action.payload;
     });
   }
 });
@@ -130,4 +187,6 @@ export default groupEventSlice.reducer;
 export {
   createGroupEventAsync,
   getAllGroupEventsAsync,
+  getOneGroupEventAsync,
+  updateGroupEventAsync,
 }
