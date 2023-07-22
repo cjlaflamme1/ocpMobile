@@ -14,7 +14,8 @@ export interface CreateGroupPostDto {
 
 export interface CreatePostResponsDto {
   responseText: string;
-  groupPostId: string;
+  groupPostId?: string;
+  groupEventId?: string;
 }
 
 export interface PostResponse {

@@ -11,6 +11,7 @@ import { useRoute } from '@react-navigation/native';
 interface Props {
   userPosted: { name: string, profile: ImageSourcePropType },
   postId: { id: string, postImage?: ImageSourcePropType, postText: string, createdAt: Date },
+  responseCount: number;
   navigation: any,
 };
 
@@ -18,6 +19,7 @@ const MessageCard: React.FC<Props> = (props: Props) => {
   const {
     userPosted,
     postId,
+    responseCount,
     navigation,
   } = props;
   const dispatch = useAppDispatch();
@@ -64,7 +66,8 @@ const MessageCard: React.FC<Props> = (props: Props) => {
         </CustomText>
       </View>
       <View style={[layoutStyles.flexRow, layoutStyles.jBetween, layoutStyles.mt_2, layoutStyles.mb_1]}>
-        <View style={[layoutStyles.flexRow]}>
+        {/* TODO: replace 'likes' with clickable response options that are set by posting user: such as 'yes', 'no' 'maybe', whatev */}
+        {/* <View style={[layoutStyles.flexRow]}>
           <Pressable onPress={() => console.log('I like it!')}>
             <Image
               style={[messageStyle.iconStyle]}
@@ -72,22 +75,25 @@ const MessageCard: React.FC<Props> = (props: Props) => {
             />
           </Pressable>
           <CustomText style={[globalStyles.mutedText, layoutStyles.ml_1]}>1k</CustomText>
-        </View>
+        </View> */}
         {
           route.name !== "View Comment" &&
           (
-            <View style={[layoutStyles.flexRow]}>
-              <Pressable onPress={() => viewResponses(postId.id)}>
+            <View>
+              <Pressable onPress={() => viewResponses(postId.id)} style={[layoutStyles.flexRow]}>
                 <Image
                   style={[messageStyle.iconStyle]}
                   source={require('../../assets/icons/comment.png')}
                 />
+                <CustomText style={[globalStyles.mutedText, layoutStyles.ml_1]}>
+                  {`${responseCount} response${(responseCount !== 1) ? 's' : ''}`}
+                </CustomText>
               </Pressable>
-              <CustomText style={[globalStyles.mutedText, layoutStyles.ml_1]}>1k</CustomText>
             </View>
           )
         }
-        <View style={[layoutStyles.flexRow]}>
+        {/* TODO: Share will be added when/if direct messaging exists */}
+        {/* <View style={[layoutStyles.flexRow]}>
           <Pressable onPress={() => console.log('I want to share it!')}>
             <Image
               style={[messageStyle.iconStyle]}
@@ -95,7 +101,7 @@ const MessageCard: React.FC<Props> = (props: Props) => {
             />
           </Pressable>
           <CustomText style={[globalStyles.mutedText, layoutStyles.ml_1]}>1k</CustomText>
-        </View>
+        </View> */}
       </View>
     </View>
   );

@@ -8,6 +8,8 @@ import GroupView from '../screens/Groups/GroupView';
 import ViewGroupMessage from '../screens/Groups/ViewGroupMessage';
 import layoutStyles from '../styles/layout';
 import CustomText from '../components/CustomText';
+import CreateGroupEvent from '../screens/Groups/CreateGroupEvent';
+import ViewGroupEvent from '../screens/Groups/ViewGroupEvent';
 
 
 
@@ -59,6 +61,24 @@ const GroupsNavigation: React.FC = () => {
         <RootStack.Screen
           name="View Comment"
           component={ViewGroupMessage}
+          options={
+            {
+              contentStyle: globalStyles.navigationStackScreen,
+            }
+          }
+        />
+        <RootStack.Screen
+          name="Create Group Event"
+          component={CreateGroupEvent}
+          options={
+            {
+              contentStyle: globalStyles.navigationStackScreen,
+            }
+          }
+        />
+        <RootStack.Screen
+          name="View Group Event"
+          component={ViewGroupEvent}
           options={
             {
               contentStyle: globalStyles.navigationStackScreen,

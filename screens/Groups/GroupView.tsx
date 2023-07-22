@@ -13,6 +13,9 @@ import { QueryObject, SortOrder } from '../../models/QueryObject';
 import SendInviteModal from '../../components/groups/SendInviteModal';
 import InviteModal from '../../components/groups/InviteModal';
 import { User } from '../../store/userSlice';
+import PrimaryButton from '../../components/PrimaryButton';
+import { getAllGroupEventsAsync } from '../../store/groupEventSlice';
+import EventCard from '../../components/groups/GroupEventCard';
 
 interface Props {
   navigation: any
@@ -36,9 +39,11 @@ const GroupView: React.FC<Props> = ({ navigation }) => {
   const currentState = useAppSelector((state) => ({
     groupState: state.groupState,
     groupPostState: state.groupPostState,
+    groupEventState: state.groupEventState,
   }));
   const { selectedGroup } = currentState.groupState;
   const { currentGroupsPosts } = currentState.groupPostState;
+  const { currentGroupEvents } = currentState.groupEventState;
 
   useEffect(() => {
     if (selectedGroup) {
@@ -57,6 +62,20 @@ const GroupView: React.FC<Props> = ({ navigation }) => {
             value: selectedGroup.id,
           }]
         }));
+        dispatch(getAllGroupEventsAsync({
+          pagination: {
+            skip: 0,
+            take: 10,
+          },
+          orderBy: {
+            column: 'createdAt',
+            order: SortOrder.DESC,
+          },
+          filters: [{
+            name: 'group.id',
+            value: selectedGroup.id,
+          }]
+        }))
       }
       navigation.setOptions({
         headerRight: () => (
@@ -182,8 +201,46 @@ const GroupView: React.FC<Props> = ({ navigation }) => {
                           postImage: post.imageGetUrl ? { uri: post.imageGetUrl } : undefined,
                           createdAt: post.createdAt,
                         }}
+                        responseCount={post.responses ? post.responses.length : 0}
                       />
                     </View>
+                  ))
+                }
+              </View>
+            )
+          }
+          {
+            radioSelector === 1 &&
+            (
+              <View>
+                <View style={[layoutStyles.mt_2, layoutStyles.mb_2]}>
+                  <PrimaryButton
+                    buttonText="Create New Event"
+                    callback={() => navigation.navigate('Create Group Event')}
+                  />
+                </View>
+                {
+                  currentGroupEvents &&
+                  currentGroupEvents.groupEvents &&
+                  currentGroupEvents.groupEvents.length > 0 &&
+                  currentGroupEvents.groupEvents.map((event) => (
+                    <EventCard
+                      key={`eventCard-${event.id}`}
+                      userPosted={{
+                        name: event.creator.firstName,
+                        profile: event.creator.imageGetUrl ? { uri: event.creator.imageGetUrl } : require('../../assets/150x150.png'),
+                      }}
+                      event={{
+                        id: event.id,
+                        postImage: event.imageGetUrl ? { uri: event.imageGetUrl } : undefined,
+                        title: event.title,
+                        createdAt: event.createdAt,
+                        eventDate: event.eventDate,
+                      }}
+                      responseCount={event.responses ? event.responses.length : 0}
+                      joiningCount={event.attendingUsers ? event.attendingUsers.length : 0}
+                      navigation={navigation}
+                    />
                   ))
                 }
               </View>
