@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { createUserActivity, getAllUsers, getCurrentUser, updateCurrentUser } from '../api/userAPI';
+import { createUserActivity, getAllUsers, getCurrentUser, getOneUser, updateCurrentUser } from '../api/userAPI';
 import { QueryObject } from '../models/QueryObject';
 import { ActivityType } from './activityTypeSlice';
 import { Group } from './groupSlice';
@@ -50,6 +50,7 @@ export interface User {
 
 interface UserState {
   currentUser: User | null;
+  selectedUser: User | null;
   userList: {
     users: User[] | null;
     count: number;
@@ -60,6 +61,7 @@ interface UserState {
 
 const initialState: UserState = {
   currentUser: null,
+  selectedUser: null,
   userList: {
     users: null,
     count: 0,
@@ -128,6 +130,21 @@ const createUserActivityAsync = createAsyncThunk(
   }
 )
 
+const getOneUserAsync = createAsyncThunk(
+  'user/getOne',
+  async (userId: string, { rejectWithValue }) => {
+    try {
+      const response: any = await getOneUser(userId);
+      return response.data;
+    } catch (err: any) {
+      rejectWithValue({
+        name: err.name,
+        message: err.message,
+      });
+    }
+  },
+);
+
 const userSlice = createSlice({
   name: 'user',
   initialState,
@@ -141,6 +158,9 @@ const userSlice = createSlice({
         count: 0,
       };
     },
+    clearSelectedUser(state) {
+      state.selectedUser = null;
+    }
   },
   extraReducers: (builder) => {
     builder
@@ -196,11 +216,24 @@ const userSlice = createSlice({
           count: 0,
         };
         state.error = action.payload;
+      })
+      .addCase(getOneUserAsync.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(getOneUserAsync.fulfilled, (state, action) => {
+        state.status = 'idle';
+        state.selectedUser = action.payload;
+        state.error = null;
+      })
+      .addCase(getOneUserAsync.rejected, (state, action) => {
+        state.status = 'failed';
+        state.selectedUser = null;
+        state.error = action.payload;
       });
   }
 })
 
-export const { clearUserState, clearUserList } = userSlice.actions;
+export const { clearUserState, clearUserList, clearSelectedUser } = userSlice.actions;
 
 export default userSlice.reducer;
 
@@ -209,4 +242,5 @@ export {
   updateCurrentUserAsync,
   createUserActivityAsync,
   getAllUsersAsync,
+  getOneUserAsync,
 }

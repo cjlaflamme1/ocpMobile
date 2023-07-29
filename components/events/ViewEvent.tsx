@@ -14,6 +14,7 @@ import { dateAndTime, timeSince } from '../../services/timeAndDate';
 import { GroupEvent, clearSelectedEvent, getOneGroupEventAsync, updateGroupEventAsync } from '../../store/groupEventSlice';
 import PrimaryButton from '../PrimaryButton';
 import { User } from '../../store/userSlice';
+import UserListModal from '../modals/UserListModal';
 
 interface Props {
   navigation: any;
@@ -23,6 +24,7 @@ interface Props {
 
 const ViewEvent: React.FC<Props> = memo(({ navigation, event, currentUser }) => {
   const [joinButtonDisabled, setJoinButtonDisabled] = useState(false);
+  const [userModal, setUserModal] = useState(false);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -96,10 +98,12 @@ const ViewEvent: React.FC<Props> = memo(({ navigation, event, currentUser }) => 
               {event.description}
             </CustomText>
           </View>
-          <View style={[layoutStyles.mt_1, layoutStyles.mb_1]}>
-            <CustomText>
-              {`${event.attendingUsers ? event.attendingUsers.length : 0} ${event.attendingUsers && event.attendingUsers.length === 1 ? 'person' : 'people'} attending.`}
-            </CustomText>
+          <View style={[layoutStyles.dFlex, layoutStyles.flexRow, layoutStyles.mt_1, layoutStyles.mb_1]}>
+            <Pressable style={[groupViewStyle.viewMembersButton]} onPress={() => setUserModal(true)}>
+              <CustomText style={[{ textDecorationLine: 'underline' }]}>
+                {`${event.attendingUsers ? event.attendingUsers.length : 0} ${event.attendingUsers && event.attendingUsers.length === 1 ? 'person' : 'people'} attending.`}
+              </CustomText>
+            </Pressable>
           </View>
           <View style={[layoutStyles.mt_1, layoutStyles.mb_1]}>
             {
@@ -171,6 +175,12 @@ const ViewEvent: React.FC<Props> = memo(({ navigation, event, currentUser }) => 
           )
         }
       </View>
+      <UserListModal
+        navigation={navigation}
+        isVisible={userModal}
+        closeModal={() => setUserModal(false)}
+        userList={[...new Set([...(event.attendingUsers || []), ...([event.creator] || [])])]}
+      />
     </View>
   );
 });

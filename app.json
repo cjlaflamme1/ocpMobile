@@ -2,7 +2,7 @@
   "expo": {
     "name": "Outdoor Community Project",
     "slug": "outdoor-community-project",
-    "version": "1.0.07",
+    "version": "1.0.08",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -44,7 +44,7 @@
       // "backgroundColor": "#9DBDC6"
     },
     "android": {
-      "versionCode": 5,
+      "versionCode": 6,
       "package": "com.outdoorcommunityproject",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
