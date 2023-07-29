@@ -14,6 +14,9 @@ const groupViewStyle = StyleSheet.create({
   radioText: {
     padding: 10,
   },
+  viewMembersButton: {
+    padding: 10,
+  },
 });
 
 export default groupViewStyle;

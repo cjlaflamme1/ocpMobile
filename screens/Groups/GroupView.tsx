@@ -16,6 +16,7 @@ import { User } from '../../store/userSlice';
 import PrimaryButton from '../../components/PrimaryButton';
 import { getAllGroupEventsAsync } from '../../store/groupEventSlice';
 import EventCard from '../../components/groups/GroupEventCard';
+import UserListModal from '../../components/modals/UserListModal';
 
 interface Props {
   navigation: any
@@ -33,6 +34,7 @@ const GroupView: React.FC<Props> = ({ navigation }) => {
     }
   });
   const [modalVisible, setModalVisible] = useState(false);
+  const [userModal, setUserModal] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [radioSelector, setRadioSelector] = useState(0);
   const dispatch = useAppDispatch();
@@ -160,9 +162,13 @@ const GroupView: React.FC<Props> = ({ navigation }) => {
             <CustomText h1 bold>
               { selectedGroup.title }
             </CustomText>
-            <CustomText style={[globalStyles.mutedText]}>
-              {`${memberNumber} Member${(memberNumber > 1) ? 's' : ''}`}
-            </CustomText>
+            <View style={[layoutStyles.dFlex, layoutStyles.flexRow]}>
+              <Pressable style={[groupViewStyle.viewMembersButton]} onPress={() => setUserModal(true)}>
+                <CustomText style={[globalStyles.mutedText, { textDecorationLine: 'underline' }]}>
+                  {`${memberNumber} Member${(memberNumber > 1) ? 's' : ''}`}
+                </CustomText>
+              </Pressable>
+            </View>
           </View>
           <View style={[groupViewStyle.radioTextContainer]}>
             <Pressable onPress={() => setRadioSelector(0)} style={[(radioSelector <= 0 && groupViewStyle.bottomBorder)]}>
@@ -256,6 +262,12 @@ const GroupView: React.FC<Props> = ({ navigation }) => {
         acceptAction={(e) => submitInvites(e)}
         navigation
         selectedGroup={selectedGroup}
+      />
+      <UserListModal
+        navigation={navigation}
+        isVisible={userModal}
+        closeModal={() => setUserModal(false)}
+        userList={[...new Set([...(selectedGroup.users || []), ...(selectedGroup.groupAdmins || [])])]}
       />
     </View>
   );

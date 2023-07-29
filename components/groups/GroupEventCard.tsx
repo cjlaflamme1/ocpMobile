@@ -3,7 +3,7 @@ import { View, Image, ImageSourcePropType, Pressable, TextInput, StyleSheet } fr
 import CustomText from '../CustomText';
 import globalStyles from '../../styles/global';
 import layoutStyles from '../../styles/layout';
-import { timeSince } from '../../services/timeAndDate';
+import { dateAndTime, timeSince } from '../../services/timeAndDate';
 import { useAppDispatch } from '../../store/hooks';
 import { getOneGroupPostAsync } from '../../store/groupPostSlice';
 import { useRoute } from '@react-navigation/native';
@@ -67,8 +67,13 @@ const EventCard: React.FC<Props> = (props: Props) => {
           )
         }
         <View style={[layoutStyles.mt_1, layoutStyles.mb_1]}>
-          <CustomText>
+          <CustomText h3>
             {event.title}
+          </CustomText>
+        </View>
+        <View style={[layoutStyles.mt_1, layoutStyles.mb_1]}>
+          <CustomText>
+            {dateAndTime(event.eventDate)}
           </CustomText>
         </View>
         <View style={[layoutStyles.flexRow, layoutStyles.jBetween, layoutStyles.mt_2, layoutStyles.mb_1]}>
