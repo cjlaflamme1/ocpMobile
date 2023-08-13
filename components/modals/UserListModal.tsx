@@ -46,8 +46,8 @@ const UserListModal: React.FC<Props> = (props: Props) => {
                 userList.length > 0 &&
                 userList
                   .slice()
-                  .map((user) => (
-                    <Pressable style={[modalStyle.userListItem]} onPress={() => viewUser(user.id)}>
+                  .map((user, index) => (
+                    <Pressable key={`user-list-${user.id}-${index}`} style={[modalStyle.userListItem]} onPress={() => viewUser(user.id)}>
                       {
                         user.imageGetUrl &&
                         (

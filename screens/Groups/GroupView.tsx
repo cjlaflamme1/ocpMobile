@@ -87,12 +87,12 @@ const GroupView: React.FC<Props> = ({ navigation }) => {
             onPress={() => setModalVisible(true)}
           >
             <Image
-              source={require('../../assets/icons/Plus.png')}
-              style={[{ height: 20, width: 20, resizeMode: 'contain'}, layoutStyles.mr_1]}
+              source={require('../../assets/icons/Setting.png')}
+              style={[{ height: 24, width: 24, resizeMode: 'contain'}, layoutStyles.mr_1]}
             />
-            <CustomText>
+            {/* <CustomText>
               Invite Members
-            </CustomText>
+            </CustomText> */}
           </Pressable>
         )
       });
