@@ -40,11 +40,7 @@ const UserSearchDropdown: React.FC<Props> = (props: Props) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const dispatch = useAppDispatch();
-  const currentState = useAppSelector((state) => ({
-    userState: state.userState,
-  }));
-
-  const { userList } = currentState.userState;
+  const userList = useAppSelector((state) => state.userState.userList);
 
   const dropdownHeight = useRef(new Animated.Value(0)).current;
 

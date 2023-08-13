@@ -47,13 +47,9 @@ const CreateGroupEvent: React.FC<Props> = ({ navigation }) => {
   const [selectedTime, setSelectedTime] = useState<TimeSelection>();
   const [groupEvent, setGroupEvent] = useState<CreateGroupEvent>();
   const dispatch = useAppDispatch();
-  const currentState = useAppSelector((state) => ({
-    userState: state.userState,
-    groupState: state.groupState,
-  }));
 
-  const { currentUser } = currentState.userState;
-  const { selectedGroup } = currentState.groupState;
+  const currentUser = useAppSelector((state) => state.userState.currentUser);
+  const selectedGroup = useAppSelector((state) => state.groupState.selectedGroup);
 
   useEffect(() => {
     if (!selectedTime) {

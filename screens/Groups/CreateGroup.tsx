@@ -29,11 +29,8 @@ const CreateGroup: React.FC<Props> = ({ navigation }) => {
   const [selectedImage, setSelectedImage] = useState<ImagePicker.ImagePickerAsset>();
   const scrollViewRef = useRef<KeyboardAwareScrollView|null>(null);
   const dispatch = useAppDispatch();
-  const currentState = useAppSelector((state) => ({
-    userState: state.userState,
-  }));
 
-  const { currentUser } = currentState.userState;
+  const currentUser = useAppSelector((state) => state.userState.currentUser);
 
   useEffect(() => {
     if (!newGroupObj) {

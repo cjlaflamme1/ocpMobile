@@ -42,11 +42,7 @@ const SendInviteModal: React.FC<Props> = (props: Props) => {
   const dropdownHeight = useRef(new Animated.Value(0)).current;
 
   const dispatch = useAppDispatch();
-  const currentState = useAppSelector((state) => ({
-    userState: state.userState,
-  }));
-
-  const { userList } = currentState.userState;
+  const userList = useAppSelector((state) => state.userState.userList);
 
   useEffect(() => {
     if (!userList || userList.count <= 0) {

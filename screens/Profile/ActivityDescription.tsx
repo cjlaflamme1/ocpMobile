@@ -22,14 +22,10 @@ const ActivityDescription: React.FC<Props> = ({ navigation }) => {
   const [editMode, setEditMode] = useState(false);
   const [updatedActivity, setUpdatedActivity] = useState<Partial<UserActivity>>()
   const scrollViewRef = useRef<KeyboardAwareScrollView|null>(null);
-  const currentState = useAppSelector((state) => ({
-    userActivityState: state.userActivityState,
-    userState: state.userState,
-  }));
   const dispatch = useAppDispatch();
 
-  const { selectedUserActivity } = currentState.userActivityState;
-  const { currentUser } = currentState.userState;
+  const selectedUserActivity = useAppSelector((state) => state.userActivityState.selectedUserActivity);
+  const currentUser = useAppSelector((state) => state.userState.currentUser);
 
   const onRefresh = async () => {
     setRefreshing(true);

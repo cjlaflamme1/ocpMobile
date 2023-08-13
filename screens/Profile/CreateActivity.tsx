@@ -25,12 +25,8 @@ const CreateActivity: React.FC<Props> = ({ navigation }) => {
   const scrollViewRef = useRef<KeyboardAwareScrollView|null>(null);
 
   const dispatch = useAppDispatch();
-  const currentState = useAppSelector((state) => ({
-    activityTypeState: state.activityTypeState,
-    userState: state.userState,
-  }));
-  const { activityTypes } = currentState.activityTypeState;
-  const { currentUser } = currentState.userState;
+  const activityTypes = useAppSelector((state) => state.activityTypeState.activityTypes);
+  const currentUser = useAppSelector((state) => state.userState.currentUser);
 
   const resetActivity = () => {
     setNewActivity({
