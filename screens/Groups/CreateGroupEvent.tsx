@@ -95,7 +95,7 @@ const CreateGroupEvent: React.FC<Props> = ({ navigation }) => {
       allowsEditing: true,
       base64: true,
       aspect: [4, 3],
-      quality: 0,
+      quality: Platform.OS === 'ios' ? 0 : .2,
     });
     if ((result.canceled === false) && result.assets.length > 0 && result.assets[0].base64) {
       const currentFile = result.assets[0];
