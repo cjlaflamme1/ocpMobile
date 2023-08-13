@@ -31,10 +31,6 @@ const SettingsSheet: React.FC<Props> = (props) => {
 
   const snapPoints = useMemo(() => customSnapPoints, [customSnapPoints]);
 
-  const handleSheetChanges = useCallback((index: number) => {
-    console.log('handleSheetChanges', index);
-  }, []);
-
   const inviteOthers = () => {
     closeSheet();
     inviteMembers();
@@ -62,7 +58,6 @@ const SettingsSheet: React.FC<Props> = (props) => {
       ref={bottomSheetRef}
       index={-1}
       snapPoints={snapPoints}
-      onChange={handleSheetChanges}
       enablePanDownToClose
     >
       <BottomSheetScrollView contentContainerStyle={[bottomSheet.scrollView]}>
