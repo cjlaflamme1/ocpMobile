@@ -12,47 +12,60 @@ import layoutStyles from '../../styles/layout';
 import createGroupStyles from '../../styles/screenStyles/groups/createGroup';
 import groupsLandingStyle from '../../styles/screenStyles/groups/groupsLanding';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { createGroupAsync, CreateGroupDto, getAllGroupsAsync, getAllUserGroupsAsync } from '../../store/groupSlice';
+import { createGroupAsync, CreateGroupDto, getAllGroupsAsync, getAllUserGroupsAsync, getOneGroupAsync, updateGroupAsync, UpdateGroupDto } from '../../store/groupSlice';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { postPresignedUrl, putImageOnS3 } from '../../api/s3API';
 import { clearUserList, getAllUsersAsync, User } from '../../store/userSlice';
 import DropdownSelect, { DropdownData } from '../../components/DropdownSelect';
 import UserSearchDropdown from '../../components/UserSearchDropdown';
+import { NavigationProp } from '@react-navigation/native';
 
 interface Props {
-  navigation: any
+  navigation: NavigationProp<any, any>;
+  route: any;
 };
 
-const CreateGroup: React.FC<Props> = ({ navigation }) => {
-  const [newGroupObj, setNewGroupObj] = useState<CreateGroupDto>();
+const EditGroup: React.FC<Props> = ({ navigation, route }) => {
+  const [groupObj, setGroupObj] = useState<UpdateGroupDto>();
   const [selectedUserIds, setSelectedUserIds] = useState<Partial<User>[]>([]);
+  const [updating, setUpdating] = useState(false);
   const [selectedImage, setSelectedImage] = useState<ImagePicker.ImagePickerAsset>();
   const scrollViewRef = useRef<KeyboardAwareScrollView|null>(null);
   const dispatch = useAppDispatch();
+  const groupId = route.params.groupId;
 
-  const currentUser = useAppSelector((state) => state.userState.currentUser);
+  const currentUser = useAppSelector((state) => state.userState);
 
   useEffect(() => {
-    if (!newGroupObj) {
-      setNewGroupObj({
+    if (!groupObj || groupObj.id !== groupId) {
+      dispatch((getOneGroupAsync(groupId))).then((res) => {
+        if (res.meta.requestStatus === 'fulfilled') {
+          const currGroup = res.payload;
+          setGroupObj(currGroup);
+        }
+      })
+    }
+    if (!groupObj) {
+      setGroupObj({
         coverPhoto: '',
         title: '',
         description: '',
-        groupAdminIds: [],
-        pendingInvitationUserIds: [],
+        addingAdminIds: [],
+        addingUserIds: [],
       });
     }
-  }, [navigation]);
+  }, [navigation, groupId]);
 
-  if (!currentUser || !newGroupObj) {
+  if (!currentUser || !groupObj) {
     return (<View />);
   }
 
-  const submitNewGroup = async () => {
-    let newCoverImage = '';
+  const updateGroup = async () => {
+    setUpdating(true);
+    let newCoverImage = groupObj.coverPhoto || '';
     if (selectedImage && selectedImage.base64) {
       const imageExt = selectedImage.uri.split('.').pop();
-      const imageFileName = `${newGroupObj.title}-${selectedImage.fileName}`;
+      const imageFileName = `${groupObj.title}-${selectedImage.fileName}`;
 
       const buff = Buffer.from(selectedImage.base64, "base64");
       const preAuthPostUrl = await postPresignedUrl({ fileName: imageFileName, fileType: `${selectedImage.type}/${imageExt}`, fileDirectory: 'groupImages'}).then((response) => response).catch((e) => {
@@ -63,22 +76,19 @@ const CreateGroup: React.FC<Props> = ({ navigation }) => {
         newCoverImage = `groupImages/${imageFileName}`;
       }
     }
-    if (newGroupObj.title && newGroupObj.description) {
-      await dispatch(createGroupAsync({
-        ...newGroupObj,
-        coverPhoto: newCoverImage,
-        pendingInvitationUserIds: (selectedUserIds && selectedUserIds.length > 0) ?
-          selectedUserIds.map((user) => user.id ? user.id : '') :
-          [],
-      }));
-      dispatch(getAllUserGroupsAsync({
-        pagination: {
-          take: 8,
-          skip: 0,
+    if (groupObj.title && groupObj.description) {
+      await dispatch(updateGroupAsync({
+        id: groupId,
+        body: {
+          title: groupObj.title,
+          description: groupObj.description,
+          coverPhoto: newCoverImage,
         }
       }));
-      navigation.navigate('Groups Landing');
+      dispatch(getOneGroupAsync(groupId));
+      navigation.goBack();
     }
+    setUpdating(false);
   };
 
   const pickImage = async () => {
@@ -106,7 +116,7 @@ const CreateGroup: React.FC<Props> = ({ navigation }) => {
       >
         <View style={[layoutStyles.mb_3]}>
           <View style={[layoutStyles.mt_2]}>
-            <CustomText h1 bold>Create Group</CustomText>
+            <CustomText h1 bold>Update Group</CustomText>
           </View>
           {
             selectedImage ?
@@ -153,10 +163,11 @@ const CreateGroup: React.FC<Props> = ({ navigation }) => {
             <View style={[inputStyle.fullWidthInputContainer]}>
               <TextInput
                 placeholder='Enter group name'
+                defaultValue={groupObj.title}
                 style={[inputStyle.fullWidthInput]}
                 onChangeText={(e) => {
-                  setNewGroupObj({
-                    ...newGroupObj,
+                  setGroupObj({
+                    ...groupObj,
                     title: e,
                   })
                 }}
@@ -170,52 +181,23 @@ const CreateGroup: React.FC<Props> = ({ navigation }) => {
             <View style={[inputStyle.fullWidthInputContainer]}>
               <TextInput
                 placeholder='Enter group description'
+                defaultValue={groupObj.description}
                 style={[inputStyle.fullWidthInput]}
                 multiline
                 onChangeText={(e) => {
-                  setNewGroupObj({
-                    ...newGroupObj,
+                  setGroupObj({
+                    ...groupObj,
                     description: e,
                   })
                 }}
               />
             </View>
           </View>
-          <View style={[layoutStyles.mt_2]}>
-            <CustomText style={[layoutStyles.mb_1]}>
-              Invite Members
-            </CustomText>
-            <UserSearchDropdown
-              testID='123455'
-              testIDDropdown='lkjfsodijfe'
-              placeholder='Search for users...'
-              setSelected={(e) => {
-                setSelectedUserIds([...selectedUserIds, e]);
-              }}
-              selected={selectedUserIds}
-            />
-          </View>
-          <View style={[layoutStyles.flexRow, { flexWrap: 'wrap'}, layoutStyles.mt_2]}>
-            {
-              selectedUserIds
-              && selectedUserIds.length > 0
-              ? selectedUserIds.map((user) => (
-                <Pressable key={`selectedUser-${user.id}`}>
-                  <UserIconSmall
-                    imageSource={{ uri: user.imageGetUrl }}
-                    userName={`${user.firstName} ${user.lastName}`}
-                  />
-                </Pressable>
-              )) : (
-                <CustomText>No users selected for invite.</CustomText>
-              )
-            }
-          </View>
           <View style={[layoutStyles.mt_3]}>
             <PrimaryButton
-              buttonText='Create'
-              disabled={!newGroupObj.title || !newGroupObj.description}
-              callback={submitNewGroup}
+              buttonText='Update'
+              disabled={!groupObj.title || !groupObj.description || updating}
+              callback={() => updateGroup()}
             />
           </View>
         </View>
@@ -224,4 +206,4 @@ const CreateGroup: React.FC<Props> = ({ navigation }) => {
   );
 };
 
-export default CreateGroup;
+export default EditGroup;

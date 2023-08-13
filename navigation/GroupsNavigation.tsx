@@ -10,6 +10,7 @@ import layoutStyles from '../styles/layout';
 import CustomText from '../components/CustomText';
 import CreateGroupEvent from '../screens/Groups/CreateGroupEvent';
 import ViewGroupEvent from '../screens/Groups/ViewGroupEvent';
+import EditGroup from '../screens/Groups/EditGroup';
 
 
 
@@ -38,6 +39,15 @@ const GroupsNavigation: React.FC = () => {
           }
         />
         <RootStack.Screen
+          name="Edit Group"
+          component={EditGroup}
+          options={
+            {
+              contentStyle: globalStyles.navigationStackScreen,
+            }
+          }
+        />
+        <RootStack.Screen
           name="View Group"
           component={GroupView}
           options={
@@ -47,12 +57,9 @@ const GroupsNavigation: React.FC = () => {
               headerRight: () => (
                 <Pressable style={[layoutStyles.flexRow, layoutStyles.alignItemCenter]}>
                   <Image
-                    source={require('../assets/icons/Plus.png')}
-                    style={[{ height: 20, width: 20, resizeMode: 'contain'}, layoutStyles.mr_1]}
+                    source={require('../assets/icons/Setting.png')}
+                    style={[{ height: 24, width: 24, resizeMode: 'contain'}, layoutStyles.mr_1]}
                   />
-                  <CustomText>
-                    Invite Members
-                  </CustomText>
                 </Pressable>
               )
             }

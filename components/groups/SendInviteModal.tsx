@@ -42,11 +42,7 @@ const SendInviteModal: React.FC<Props> = (props: Props) => {
   const dropdownHeight = useRef(new Animated.Value(0)).current;
 
   const dispatch = useAppDispatch();
-  const currentState = useAppSelector((state) => ({
-    userState: state.userState,
-  }));
-
-  const { userList } = currentState.userState;
+  const userList = useAppSelector((state) => state.userState.userList);
 
   useEffect(() => {
     if (!userList || userList.count <= 0) {
@@ -167,12 +163,13 @@ const SendInviteModal: React.FC<Props> = (props: Props) => {
             closeModal();
             setSelectedUserIds([]);
           }}>
-            <CustomText>
-              X
-            </CustomText>
+            <Image
+              source={require('../../assets/icons/Close-Square.png')}
+              style={[{ height: 24, width: 24, resizeMode: 'contain'}]}
+            />
           </Pressable>
           <View style={[layoutStyles.mb_3]}>
-            <View style={[ layoutStyles.dFlex, layoutStyles.mt_1 ]}>
+            <View style={[ layoutStyles.dFlex, layoutStyles.mt_2 ]}>
               {
                 isDropdownOpen ? 
                 (

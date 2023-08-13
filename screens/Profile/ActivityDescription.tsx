@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { ScrollView, View, Image, RefreshControl, Pressable, TextInput, Switch, Alert } from 'react-native';
+import { ScrollView, View, Image, RefreshControl, Pressable, TextInput, Switch, Alert, Platform } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import * as ImagePicker from 'expo-image-picker';
 import {Buffer} from "buffer";
@@ -22,14 +22,10 @@ const ActivityDescription: React.FC<Props> = ({ navigation }) => {
   const [editMode, setEditMode] = useState(false);
   const [updatedActivity, setUpdatedActivity] = useState<Partial<UserActivity>>()
   const scrollViewRef = useRef<KeyboardAwareScrollView|null>(null);
-  const currentState = useAppSelector((state) => ({
-    userActivityState: state.userActivityState,
-    userState: state.userState,
-  }));
   const dispatch = useAppDispatch();
 
-  const { selectedUserActivity } = currentState.userActivityState;
-  const { currentUser } = currentState.userState;
+  const selectedUserActivity = useAppSelector((state) => state.userActivityState.selectedUserActivity);
+  const currentUser = useAppSelector((state) => state.userState.currentUser);
 
   const onRefresh = async () => {
     setRefreshing(true);
@@ -47,7 +43,7 @@ const ActivityDescription: React.FC<Props> = ({ navigation }) => {
         allowsEditing: true,
         base64: true,
         aspect: [4, 3],
-        quality: 0,
+        quality: Platform.OS === 'ios' ? 0 : .2,
       });
       if ((result.canceled === false) && result.assets.length > 0 && result.assets[0].base64) {
         const currentFile = result.assets[0];

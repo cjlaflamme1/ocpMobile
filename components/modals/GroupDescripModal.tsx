@@ -7,23 +7,16 @@ import { NavigationProp } from '@react-navigation/native';
 
 interface Props {
   isVisible: boolean;
-  userList: User[];
   closeModal: () => void;
-  navigation: NavigationProp<any, any>;
+  groupDescription: string;
 };
 
-const UserListModal: React.FC<Props> = (props: Props) => {
+const GroupDescriptionModal: React.FC<Props> = (props: Props) => {
   const {
-    userList,
     isVisible,
     closeModal,
-    navigation
+    groupDescription,
   } = props;
-
-  const viewUser = (userId: string) => {
-    navigation.navigate('Search', { screen: 'View User', initial: false, params: { userId: userId } })
-    closeModal();
-  };
 
   return (
     <Modal
@@ -43,24 +36,12 @@ const UserListModal: React.FC<Props> = (props: Props) => {
           <View style={[{ maxHeight: 500, paddingTop: 20, paddingBottom: 20 }]}>
             <ScrollView>
               {
-                userList &&
-                userList.length > 0 &&
-                userList
-                  .slice()
-                  .map((user, index) => (
-                    <Pressable key={`user-list-${user.id}-${index}`} style={[modalStyle.userListItem]} onPress={() => viewUser(user.id)}>
-                      {
-                        user.imageGetUrl &&
-                        (
-                          <Image
-                              source={{ uri: user.imageGetUrl }}
-                              style={[{ width: 72, height: 72, borderRadius: 50, marginRight: 10 }]}
-                            />
-                        )
-                      }
-                      <CustomText>{`${user.firstName} ${user.lastName}`}</CustomText>
-                    </Pressable>
-                  ))
+                groupDescription ? 
+                (
+                  <CustomText>{groupDescription}</CustomText>
+                ) : (
+                  <CustomText>No description provided.</CustomText>
+                )
               }
             </ScrollView>
           </View>
@@ -70,31 +51,9 @@ const UserListModal: React.FC<Props> = (props: Props) => {
   );
 };
 
-export default UserListModal;
+export default GroupDescriptionModal;
 
 const modalStyle = StyleSheet.create({
-  userListItem: {
-    display: 'flex',
-    flexDirection: 'row',
-    padding: 20,
-    alignItems: 'center'
-  },
-  cardContainer: {
-    backgroundColor: 'white',
-    padding: 10,
-    borderRadius: 16,
-  },
-  postProfileImage: {
-    width: 32,
-    height: 32,
-    borderRadius: 25,
-    resizeMode: 'contain',
-  },
-  iconStyle: {
-    height: 25,
-    width: 25,
-    resizeMode: 'contain',
-  },
   centeredView: {
     flex: 1,
     justifyContent: 'center',

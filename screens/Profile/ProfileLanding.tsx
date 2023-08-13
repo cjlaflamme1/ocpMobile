@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { ScrollView, View, Image, RefreshControl, AppState, Text, Button, Pressable, TextInput } from 'react-native';
+import { ScrollView, View, Image, RefreshControl, AppState, Text, Button, Pressable, TextInput, Platform } from 'react-native';
 import ProfileActivityCard from '../../components/ProfileActivityCard';
 import CustomText from '../../components/CustomText';
 import globalStyles from '../../styles/global';
@@ -93,7 +93,7 @@ const ProfileLanding: React.FC<Props> = ({ navigation }) => {
       allowsEditing: true,
       base64: true,
       aspect: [3, 3],
-      quality: 0,
+      quality: Platform.OS === 'ios' ? 0 : .2,
     });
 
     if ((result.canceled === false) && result.assets.length > 0 && result.assets[0].base64) {
