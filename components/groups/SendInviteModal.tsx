@@ -167,12 +167,13 @@ const SendInviteModal: React.FC<Props> = (props: Props) => {
             closeModal();
             setSelectedUserIds([]);
           }}>
-            <CustomText>
-              X
-            </CustomText>
+            <Image
+              source={require('../../assets/icons/Close-Square.png')}
+              style={[{ height: 24, width: 24, resizeMode: 'contain'}]}
+            />
           </Pressable>
           <View style={[layoutStyles.mb_3]}>
-            <View style={[ layoutStyles.dFlex, layoutStyles.mt_1 ]}>
+            <View style={[ layoutStyles.dFlex, layoutStyles.mt_2 ]}>
               {
                 isDropdownOpen ? 
                 (

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { ScrollView, View, Image, RefreshControl, AppState, Text, Button, Pressable, FlatList } from 'react-native';
 import CustomText from '../../components/CustomText';
 import layoutStyles from '../../styles/layout';
@@ -17,9 +17,13 @@ import PrimaryButton from '../../components/PrimaryButton';
 import { getAllGroupEventsAsync } from '../../store/groupEventSlice';
 import EventCard from '../../components/groups/GroupEventCard';
 import UserListModal from '../../components/modals/UserListModal';
+import SettingsSheet from '../../components/bottomsheet/SettingsBottomSheet';
+import BottomSheet from '@gorhom/bottom-sheet';
+import GroupDescriptionModal from '../../components/modals/GroupDescripModal';
+import { NavigationProp } from '@react-navigation/native';
 
 interface Props {
-  navigation: any
+  navigation: NavigationProp<any, any>;
 };
 
 const GroupView: React.FC<Props> = ({ navigation }) => {
@@ -35,17 +39,20 @@ const GroupView: React.FC<Props> = ({ navigation }) => {
   });
   const [modalVisible, setModalVisible] = useState(false);
   const [userModal, setUserModal] = useState(false);
+  const [descripModal, setDescripModal] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [radioSelector, setRadioSelector] = useState(0);
   const dispatch = useAppDispatch();
-  const currentState = useAppSelector((state) => ({
-    groupState: state.groupState,
-    groupPostState: state.groupPostState,
-    groupEventState: state.groupEventState,
-  }));
-  const { selectedGroup } = currentState.groupState;
-  const { currentGroupsPosts } = currentState.groupPostState;
-  const { currentGroupEvents } = currentState.groupEventState;
+  const selectedGroup = useAppSelector((state) => state.groupState.selectedGroup);
+  const currentGroupsPosts = useAppSelector((state) => state.groupPostState.currentGroupsPosts);
+  const currentGroupEvents = useAppSelector((state) => state.groupEventState.currentGroupEvents);
+  const currentUser = useAppSelector((state) => state.userState.currentUser);
+
+  const bottomSheetRef = useRef<BottomSheet>(null);
+
+  const handleClosePress = () => bottomSheetRef?.current?.close();
+
+  const handleOpen = () => bottomSheetRef?.current?.expand();
 
   useEffect(() => {
     if (selectedGroup) {
@@ -84,15 +91,12 @@ const GroupView: React.FC<Props> = ({ navigation }) => {
           <Pressable
             style={[layoutStyles.flexRow,
             layoutStyles.alignItemCenter]}
-            onPress={() => setModalVisible(true)}
+            onPress={() => handleOpen()}
           >
             <Image
               source={require('../../assets/icons/Setting.png')}
               style={[{ height: 24, width: 24, resizeMode: 'contain'}, layoutStyles.mr_1]}
             />
-            {/* <CustomText>
-              Invite Members
-            </CustomText> */}
           </Pressable>
         )
       });
@@ -107,6 +111,18 @@ const GroupView: React.FC<Props> = ({ navigation }) => {
     return (<View />);
   }
   const memberNumber = (selectedGroup.groupAdmins ? selectedGroup.groupAdmins.length : 0) + (selectedGroup.users ? selectedGroup.users.length : 0);
+
+  const adminUser = useCallback(() => {
+    let adminPermission = false;
+    if (currentUser
+      && selectedGroup
+      && selectedGroup.groupAdmins
+      && selectedGroup.groupAdmins.length > 0
+      && selectedGroup.groupAdmins.find((admin) => admin.id === currentUser.id)) {
+        adminPermission = true;
+      }
+    return adminPermission;
+  }, [currentUser]);
 
   const onRefresh = async () => {
     setRefreshing(true);
@@ -268,6 +284,21 @@ const GroupView: React.FC<Props> = ({ navigation }) => {
         isVisible={userModal}
         closeModal={() => setUserModal(false)}
         userList={[...new Set([...(selectedGroup.users || []), ...(selectedGroup.groupAdmins || [])])]}
+      />
+      <GroupDescriptionModal
+        isVisible={descripModal}
+        closeModal={() => setDescripModal(false)}
+        groupDescription={selectedGroup.description}
+      />
+      <SettingsSheet
+        closeSheet={() => handleClosePress()}
+        bottomSheetRef={bottomSheetRef}
+        customSnapPoints={['25%', '50%']}
+        inviteMembers={() => setModalVisible(true)}
+        adminView={adminUser()}
+        viewMembers={() => setUserModal(true)}
+        viewDescription={() => setDescripModal(true)}
+        editGroup={() => navigation.navigate('Edit Group', { groupId: selectedGroup.id })}
       />
     </View>
   );

@@ -12,6 +12,7 @@ import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 import { Manrope_400Regular, Manrope_600SemiBold, Manrope_800ExtraBold } from '@expo-google-fonts/manrope';
 import { StatusBar } from 'expo-status-bar';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -99,14 +100,16 @@ export default function App() {
     return null;
   }
   return (
-    <NavigationContainer>
-      <SafeAreaView style={[safeStyle.safeArea]} onLayout={onLayoutRootView}>
-        <Provider store={store}>
-          <RootNavigation expoPushToken={expoPushToken} />
-        </Provider>
-        <StatusBar style="dark" />
-      </SafeAreaView>
-    </NavigationContainer>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <NavigationContainer>
+        <SafeAreaView style={[safeStyle.safeArea]} onLayout={onLayoutRootView}>
+          <Provider store={store}>
+            <RootNavigation expoPushToken={expoPushToken} />
+          </Provider>
+          <StatusBar style="dark" />
+        </SafeAreaView>
+      </NavigationContainer>
+    </GestureHandlerRootView>
   );
 }
 

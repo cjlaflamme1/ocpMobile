@@ -31,9 +31,10 @@ const InviteModal: React.FC<Props> = (props: Props) => {
       <View style={inviteStyle.centeredView}>
         <View style={inviteStyle.modalView}>
           <Pressable style={[{ position: 'absolute', right: 20, top: 20}]} onPress={closeModal}>
-            <CustomText>
-              X
-            </CustomText>
+            <Image
+              source={require('../../assets/icons/Close-Square.png')}
+              style={[{ height: 24, width: 24, resizeMode: 'contain'}]}
+            />
           </Pressable>
           <View style={[layoutStyles.mb_3]}>
             <View style={[layoutStyles.mt_2]}>

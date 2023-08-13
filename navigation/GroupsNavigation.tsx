@@ -10,6 +10,7 @@ import layoutStyles from '../styles/layout';
 import CustomText from '../components/CustomText';
 import CreateGroupEvent from '../screens/Groups/CreateGroupEvent';
 import ViewGroupEvent from '../screens/Groups/ViewGroupEvent';
+import EditGroup from '../screens/Groups/EditGroup';
 
 
 
@@ -31,6 +32,15 @@ const GroupsNavigation: React.FC = () => {
         <RootStack.Screen
           name="Create Group"
           component={CreateGroup}
+          options={
+            {
+              contentStyle: globalStyles.navigationStackScreen,
+            }
+          }
+        />
+        <RootStack.Screen
+          name="Edit Group"
+          component={EditGroup}
           options={
             {
               contentStyle: globalStyles.navigationStackScreen,
