@@ -6,12 +6,13 @@ import CustomText from '../CustomText';
 import { CreateGroupPostDto } from '../../store/groupPostSlice';
 import * as ImagePicker from 'expo-image-picker';
 import {Buffer} from "buffer";
+import { NavigationProp } from '@react-navigation/native';
 
 interface Props {
   placeholderText: string,
   buttonText: string,
   handleSubmit: (newPost: string) => Promise<boolean>;
-  navigation: any
+  navigation: NavigationProp<any, any>;
 };
 
 const CommentResponse: React.FC<Props> = (props: Props) => {

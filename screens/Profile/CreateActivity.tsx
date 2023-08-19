@@ -14,9 +14,10 @@ import createActivityStyles from '../../styles/screenStyles/profile/createActivi
 import { postPresignedUrl, putImageOnS3 } from '../../api/s3API';
 import { getUserActivitiesAsync } from '../../store/userActivitySlice';
 import PrimaryButton from '../../components/PrimaryButton';
+import { NavigationProp } from '@react-navigation/native';
 
 interface Props {
-  navigation: any
+  navigation: NavigationProp<any, any>;
 };
 
 const CreateActivity: React.FC<Props> = ({ navigation }) => {

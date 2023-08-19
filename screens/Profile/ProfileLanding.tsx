@@ -17,6 +17,7 @@ import { NavigationProp } from '@react-navigation/native';
 import inputStyle from '../../styles/componentStyles/inputBar';
 import { getOneUserActivityAsync, getUserActivitiesAsync } from '../../store/userActivitySlice';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { getNotificationsAsync } from '../../store/notificationSlice';
 
 interface Props {
   navigation: NavigationProp<any, any>
@@ -56,6 +57,7 @@ const ProfileLanding: React.FC<Props> = ({ navigation }) => {
       )
     });
     dispatch(getUserActivitiesAsync());
+    dispatch(getNotificationsAsync());
   }, [navigation])
 
   const currentUser = useAppSelector((state) => state.userState.currentUser);

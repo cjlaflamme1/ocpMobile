@@ -8,9 +8,11 @@ import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import globalStyles from '../../styles/global';
 import layoutStyles from '../../styles/layout';
 import searchLandingStyle from '../../styles/screenStyles/search/searchLanding';
+import { NavigationProp } from '@react-navigation/native';
+import { getNotificationsAsync } from '../../store/notificationSlice';
 
 interface Props {
-  navigation: any
+  navigation: NavigationProp<any, any>;
 };
 
 const SearchLanding: React.FC<Props> = ({ navigation }) => {
@@ -29,6 +31,7 @@ const SearchLanding: React.FC<Props> = ({ navigation }) => {
         }
       }));
     }
+    dispatch(getNotificationsAsync());
   }, [navigation]);
 
   if (!currentUser) {

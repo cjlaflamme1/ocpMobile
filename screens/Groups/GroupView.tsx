@@ -24,9 +24,10 @@ import { NavigationProp } from '@react-navigation/native';
 
 interface Props {
   navigation: NavigationProp<any, any>;
+  route: any;
 };
 
-const GroupView: React.FC<Props> = ({ navigation }) => {
+const GroupView: React.FC<Props> = ({ navigation, route }) => {
   const [queryParams, setQueryParams] = useState<QueryObject>({
     pagination: {
       skip: 0,
@@ -37,6 +38,7 @@ const GroupView: React.FC<Props> = ({ navigation }) => {
       order: SortOrder.DESC,
     }
   });
+  const groupId = route.params.groupId;
   const [modalVisible, setModalVisible] = useState(false);
   const [userModal, setUserModal] = useState(false);
   const [descripModal, setDescripModal] = useState(false);
@@ -55,7 +57,10 @@ const GroupView: React.FC<Props> = ({ navigation }) => {
   const handleOpen = () => bottomSheetRef?.current?.expand();
 
   useEffect(() => {
-    if (selectedGroup) {
+    if (!selectedGroup || (selectedGroup.id !== groupId)) {
+      dispatch(getOneGroupAsync(groupId));
+    }
+    if (selectedGroup || groupId) {
       if (!currentGroupsPosts || currentGroupsPosts.count <= 0) {
         dispatch(getAllGroupPostsAsync({
           pagination: {
@@ -68,7 +73,7 @@ const GroupView: React.FC<Props> = ({ navigation }) => {
           },
           filters: [{
             name: 'group.id',
-            value: selectedGroup.id,
+            value: groupId,
           }]
         }));
         dispatch(getAllGroupEventsAsync({
@@ -82,7 +87,7 @@ const GroupView: React.FC<Props> = ({ navigation }) => {
           },
           filters: [{
             name: 'group.id',
-            value: selectedGroup.id,
+            value: groupId,
           }]
         }))
       }
@@ -105,12 +110,9 @@ const GroupView: React.FC<Props> = ({ navigation }) => {
       dispatch(clearPosts());
       dispatch(clearSelectedGroup());
     }
-  }, [navigation]);
+  }, [navigation, groupId]);
 
-  if (!selectedGroup) {
-    return (<View />);
-  }
-  const memberNumber = (selectedGroup.groupAdmins ? selectedGroup.groupAdmins.length : 0) + (selectedGroup.users ? selectedGroup.users.length : 0);
+  const memberNumber = (selectedGroup?.groupAdmins ? selectedGroup.groupAdmins.length : 0) + (selectedGroup?.users ? selectedGroup.users.length : 0);
 
   const adminUser = useCallback(() => {
     let adminPermission = false;
@@ -126,12 +128,12 @@ const GroupView: React.FC<Props> = ({ navigation }) => {
 
   const onRefresh = async () => {
     setRefreshing(true);
-      await dispatch(getOneGroupAsync(selectedGroup.id));
+      await dispatch(getOneGroupAsync(groupId));
       await dispatch(getAllGroupPostsAsync({
         ...queryParams,
         filters: [{
           name: 'group.id',
-          value: selectedGroup.id,
+          value: groupId,
         }]
       }));
     setRefreshing(false);
@@ -144,22 +146,25 @@ const GroupView: React.FC<Props> = ({ navigation }) => {
         ...queryParams,
         filters: [{
           name: 'group.id',
-          value: selectedGroup.id,
+          value: groupId,
         }]
       }));
     }
   }
 
   const submitInvites = async (invites: Partial<User>[]) => {
-    console.log(invites);
     const inviteSubmission = await dispatch(createGroupInvitesAsync({
-      groupid: selectedGroup.id,
+      groupid: groupId,
       userIds: invites.map((user) => user.id || ''),
     }));
     if (inviteSubmission.meta.requestStatus === 'fulfilled') {
       setModalVisible(false);
       onRefresh();
     }
+  }
+
+  if (!selectedGroup) {
+    return (<View />);
   }
 
   return (
@@ -276,7 +281,7 @@ const GroupView: React.FC<Props> = ({ navigation }) => {
         closeModal={() => setModalVisible(false)}
         rejectAction={() => setModalVisible(false)}
         acceptAction={(e) => submitInvites(e)}
-        navigation
+        navigation={navigation}
         selectedGroup={selectedGroup}
       />
       <UserListModal

@@ -22,9 +22,10 @@ import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/dat
 import { dateOnly } from '../../services/timeAndDate';
 import { createGroupEventAsync, getAllGroupEventsAsync } from '../../store/groupEventSlice';
 import { SortOrder } from '../../models/QueryObject';
+import { NavigationProp } from '@react-navigation/native';
 
 interface Props {
-  navigation: any
+  navigation: NavigationProp<any, any>;
 };
 
 interface TimeSelection {

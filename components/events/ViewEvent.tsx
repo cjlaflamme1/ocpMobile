@@ -8,7 +8,7 @@ import PostMessageCard from '../../components/groups/PostMessage';
 import MessageCard from '../../components/groups/MessageCard';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { clearPosts, clearSelectedPost, createGroupPostAsync, CreateGroupPostDto, createPostResponseAsync, getAllGroupPostsAsync, getOneGroupPostAsync } from '../../store/groupPostSlice';
-import { useRoute } from '@react-navigation/native';
+import { NavigationProp, useRoute } from '@react-navigation/native';
 import CommentResponse from '../../components/groups/CommentResponse';
 import { dateAndTime, timeSince } from '../../services/timeAndDate';
 import { GroupEvent, clearSelectedEvent, getOneGroupEventAsync, updateGroupEventAsync } from '../../store/groupEventSlice';
@@ -17,7 +17,7 @@ import { User } from '../../store/userSlice';
 import UserListModal from '../modals/UserListModal';
 
 interface Props {
-  navigation: any;
+  navigation: NavigationProp<any, any>;
   event: GroupEvent;
   currentUser: User;
 };
@@ -28,7 +28,6 @@ const ViewEvent: React.FC<Props> = memo(({ navigation, event, currentUser }) => 
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    console.log('Render view event')
     return () => {
       dispatch(clearSelectedEvent());
     }
@@ -131,7 +130,7 @@ const ViewEvent: React.FC<Props> = memo(({ navigation, event, currentUser }) => 
               buttonText='Submit Comment'
               placeholderText='Enter comment here...'
               handleSubmit={(e) => submitPostResponse(e)}
-              navigation
+              navigation={navigation}
             />
           </View>
         </View>

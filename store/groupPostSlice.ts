@@ -111,7 +111,6 @@ const getOneGroupPostAsync = createAsyncThunk(
         const userList: User[] = [];
         response.data.responses = await Promise.all(
           response.data.responses.map(async (response: PostResponse) => {
-            console.log(response);
             if (response.author) {
               const foundUser = userList.find((ul) => ul.id === response.author.id);
               if (foundUser) {

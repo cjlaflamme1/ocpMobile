@@ -6,7 +6,7 @@ import layoutStyles from '../../styles/layout';
 import { dateAndTime, timeSince } from '../../services/timeAndDate';
 import { useAppDispatch } from '../../store/hooks';
 import { getOneGroupPostAsync } from '../../store/groupPostSlice';
-import { useRoute } from '@react-navigation/native';
+import { NavigationProp, useRoute } from '@react-navigation/native';
 import { getOneGroupEventAsync } from '../../store/groupEventSlice';
 
 interface Props {
@@ -14,7 +14,7 @@ interface Props {
   event: { id: string, postImage?: ImageSourcePropType, title: string, createdAt: Date, eventDate: Date },
   responseCount: number;
   joiningCount: number;
-  navigation: any,
+  navigation: NavigationProp<any, any>;
 };
 
 const EventCard: React.FC<Props> = (props: Props) => {
@@ -25,14 +25,10 @@ const EventCard: React.FC<Props> = (props: Props) => {
     joiningCount,
     navigation,
   } = props;
-  const dispatch = useAppDispatch();
   const route = useRoute();
 
-  const viewEvent = async (id: string) => {
-    const post = await dispatch(getOneGroupEventAsync(id));
-    if (post && post.meta.requestStatus === 'fulfilled') {
-      navigation.navigate('View Group Event');
-    }
+  const viewEvent = (id: string) => {
+    navigation.navigate('View Group Event', { eventId: id });
   }
 
   return (

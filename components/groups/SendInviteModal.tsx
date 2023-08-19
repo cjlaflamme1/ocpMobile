@@ -10,6 +10,7 @@ import { clearUserList, getAllUsersAsync, User } from '../../store/userSlice';
 import UserIconSmall from '../UserIconSmall';
 import inputStyle from '../../styles/componentStyles/inputBar';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { NavigationProp } from '@react-navigation/native';
 
 export interface DropdownData<T, U> {
   key: T;
@@ -22,7 +23,7 @@ interface Props {
   acceptAction: (invites: Partial<User>[]) => void;
   rejectAction: () => void;
   closeModal: () => void;
-  navigation: any,
+  navigation: NavigationProp<any, any>;
   selectedGroup: Group,
 };
 

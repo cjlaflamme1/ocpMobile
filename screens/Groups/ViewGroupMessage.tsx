@@ -11,15 +11,16 @@ import { clearSelectedGroup, getOneGroupAsync } from '../../store/groupSlice';
 import { clearPosts, clearSelectedPost, createGroupPostAsync, CreateGroupPostDto, createPostResponseAsync, getAllGroupPostsAsync, getOneGroupPostAsync } from '../../store/groupPostSlice';
 import { QueryObject, SortOrder } from '../../models/QueryObject';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { useRoute } from '@react-navigation/native';
+import { NavigationProp, useRoute } from '@react-navigation/native';
 import CommentResponse from '../../components/groups/CommentResponse';
 import { timeSince } from '../../services/timeAndDate';
 
 interface Props {
-  navigation: any
+  navigation: NavigationProp<any, any>;
+  route: any;
 };
 
-const ViewGroupMessage: React.FC<Props> = ({ navigation }) => {
+const ViewGroupMessage: React.FC<Props> = ({ navigation, route }) => {
   const [queryParams, setQueryParams] = useState<QueryObject>({
     pagination: {
       skip: 0,
@@ -30,16 +31,20 @@ const ViewGroupMessage: React.FC<Props> = ({ navigation }) => {
       order: SortOrder.DESC,
     }
   });
+  const postId = route.params.postId;
   const [refreshing, setRefreshing] = useState(false);
   const dispatch = useAppDispatch();
   const scrollViewRef = useRef<KeyboardAwareScrollView|null>(null);
   const selectedPost = useAppSelector((state) => state.groupPostState.selectedPost);
 
   useEffect(() => {
+    if (!selectedPost || selectedPost.id !== postId) {
+      dispatch(getOneGroupPostAsync(postId));
+    }
     return () => {
       dispatch(clearSelectedPost());
     }
-  }, [navigation]);
+  }, [navigation, postId]);
 
   if (!selectedPost) {
     return (<View />);
@@ -47,7 +52,7 @@ const ViewGroupMessage: React.FC<Props> = ({ navigation }) => {
 
   const onRefresh = async () => {
     setRefreshing(true);
-      console.log('refreshing');
+    await dispatch(getOneGroupPostAsync(postId));
     setRefreshing(false);
   }
 
@@ -84,7 +89,7 @@ const ViewGroupMessage: React.FC<Props> = ({ navigation }) => {
                 postImage: selectedPost.imageGetUrl ? { uri: selectedPost.imageGetUrl } : undefined,
                 createdAt: selectedPost.createdAt,
               }}
-              navigation
+              navigation={navigation}
               responseCount={0}
             />
           </View>
@@ -93,7 +98,7 @@ const ViewGroupMessage: React.FC<Props> = ({ navigation }) => {
               buttonText='Submit Response'
               placeholderText='Enter response here...'
               handleSubmit={(e) => submitPostResponse(e)}
-              navigation
+              navigation={navigation}
             />
           </View>
           {

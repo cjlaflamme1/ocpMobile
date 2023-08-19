@@ -78,6 +78,7 @@ const layoutStyles = StyleSheet.create({
     width: '100%',
     paddingLeft: 15,
     paddingRight: 15,
+    flexGrow: 1,
   }
 });
 

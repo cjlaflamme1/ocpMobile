@@ -9,20 +9,25 @@ import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import globalStyles from '../../styles/global';
 import layoutStyles from '../../styles/layout';
 import groupsLandingStyle from '../../styles/screenStyles/groups/groupsLanding';
+import { NavigationProp } from '@react-navigation/native';
+import { getNotificationsAsync } from '../../store/notificationSlice';
 
 interface Props {
-  navigation: any
+  navigation: NavigationProp<any, any>;
+  route: any;
 };
 
-const GroupsLanding: React.FC<Props> = ({ navigation }) => {
+const GroupsLanding: React.FC<Props> = ({ navigation, route }) => {
   const [refreshing, setRefreshing] = useState(false);
   const [selectedInvite, setSelectedInvite] = useState('');
   const [exploreInvitations, setExploreInvitations] = useState(false);
   const dispatch = useAppDispatch();
+  const openInvite = route.params?.invite;
   const allGroups = useAppSelector((state) => state.groupState.allGroups);
   const allInvitations = useAppSelector((state) => state.groupState.allInvitations);
 
   useEffect(() => {
+    dispatch(getNotificationsAsync());
     if (allGroups && allGroups.count <= 0) {
       dispatch(getAllUserGroupsAsync({
         pagination: {
@@ -35,6 +40,12 @@ const GroupsLanding: React.FC<Props> = ({ navigation }) => {
       dispatch(getAllInvitationsAsync());
     }
   }, [navigation]);
+
+  useEffect(() => {
+    if (openInvite) {
+      setExploreInvitations(true);
+    }
+  }, [openInvite]);
 
   const onRefresh = async () => {
     setRefreshing(true);
@@ -53,10 +64,7 @@ const GroupsLanding: React.FC<Props> = ({ navigation }) => {
   }
 
   const viewUserGroup = async (id: string) => {
-    const res = await dispatch(getOneGroupAsync(id));
-    if (res.meta.requestStatus === 'fulfilled') {
-      navigation.navigate('View Group');
-    };
+    navigation.navigate('View Group', {groupId: id});
   }
 
   const inviteResponse = async (inviteId: string, accept: boolean) => {

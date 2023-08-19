@@ -45,7 +45,6 @@ const UserSearchDropdown: React.FC<Props> = (props: Props) => {
   const dropdownHeight = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
-    console.log('useEffect');
     if (!userList || userList.count === 0) {
       dispatch(getAllUsersAsync({
         pagination: {
