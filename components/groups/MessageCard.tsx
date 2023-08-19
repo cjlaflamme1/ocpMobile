@@ -22,14 +22,10 @@ const MessageCard: React.FC<Props> = (props: Props) => {
     responseCount,
     navigation,
   } = props;
-  const dispatch = useAppDispatch();
   const route = useRoute();
 
   const viewResponses = async (id: string) => {
-    const post = await dispatch(getOneGroupPostAsync(id));
-    if (post && post.meta.requestStatus === 'fulfilled') {
-      navigation.navigate('View Comment');
-    }
+    navigation.navigate('View Comment', { postId: id });
   }
 
   return (

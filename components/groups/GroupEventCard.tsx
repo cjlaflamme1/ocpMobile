@@ -25,14 +25,10 @@ const EventCard: React.FC<Props> = (props: Props) => {
     joiningCount,
     navigation,
   } = props;
-  const dispatch = useAppDispatch();
   const route = useRoute();
 
-  const viewEvent = async (id: string) => {
-    const post = await dispatch(getOneGroupEventAsync(id));
-    if (post && post.meta.requestStatus === 'fulfilled') {
-      navigation.navigate('View Group Event');
-    }
+  const viewEvent = (id: string) => {
+    navigation.navigate('View Group Event', { eventId: id });
   }
 
   return (

@@ -8,6 +8,7 @@ import groupPostSlice from './groupPostSlice';
 import groupSlice from './groupSlice';
 import userActivitySlice from './userActivitySlice';
 import userSlice from './userSlice';
+import notificationSlice from './notificationSlice';
 
 const reducer = combineReducers({
   authState: authSlice,
@@ -17,6 +18,7 @@ const reducer = combineReducers({
   groupState: groupSlice,
   groupPostState: groupPostSlice,
   groupEventState: groupEventSlice,
+  notificationState: notificationSlice,
 });
 
 export const store = configureStore({

@@ -4,22 +4,27 @@ import layoutStyles from '../../styles/layout';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { QueryObject, SortOrder } from '../../models/QueryObject';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { clearSelectedEvent } from '../../store/groupEventSlice';
+import { clearSelectedEvent, getOneGroupEventAsync } from '../../store/groupEventSlice';
 import ViewEvent from '../../components/events/ViewEvent';
 import { NavigationProp } from '@react-navigation/native';
 
 interface Props {
   navigation: NavigationProp<any, any>;
+  route: any;
 };
 
-const ViewGroupEvent: React.FC<Props> = ({ navigation }) => {
+const ViewGroupEvent: React.FC<Props> = ({ navigation, route }) => {
   const [refreshing, setRefreshing] = useState(false);
+  const eventId = route.params.eventId;
   const dispatch = useAppDispatch();
   const scrollViewRef = useRef<KeyboardAwareScrollView|null>(null);
   const selectedGroupEvent = useAppSelector((state) => state.groupEventState.selectedGroupEvent);
   const currentUser = useAppSelector((state) => state.userState.currentUser)
 
   useEffect(() => {
+    if (!selectedGroupEvent || eventId !== selectedGroupEvent.id) {
+      dispatch(getOneGroupEventAsync(eventId));
+    }
     return () => {
       dispatch(clearSelectedEvent());
     }
@@ -31,7 +36,7 @@ const ViewGroupEvent: React.FC<Props> = ({ navigation }) => {
 
   const onRefresh = async () => {
     setRefreshing(true);
-      console.log('refreshing');
+    await dispatch(getOneGroupEventAsync(eventId));
     setRefreshing(false);
   }
 

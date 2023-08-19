@@ -9,6 +9,8 @@ import { loginAction } from '../store/authSlice';
 import SignIn from '../screens/Auth/SignIn';
 import SignUp from '../screens/Auth/SignUp';
 import globalStyles from '../styles/global';
+import * as Notifications from 'expo-notifications';
+import { getNotificationsAsync } from '../store/notificationSlice';
 
 interface Props {
   expoPushToken: string;
@@ -19,6 +21,8 @@ const RootNavigation: React.FC<Props> = ({ expoPushToken }) => {
   const dispatch = useAppDispatch();
   const currentAuth = useAppSelector((state) => state.authState.currentAuth);
   const currentUser = useAppSelector((state) => state.userState.currentUser);
+  const numberOfNotifications = useAppSelector((state) => state.notificationState.notificationCount);
+
 
   const checkUser = async () => {
     try {
@@ -50,7 +54,14 @@ const RootNavigation: React.FC<Props> = ({ expoPushToken }) => {
         }));
       };
     }
+    if (currentUser) {
+      dispatch(getNotificationsAsync());
+    }
   }, [expoPushToken, currentUser])
+
+  useEffect(() => {
+    Notifications.setBadgeCountAsync(numberOfNotifications);
+  }, [numberOfNotifications]);
 
   return (
     <>

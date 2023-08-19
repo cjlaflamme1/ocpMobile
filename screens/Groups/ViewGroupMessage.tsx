@@ -17,9 +17,10 @@ import { timeSince } from '../../services/timeAndDate';
 
 interface Props {
   navigation: NavigationProp<any, any>;
+  route: any;
 };
 
-const ViewGroupMessage: React.FC<Props> = ({ navigation }) => {
+const ViewGroupMessage: React.FC<Props> = ({ navigation, route }) => {
   const [queryParams, setQueryParams] = useState<QueryObject>({
     pagination: {
       skip: 0,
@@ -30,16 +31,20 @@ const ViewGroupMessage: React.FC<Props> = ({ navigation }) => {
       order: SortOrder.DESC,
     }
   });
+  const postId = route.params.postId;
   const [refreshing, setRefreshing] = useState(false);
   const dispatch = useAppDispatch();
   const scrollViewRef = useRef<KeyboardAwareScrollView|null>(null);
   const selectedPost = useAppSelector((state) => state.groupPostState.selectedPost);
 
   useEffect(() => {
+    if (!selectedPost || selectedPost.id !== postId) {
+      dispatch(getOneGroupPostAsync(postId));
+    }
     return () => {
       dispatch(clearSelectedPost());
     }
-  }, [navigation]);
+  }, [navigation, postId]);
 
   if (!selectedPost) {
     return (<View />);
@@ -47,7 +52,7 @@ const ViewGroupMessage: React.FC<Props> = ({ navigation }) => {
 
   const onRefresh = async () => {
     setRefreshing(true);
-      console.log('refreshing');
+    await dispatch(getOneGroupPostAsync(postId));
     setRefreshing(false);
   }
 

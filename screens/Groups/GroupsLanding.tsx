@@ -54,10 +54,7 @@ const GroupsLanding: React.FC<Props> = ({ navigation }) => {
   }
 
   const viewUserGroup = async (id: string) => {
-    const res = await dispatch(getOneGroupAsync(id));
-    if (res.meta.requestStatus === 'fulfilled') {
-      navigation.navigate('View Group');
-    };
+    navigation.navigate('View Group', {groupId: id});
   }
 
   const inviteResponse = async (inviteId: string, accept: boolean) => {

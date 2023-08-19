@@ -1,10 +1,11 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Pressable, View, Image, StyleProp, ViewStyle } from 'react-native';
-import { Notifications } from '../../store/notificationSlice';
+import { Notifications, getNotificationsAsync, updateNotificationAsync } from '../../store/notificationSlice';
 import CustomText from '../CustomText';
 import layoutStyles from '../../styles/layout';
 import notificationItemStyles from '../../styles/componentStyles/notifications/notificationItem';
 import { NavigationProp } from '@react-navigation/native';
+import { useAppDispatch } from '../../store/hooks';
 
 interface Props {
   notification: Notifications;
@@ -17,6 +18,7 @@ const NotificationItem: React.FC<Props> = (props: Props) => {
     navigation,
     styles,
     notification: {
+      id,
       title,
       description,
       viewed,
@@ -26,6 +28,8 @@ const NotificationItem: React.FC<Props> = (props: Props) => {
       user,
     }
   } = props;
+
+  const dispatch = useAppDispatch();
 
   const navigationLocation = useCallback(() => {
     if (groupId) {
@@ -40,11 +44,25 @@ const NotificationItem: React.FC<Props> = (props: Props) => {
     return null;
   }, [groupId, postId, eventId]);
 
+  const clickAction = () => {
+    if (!viewed) {
+      dispatch(updateNotificationAsync({
+        id: id,
+        body: {
+          viewed: true,
+        }
+      })).then(() => {
+        dispatch(getNotificationsAsync());
+      });
+    }
+    navigationLocation();
+  }
+
 
   return (
     <Pressable
-    style={[layoutStyles.flexRow, layoutStyles.alignItemCenter, layoutStyles.jBetween, notificationItemStyles.clickableContainer, styles]}
-    onPress={() => navigationLocation()}
+    style={[layoutStyles.flexRow, layoutStyles.alignItemCenter, layoutStyles.jBetween, notificationItemStyles.clickableContainer, !viewed && { borderColor:  '#CB1406'} ,  styles]}
+    onPress={clickAction}
     >
       <View style={[{ flexGrow: 1 }]}>
         <CustomText h4>{title}</CustomText>
