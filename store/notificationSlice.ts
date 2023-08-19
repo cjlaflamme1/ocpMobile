@@ -9,6 +9,7 @@ export interface Notifications {
   groupId?: string;
   postId?: string;
   eventId?: string;
+  invite: boolean;
   viewed: boolean;
   createdAt: Date;
   user?: User;

@@ -153,7 +153,6 @@ const GroupView: React.FC<Props> = ({ navigation, route }) => {
   }
 
   const submitInvites = async (invites: Partial<User>[]) => {
-    console.log(invites);
     const inviteSubmission = await dispatch(createGroupInvitesAsync({
       groupid: groupId,
       userIds: invites.map((user) => user.id || ''),

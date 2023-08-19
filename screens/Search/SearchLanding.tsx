@@ -9,6 +9,7 @@ import globalStyles from '../../styles/global';
 import layoutStyles from '../../styles/layout';
 import searchLandingStyle from '../../styles/screenStyles/search/searchLanding';
 import { NavigationProp } from '@react-navigation/native';
+import { getNotificationsAsync } from '../../store/notificationSlice';
 
 interface Props {
   navigation: NavigationProp<any, any>;
@@ -30,6 +31,7 @@ const SearchLanding: React.FC<Props> = ({ navigation }) => {
         }
       }));
     }
+    dispatch(getNotificationsAsync());
   }, [navigation]);
 
   if (!currentUser) {

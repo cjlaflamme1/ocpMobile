@@ -28,7 +28,6 @@ const ViewEvent: React.FC<Props> = memo(({ navigation, event, currentUser }) => 
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    console.log('Render view event')
     return () => {
       dispatch(clearSelectedEvent());
     }

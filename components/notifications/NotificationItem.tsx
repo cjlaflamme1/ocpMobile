@@ -25,6 +25,7 @@ const NotificationItem: React.FC<Props> = (props: Props) => {
       groupId,
       postId,
       eventId,
+      invite,
       user,
     }
   } = props;
@@ -40,6 +41,9 @@ const NotificationItem: React.FC<Props> = (props: Props) => {
     }
     if (eventId) {
       navigation.navigate('Groups', { screen: 'View Group Event', initial: false, params: { eventId: eventId } });
+    }
+    if (invite) {
+      navigation.navigate('Groups', { screen: 'Groups Landing', params: { invite: true }});
     }
     return null;
   }, [groupId, postId, eventId]);
