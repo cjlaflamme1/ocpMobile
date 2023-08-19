@@ -5,6 +5,7 @@ import { Image } from 'react-native';
 import GroupsNavigation from './GroupsNavigation';
 import SearchNavigation from './SearchNavigation';
 import CalendarNavigation from './CalendarNavigation';
+import NotificationNavigation from './NotificationNavigation';
 
 const Tab = createBottomTabNavigator();
 
@@ -60,7 +61,7 @@ const TabNavigator: React.FC = () => {
         }}
         
       />
-      <Tab.Screen
+      {/* <Tab.Screen
         name="Calendar Navigation"
         component={CalendarNavigation}
         options={{
@@ -69,6 +70,22 @@ const TabNavigator: React.FC = () => {
               <Image
                 style={{width: size, height: size, resizeMode: 'contain'}}
                 source={focused ? require("../assets/icons/Calendar.png") : require("../assets/icons/CalendarUnfocused.png")}
+              />
+            )
+          },
+          tabBarShowLabel: false,
+          headerShown: false,
+        }}
+      /> */}
+      <Tab.Screen
+        name="notifications"
+        component={NotificationNavigation}
+        options={{
+          tabBarIcon: ({ focused, color, size }) => {
+            return (
+              <Image
+                style={{width: size, height: size, resizeMode: 'contain'}}
+                source={focused ? require("../assets/icons/NotificationFocused.png") : require("../assets/icons/Notification.png")}
               />
             )
           },

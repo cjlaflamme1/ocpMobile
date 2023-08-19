@@ -6,9 +6,10 @@ import { QueryObject, SortOrder } from '../../models/QueryObject';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { clearSelectedEvent } from '../../store/groupEventSlice';
 import ViewEvent from '../../components/events/ViewEvent';
+import { NavigationProp } from '@react-navigation/native';
 
 interface Props {
-  navigation: any
+  navigation: NavigationProp<any, any>;
 };
 
 const ViewGroupEvent: React.FC<Props> = ({ navigation }) => {

@@ -12,9 +12,10 @@ import layoutStyles from '../../styles/layout';
 import createActivityStyles from '../../styles/screenStyles/profile/createActivity';
 import { postPresignedUrl, putImageOnS3 } from '../../api/s3API';
 import PrimaryButton from '../../components/PrimaryButton';
+import { NavigationProp } from '@react-navigation/native';
 
 interface Props {
-  navigation: any
+  navigation: NavigationProp<any, any>;
 };
 
 const ActivityDescription: React.FC<Props> = ({ navigation }) => {

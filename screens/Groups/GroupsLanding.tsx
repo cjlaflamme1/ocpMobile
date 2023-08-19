@@ -9,9 +9,10 @@ import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import globalStyles from '../../styles/global';
 import layoutStyles from '../../styles/layout';
 import groupsLandingStyle from '../../styles/screenStyles/groups/groupsLanding';
+import { NavigationProp } from '@react-navigation/native';
 
 interface Props {
-  navigation: any
+  navigation: NavigationProp<any, any>;
 };
 
 const GroupsLanding: React.FC<Props> = ({ navigation }) => {

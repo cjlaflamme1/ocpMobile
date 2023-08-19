@@ -18,9 +18,10 @@ import { postPresignedUrl, putImageOnS3 } from '../../api/s3API';
 import { clearUserList, getAllUsersAsync, User } from '../../store/userSlice';
 import DropdownSelect, { DropdownData } from '../../components/DropdownSelect';
 import UserSearchDropdown from '../../components/UserSearchDropdown';
+import { NavigationProp } from '@react-navigation/native';
 
 interface Props {
-  navigation: any
+  navigation: NavigationProp<any, any>;
 };
 
 const CreateGroup: React.FC<Props> = ({ navigation }) => {

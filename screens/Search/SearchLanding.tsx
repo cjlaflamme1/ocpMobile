@@ -8,9 +8,10 @@ import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import globalStyles from '../../styles/global';
 import layoutStyles from '../../styles/layout';
 import searchLandingStyle from '../../styles/screenStyles/search/searchLanding';
+import { NavigationProp } from '@react-navigation/native';
 
 interface Props {
-  navigation: any
+  navigation: NavigationProp<any, any>;
 };
 
 const SearchLanding: React.FC<Props> = ({ navigation }) => {

@@ -10,8 +10,9 @@ import PrimaryButton from '../../components/PrimaryButton';
 import { SignupObject } from '../../models/SignupObject';
 import { signUpAsync } from '../../store/authSlice';
 import { getCurrentUserAsync } from '../../store/userSlice';
+import { NavigationProp } from '@react-navigation/native';
 interface Props {
-  navigation: any;
+  navigation: NavigationProp<any, any>;
 };
 
 const SignIn: React.FC<Props> = ({ navigation }) => {

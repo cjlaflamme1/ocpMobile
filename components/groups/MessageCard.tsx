@@ -6,13 +6,13 @@ import layoutStyles from '../../styles/layout';
 import { timeSince } from '../../services/timeAndDate';
 import { useAppDispatch } from '../../store/hooks';
 import { getOneGroupPostAsync } from '../../store/groupPostSlice';
-import { useRoute } from '@react-navigation/native';
+import { NavigationProp, useRoute } from '@react-navigation/native';
 
 interface Props {
   userPosted: { name: string, profile: ImageSourcePropType },
   postId: { id: string, postImage?: ImageSourcePropType, postText: string, createdAt: Date },
   responseCount: number;
-  navigation: any,
+  navigation: NavigationProp<any, any>;
 };
 
 const MessageCard: React.FC<Props> = (props: Props) => {

@@ -6,9 +6,10 @@ import UpcomingEventCard from '../../components/UpcomingEventCard';
 import globalStyles from '../../styles/global';
 import layoutStyles from '../../styles/layout';
 import calendarStyles from '../../styles/screenStyles/calendar/calendar';
+import { NavigationProp } from '@react-navigation/native';
 
 interface Props {
-  navigation: any
+  navigation: NavigationProp<any, any>;
 };
 
 const CalendarLanding: React.FC<Props> = ({ navigation }) => {

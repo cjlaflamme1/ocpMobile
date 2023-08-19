@@ -22,6 +22,8 @@ Notifications.setNotificationHandler({
   }),
 });
 
+SplashScreen.preventAutoHideAsync();
+
 export default function App() {
   const [expoPushToken, setExpoPushToken] = useState('');
   const [notification, setNotification] = useState(false);
