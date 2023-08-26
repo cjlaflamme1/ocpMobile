@@ -168,11 +168,12 @@ const CreateActivity: React.FC<Props> = ({ navigation }) => {
                     style={[{width: 24, height: 24}]}
                   />
                 </Pressable>
+                  <CustomText>Select Image</CustomText>
               </View>
             )
           }
           <View style={[layoutStyles.mt_2]}>
-            <CustomText h1 bold>
+            <CustomText h4 bold>
               Select Activity
             </CustomText>
             <DropdownSelect
