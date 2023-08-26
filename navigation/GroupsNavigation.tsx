@@ -11,6 +11,11 @@ import CustomText from '../components/CustomText';
 import CreateGroupEvent from '../screens/Groups/CreateGroupEvent';
 import ViewGroupEvent from '../screens/Groups/ViewGroupEvent';
 import EditGroup from '../screens/Groups/EditGroup';
+import ViewUser from '../screens/Search/ViewUser';
+import ViewUserActivity from '../screens/Search/ViewUserActivity';
+import TitleWithBackButton from '../components/headers/TitleBackButton';
+import TitleOnly from '../components/headers/TitleOnly';
+import TripleHeader from '../components/headers/TripleHeader';
 
 
 
@@ -26,6 +31,9 @@ const GroupsNavigation: React.FC = () => {
           options={
             {
               contentStyle: globalStyles.navigationStackScreen,
+              header: () => (
+                <TitleOnly title='View Your Groups' />
+              )
             }
           }
         />
@@ -35,6 +43,9 @@ const GroupsNavigation: React.FC = () => {
           options={
             {
               contentStyle: globalStyles.navigationStackScreen,
+              header: () => (
+                <TitleWithBackButton title='Create Group' />
+              )
             }
           }
         />
@@ -44,6 +55,9 @@ const GroupsNavigation: React.FC = () => {
           options={
             {
               contentStyle: globalStyles.navigationStackScreen,
+              header: () => (
+                <TitleWithBackButton title='Edit Group' />
+              )
             }
           }
         />
@@ -54,13 +68,15 @@ const GroupsNavigation: React.FC = () => {
             {
               contentStyle: globalStyles.navigationStackScreen,
               headerTitle: '',
-              headerRight: () => (
-                <Pressable style={[layoutStyles.flexRow, layoutStyles.alignItemCenter]}>
-                  <Image
-                    source={require('../assets/icons/Setting.png')}
-                    style={[{ height: 24, width: 24, resizeMode: 'contain'}, layoutStyles.mr_1]}
-                  />
-                </Pressable>
+              header: () => (
+                <TripleHeader title='View Group'>
+                  <Pressable style={[layoutStyles.flexRow, layoutStyles.alignItemCenter]}>
+                    <Image
+                      source={require('../assets/icons/Setting.png')}
+                      style={[{ height: 24, width: 24, resizeMode: 'contain'}, layoutStyles.mr_1]}
+                    />
+                  </Pressable>
+                </TripleHeader>
               )
             }
           }
@@ -71,6 +87,9 @@ const GroupsNavigation: React.FC = () => {
           options={
             {
               contentStyle: globalStyles.navigationStackScreen,
+              header: () => (
+                <TitleWithBackButton title='View Message' />
+              )
             }
           }
         />
@@ -80,6 +99,9 @@ const GroupsNavigation: React.FC = () => {
           options={
             {
               contentStyle: globalStyles.navigationStackScreen,
+              header: () => (
+                <TitleWithBackButton title='Create Event' />
+              )
             }
           }
         />
@@ -89,6 +111,33 @@ const GroupsNavigation: React.FC = () => {
           options={
             {
               contentStyle: globalStyles.navigationStackScreen,
+              header: () => (
+                <TitleWithBackButton title='View Event' />
+              )
+            }
+          }
+        />
+        <RootStack.Screen
+          name="group-view-user"
+          component={ViewUser}
+          options={
+            {
+              contentStyle: globalStyles.navigationStackScreen,
+              header: () => (
+                <TitleWithBackButton title='View User' />
+              )
+            }
+          }
+        />
+        <RootStack.Screen
+          name="group-view-user-activity"
+          component={ViewUserActivity}
+          options={
+            {
+              contentStyle: globalStyles.navigationStackScreen,
+              header: () => (
+                <TitleWithBackButton title='View User' />
+              )
             }
           }
         />

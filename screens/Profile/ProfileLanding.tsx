@@ -18,6 +18,10 @@ import inputStyle from '../../styles/componentStyles/inputBar';
 import { getOneUserActivityAsync, getUserActivitiesAsync } from '../../store/userActivitySlice';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { getNotificationsAsync } from '../../store/notificationSlice';
+import ProfileSettingsSheet from '../../components/bottomsheet/ProfileSettingsSheet';
+import BottomSheet from '@gorhom/bottom-sheet';
+import TitleAndAction from '../../components/headers/TitleAndAction';
+import PrimaryButton from '../../components/PrimaryButton';
 
 interface Props {
   navigation: NavigationProp<any, any>
@@ -39,21 +43,27 @@ const ProfileLanding: React.FC<Props> = ({ navigation }) => {
     setRefreshing(false);
   }
 
+  const bottomSheetRef = useRef<BottomSheet>(null);
+
+  const handleClosePress = () => bottomSheetRef?.current?.close();
+
+  const handleOpen = () => bottomSheetRef?.current?.expand();
+
   useEffect(() => {
     navigation.setOptions({
-      headerRight: () => (
-        <Pressable
-          style={[layoutStyles.flexRow, layoutStyles.alignItemCenter]}
-          onPress={() => setEditMode((editMode) => !editMode)}
-        >
-          <Image
-            source={require('../../assets/icons/Edit.png')}
-            style={[{ height: 16, width: 16, resizeMode: 'contain'}, layoutStyles.mr_1]}
-          />
-          <CustomText>
-            Edit Profile
-          </CustomText>
-        </Pressable>
+      header: () => (
+        <TitleAndAction title='Outdoor Community Project'>
+          <Pressable
+            style={[layoutStyles.flexRow,
+            layoutStyles.alignItemCenter]}
+            onPress={() => handleOpen()}
+          >
+            <Image
+              source={require('../../assets/icons/Setting.png')}
+              style={[{ height: 24, width: 24, resizeMode: 'contain'}, layoutStyles.mr_1]}
+            />
+          </Pressable>
+        </TitleAndAction>
       )
     });
     dispatch(getUserActivitiesAsync());
@@ -225,6 +235,12 @@ const ProfileLanding: React.FC<Props> = ({ navigation }) => {
                     />
                   </View>
                 </View>
+                <View style={[layoutStyles.mt_2]}>
+                  <PrimaryButton
+                    buttonText='Save Edits'
+                    callback={() => setEditMode(false)}
+                  />
+                </View>
               </View>
             ) : (
               <View>
@@ -285,6 +301,12 @@ const ProfileLanding: React.FC<Props> = ({ navigation }) => {
           )
         }
       </KeyboardAwareScrollView>
+      <ProfileSettingsSheet
+        closeSheet={() => handleClosePress()}
+        bottomSheetRef={bottomSheetRef}
+        customSnapPoints={['25%', '50%']}
+        editProfile={() => setEditMode(!editMode)}
+      />
     </View>
   );
 };

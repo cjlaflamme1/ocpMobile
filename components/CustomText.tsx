@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text } from 'react-native';
+import { StyleProp, Text, TextStyle } from 'react-native';
 import globalStyles from '../styles/global';
 
 interface Props {
@@ -10,7 +10,7 @@ interface Props {
   h3?: boolean,
   h2?: boolean,
   h1?: boolean,
-  style?: any[],
+  style?: StyleProp<TextStyle>,
   center?: boolean,
   left?: boolean,
   right?: boolean,
@@ -45,7 +45,7 @@ const CustomText: React.FC<Props> = (props: Props) => {
         (center && globalStyles.tCenter),
         (left && globalStyles.tLeft),
         (right && globalStyles.tRight),
-        (style && (style as []))
+        (style && style)
       ]}
     >
       {children}

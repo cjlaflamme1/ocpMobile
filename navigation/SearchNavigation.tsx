@@ -1,10 +1,8 @@
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import GroupsLanding from '../screens/Groups/GroupsLanding';
 import SearchLanding from '../screens/Search/SearchLanding';
 import globalStyles from '../styles/global';
-import ViewUser from '../screens/Search/ViewUser';
-import ViewUserActivity from '../screens/Search/ViewUserActivity';
+import TitleOnly from '../components/headers/TitleOnly';
 
 
 
@@ -20,15 +18,21 @@ const SearchNavigation: React.FC = () => {
           options={
             {
               contentStyle: globalStyles.navigationStackScreen,
+              header: () => (
+                <TitleOnly title='Search New Groups' />
+              )
             }
           }
         />
-        <RootStack.Screen
+        {/* <RootStack.Screen
           name="View User"
           component={ViewUser}
           options={
             {
               contentStyle: globalStyles.navigationStackScreen,
+              header: () => (
+                <TitleWithBackButton title='View User' />
+              )
             }
           }
         />
@@ -38,9 +42,12 @@ const SearchNavigation: React.FC = () => {
           options={
             {
               contentStyle: globalStyles.navigationStackScreen,
+              header: () => (
+                <TitleWithBackButton title='View User' />
+              )
             }
           }
-        />
+        /> */}
       </RootStack.Navigator >
     </>
   );

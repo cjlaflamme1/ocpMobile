@@ -21,7 +21,7 @@ const UserListModal: React.FC<Props> = (props: Props) => {
   } = props;
 
   const viewUser = (userId: string) => {
-    navigation.navigate('Search', { screen: 'View User', initial: false, params: { userId: userId } })
+    navigation.navigate('group-view-user', { userId: userId });
     closeModal();
   };
 

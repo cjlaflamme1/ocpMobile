@@ -21,6 +21,7 @@ import SettingsSheet from '../../components/bottomsheet/SettingsBottomSheet';
 import BottomSheet from '@gorhom/bottom-sheet';
 import GroupDescriptionModal from '../../components/modals/GroupDescripModal';
 import { NavigationProp } from '@react-navigation/native';
+import TripleHeader from '../../components/headers/TripleHeader';
 
 interface Props {
   navigation: NavigationProp<any, any>;
@@ -92,17 +93,20 @@ const GroupView: React.FC<Props> = ({ navigation, route }) => {
         }))
       }
       navigation.setOptions({
-        headerRight: () => (
-          <Pressable
-            style={[layoutStyles.flexRow,
-            layoutStyles.alignItemCenter]}
-            onPress={() => handleOpen()}
-          >
-            <Image
-              source={require('../../assets/icons/Setting.png')}
-              style={[{ height: 24, width: 24, resizeMode: 'contain'}, layoutStyles.mr_1]}
-            />
-          </Pressable>
+        header: () => (
+          <TripleHeader navigation={navigation} title='View Group'>
+            <Pressable
+              style={[layoutStyles.flexRow,
+              layoutStyles.alignItemCenter]}
+              onPress={() => handleOpen()}
+            >
+              <Image
+                source={require('../../assets/icons/Setting.png')}
+                style={[{ height: 24, width: 24, resizeMode: 'contain'}, layoutStyles.mr_1]}
+              />
+            </Pressable>
+          </TripleHeader>
+          
         )
       });
     }
@@ -124,7 +128,7 @@ const GroupView: React.FC<Props> = ({ navigation, route }) => {
         adminPermission = true;
       }
     return adminPermission;
-  }, [currentUser]);
+  }, [currentUser, groupId, selectedGroup]);
 
   const onRefresh = async () => {
     setRefreshing(true);

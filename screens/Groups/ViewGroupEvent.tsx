@@ -7,6 +7,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import { clearSelectedEvent, getOneGroupEventAsync } from '../../store/groupEventSlice';
 import ViewEvent from '../../components/events/ViewEvent';
 import { NavigationProp } from '@react-navigation/native';
+import TitleWithBackButton from '../../components/headers/TitleBackButton';
 
 interface Props {
   navigation: NavigationProp<any, any>;
@@ -25,6 +26,11 @@ const ViewGroupEvent: React.FC<Props> = ({ navigation, route }) => {
     if (!selectedGroupEvent || eventId !== selectedGroupEvent.id) {
       dispatch(getOneGroupEventAsync(eventId));
     }
+    navigation.setOptions({
+      header: () => (
+        <TitleWithBackButton title='View Event' navigation={navigation} />
+      )
+    });
     return () => {
       dispatch(clearSelectedEvent());
     }

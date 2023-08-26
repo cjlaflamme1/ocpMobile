@@ -19,6 +19,7 @@ import { clearUserList, getAllUsersAsync, User } from '../../store/userSlice';
 import DropdownSelect, { DropdownData } from '../../components/DropdownSelect';
 import UserSearchDropdown from '../../components/UserSearchDropdown';
 import { NavigationProp } from '@react-navigation/native';
+import TitleWithBackButton from '../../components/headers/TitleBackButton';
 
 interface Props {
   navigation: NavigationProp<any, any>;
@@ -43,6 +44,11 @@ const CreateGroup: React.FC<Props> = ({ navigation }) => {
         pendingInvitationUserIds: [],
       });
     }
+    navigation.setOptions({
+      header: () => (
+        <TitleWithBackButton title='Create Group' navigation={navigation} />
+      )
+    });
   }, [navigation]);
 
   if (!currentUser || !newGroupObj) {

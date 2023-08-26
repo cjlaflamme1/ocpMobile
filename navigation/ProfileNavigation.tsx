@@ -7,6 +7,9 @@ import ActivityDescription from '../screens/Profile/ActivityDescription';
 import CustomText from '../components/CustomText';
 import layoutStyles from '../styles/layout';
 import CreateActivity from '../screens/Profile/CreateActivity';
+import TitleWithBackButton from '../components/headers/TitleBackButton';
+import TitleAndAction from '../components/headers/TitleAndAction';
+import TripleHeader from '../components/headers/TripleHeader';
 
 
 
@@ -23,16 +26,15 @@ const ProfileNavigation: React.FC = () => {
             {
               contentStyle: globalStyles.navigationStackScreen,
               headerTitle: '',
-              headerRight: () => (
-                <Pressable style={[layoutStyles.flexRow, layoutStyles.alignItemCenter]}>
-                  <Image
-                    source={require('../assets/icons/Edit.png')}
-                    style={[{ height: 16, width: 16, resizeMode: 'contain'}, layoutStyles.mr_1]}
-                  />
-                  <CustomText>
-                    Edit Profile
-                  </CustomText>
-                </Pressable>
+              header: () => (
+                <TitleAndAction title='Outdoor Community Project'>
+                  <Pressable style={[layoutStyles.flexRow, layoutStyles.alignItemCenter]}>
+                    <Image
+                      source={require('../assets/icons/Setting.png')}
+                      style={[{ height: 24, width: 24, resizeMode: 'contain'}, layoutStyles.mr_1]}
+                    />
+                  </Pressable>
+                </TitleAndAction>
               )
             }
           }
@@ -44,16 +46,15 @@ const ProfileNavigation: React.FC = () => {
             {
               contentStyle: globalStyles.navigationStackScreen,
               headerTitle: '',
-              headerRight: () => (
-                <Pressable style={[layoutStyles.flexRow, layoutStyles.alignItemCenter]}>
-                  <Image
-                    source={require('../assets/icons/Edit.png')}
-                    style={[{ height: 16, width: 16, resizeMode: 'contain'}, layoutStyles.mr_1]}
-                  />
-                  <CustomText>
-                    Edit Activity
-                  </CustomText>
-                </Pressable>
+              header: () => (
+                <TripleHeader title='Activity Description'>
+                  <Pressable style={[layoutStyles.flexRow, layoutStyles.alignItemCenter]}>
+                    <Image
+                      source={require('../assets/icons/Setting.png')}
+                      style={[{ height: 24, width: 24, resizeMode: 'contain'}, layoutStyles.mr_1]}
+                    />
+                  </Pressable>
+                </TripleHeader>
               )
             }
           }
@@ -64,7 +65,9 @@ const ProfileNavigation: React.FC = () => {
           options={
             {
               contentStyle: globalStyles.navigationStackScreen,
-              headerTitle: '',
+              header: () => (
+                <TitleWithBackButton title='Create Activity' />
+              )
             }
           }
         />

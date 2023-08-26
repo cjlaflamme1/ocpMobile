@@ -13,6 +13,9 @@ import createActivityStyles from '../../styles/screenStyles/profile/createActivi
 import { postPresignedUrl, putImageOnS3 } from '../../api/s3API';
 import PrimaryButton from '../../components/PrimaryButton';
 import { NavigationProp } from '@react-navigation/native';
+import TripleHeader from '../../components/headers/TripleHeader';
+import BottomSheet from '@gorhom/bottom-sheet';
+import ActivitySettingsSheet from '../../components/bottomsheet/ActivitySettingsSheet';
 
 interface Props {
   navigation: NavigationProp<any, any>;
@@ -27,6 +30,12 @@ const ActivityDescription: React.FC<Props> = ({ navigation }) => {
 
   const selectedUserActivity = useAppSelector((state) => state.userActivityState.selectedUserActivity);
   const currentUser = useAppSelector((state) => state.userState.currentUser);
+
+  const bottomSheetRef = useRef<BottomSheet>(null);
+
+  const handleClosePress = () => bottomSheetRef?.current?.close();
+
+  const handleOpen = () => bottomSheetRef?.current?.expand();
 
   const onRefresh = async () => {
     setRefreshing(true);
@@ -92,19 +101,19 @@ const ActivityDescription: React.FC<Props> = ({ navigation }) => {
 
   useEffect(() => {
     navigation.setOptions({
-      headerRight: () => (
-        <Pressable
-          style={[layoutStyles.flexRow, layoutStyles.alignItemCenter]}
-          onPress={() => setEditMode((editMode) => !editMode)}
-        >
-          <Image
-            source={require('../../assets/icons/Edit.png')}
-            style={[{ height: 16, width: 16, resizeMode: 'contain'}, layoutStyles.mr_1]}
-          />
-          <CustomText>
-            Edit Activity
-          </CustomText>
-        </Pressable>
+      header: () => (
+        <TripleHeader navigation={navigation} title='Activity Description'>
+          <Pressable
+            style={[layoutStyles.flexRow,
+            layoutStyles.alignItemCenter]}
+            onPress={() => handleOpen()}
+          >
+            <Image
+              source={require('../../assets/icons/Setting.png')}
+              style={[{ height: 24, width: 24, resizeMode: 'contain'}, layoutStyles.mr_1]}
+            />
+          </Pressable>
+        </TripleHeader>
       )
     });
     setUpdatedActivity({
@@ -404,6 +413,12 @@ const ActivityDescription: React.FC<Props> = ({ navigation }) => {
           </ScrollView>
         )
       }
+      <ActivitySettingsSheet
+        closeSheet={() => handleClosePress()}
+        bottomSheetRef={bottomSheetRef}
+        customSnapPoints={['25%', '50%']}
+        editProfile={() => setEditMode(!editMode)}
+      />
     </View>
   );
 };
