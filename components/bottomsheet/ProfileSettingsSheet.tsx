@@ -10,6 +10,7 @@ interface Props {
   bottomSheetRef: React.RefObject<any>;
   closeSheet: () => void;
   editProfile: () => void;
+  logout: () => void;
 };
 
 const ProfileSettingsSheet: React.FC<Props> = (props) => {
@@ -18,6 +19,7 @@ const ProfileSettingsSheet: React.FC<Props> = (props) => {
     closeSheet,
     bottomSheetRef,
     editProfile,
+    logout,
   } = props;
   
 
@@ -27,6 +29,11 @@ const ProfileSettingsSheet: React.FC<Props> = (props) => {
     closeSheet();
     editProfile();
   };
+
+  const logoutPress = () => {
+    closeSheet();
+    logout();
+  }
 
   return (
     <BottomSheet
@@ -47,6 +54,20 @@ const ProfileSettingsSheet: React.FC<Props> = (props) => {
             />
             <CustomText>
               Edit Profile
+            </CustomText>
+          </Pressable>
+        </View>
+        <View style={[bottomSheet.itemContainer]}>
+          <Pressable
+            style={[layoutStyles.flexRow, layoutStyles.alignItemCenter]}
+            onPress={() => logoutPress()}
+          >
+            <Image
+              source={require('../../assets/icons/Logout.png')}
+              style={[{ height: 16, width: 16, resizeMode: 'contain'}, layoutStyles.mr_1]}
+            />
+            <CustomText>
+              Logout
             </CustomText>
           </Pressable>
         </View>

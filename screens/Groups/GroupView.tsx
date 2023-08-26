@@ -255,23 +255,24 @@ const GroupView: React.FC<Props> = ({ navigation, route }) => {
                   currentGroupEvents.groupEvents &&
                   currentGroupEvents.groupEvents.length > 0 &&
                   currentGroupEvents.groupEvents.map((event) => (
-                    <EventCard
-                      key={`eventCard-${event.id}`}
-                      userPosted={{
-                        name: event.creator.firstName,
-                        profile: event.creator.imageGetUrl ? { uri: event.creator.imageGetUrl } : require('../../assets/150x150.png'),
-                      }}
-                      event={{
-                        id: event.id,
-                        postImage: event.imageGetUrl ? { uri: event.imageGetUrl } : undefined,
-                        title: event.title,
-                        createdAt: event.createdAt,
-                        eventDate: event.eventDate,
-                      }}
-                      responseCount={event.responses ? event.responses.length : 0}
-                      joiningCount={event.attendingUsers ? event.attendingUsers.length : 0}
-                      navigation={navigation}
-                    />
+                    <View key={`eventCard-${event.id}`} style={[layoutStyles.mb_2]}>
+                      <EventCard
+                        userPosted={{
+                          name: event.creator.firstName,
+                          profile: event.creator.imageGetUrl ? { uri: event.creator.imageGetUrl } : require('../../assets/150x150.png'),
+                        }}
+                        event={{
+                          id: event.id,
+                          postImage: event.imageGetUrl ? { uri: event.imageGetUrl } : undefined,
+                          title: event.title,
+                          createdAt: event.createdAt,
+                          eventDate: event.eventDate,
+                        }}
+                        responseCount={event.responses ? event.responses.length : 0}
+                        joiningCount={event.attendingUsers ? event.attendingUsers.length : 0}
+                        navigation={navigation}
+                      />
+                    </View>
                   ))
                 }
               </View>

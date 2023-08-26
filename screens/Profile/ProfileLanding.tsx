@@ -302,6 +302,7 @@ const ProfileLanding: React.FC<Props> = ({ navigation }) => {
         }
       </KeyboardAwareScrollView>
       <ProfileSettingsSheet
+        logout={() => dispatch(logoutAction())}
         closeSheet={() => handleClosePress()}
         bottomSheetRef={bottomSheetRef}
         customSnapPoints={['25%', '50%']}
