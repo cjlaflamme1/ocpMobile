@@ -8,13 +8,15 @@ interface Props {
   groupTitle: string,
   numberOfMembers: number,
   imageSource?: ImageSourcePropType,
+  hideCount?: boolean,
 };
 
 const GroupCard: React.FC<Props> = (props: Props) => {
   const {
     groupTitle,
     imageSource,
-    numberOfMembers
+    numberOfMembers,
+    hideCount,
   } = props;
 
   return (
@@ -34,9 +36,13 @@ const GroupCard: React.FC<Props> = (props: Props) => {
         <CustomText bold>
           {groupTitle}
         </CustomText>
-        <CustomText style={[globalStyles.mutedText]}>
-          {`${numberOfMembers} member${(numberOfMembers !== 1) ? 's' : ''}`}
-        </CustomText>
+        {
+          !hideCount && (
+            <CustomText style={[globalStyles.mutedText]}>
+              {`${numberOfMembers} member${(numberOfMembers !== 1) ? 's' : ''}`}
+            </CustomText>
+          )
+        }
       </View>
     </View>
   );
@@ -44,6 +50,7 @@ const GroupCard: React.FC<Props> = (props: Props) => {
 
 GroupCard.defaultProps = {
   imageSource: undefined,
+  hideCount: false,
 }
 
 export default GroupCard;

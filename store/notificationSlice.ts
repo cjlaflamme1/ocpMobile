@@ -57,7 +57,7 @@ const updateNotificationAsync = createAsyncThunk(
       });
     }
   },
-)
+);
 
 const notificationSlice = createSlice({
   name: 'notifications',

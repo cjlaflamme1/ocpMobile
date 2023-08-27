@@ -116,7 +116,7 @@ const GroupView: React.FC<Props> = ({ navigation, route }) => {
     }
   }, [navigation, groupId]);
 
-  const memberNumber = (selectedGroup?.groupAdmins ? selectedGroup.groupAdmins.length : 0) + (selectedGroup?.users ? selectedGroup.users.length : 0);
+  const memberNumber = selectedGroup?.users ? selectedGroup.users.length : 0;
 
   const adminUser = useCallback(() => {
     let adminPermission = false;
@@ -293,7 +293,7 @@ const GroupView: React.FC<Props> = ({ navigation, route }) => {
         navigation={navigation}
         isVisible={userModal}
         closeModal={() => setUserModal(false)}
-        userList={[...new Set([...(selectedGroup.users || []), ...(selectedGroup.groupAdmins || [])])]}
+        userList={selectedGroup.users || []}
       />
       <GroupDescriptionModal
         isVisible={descripModal}
