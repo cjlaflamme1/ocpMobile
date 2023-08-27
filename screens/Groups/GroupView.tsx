@@ -21,6 +21,7 @@ import SettingsSheet from '../../components/bottomsheet/SettingsBottomSheet';
 import BottomSheet from '@gorhom/bottom-sheet';
 import GroupDescriptionModal from '../../components/modals/GroupDescripModal';
 import { NavigationProp } from '@react-navigation/native';
+import TripleHeader from '../../components/headers/TripleHeader';
 
 interface Props {
   navigation: NavigationProp<any, any>;
@@ -92,17 +93,20 @@ const GroupView: React.FC<Props> = ({ navigation, route }) => {
         }))
       }
       navigation.setOptions({
-        headerRight: () => (
-          <Pressable
-            style={[layoutStyles.flexRow,
-            layoutStyles.alignItemCenter]}
-            onPress={() => handleOpen()}
-          >
-            <Image
-              source={require('../../assets/icons/Setting.png')}
-              style={[{ height: 24, width: 24, resizeMode: 'contain'}, layoutStyles.mr_1]}
-            />
-          </Pressable>
+        header: () => (
+          <TripleHeader navigation={navigation} title='View Group'>
+            <Pressable
+              style={[layoutStyles.flexRow,
+              layoutStyles.alignItemCenter]}
+              onPress={() => handleOpen()}
+            >
+              <Image
+                source={require('../../assets/icons/Setting.png')}
+                style={[{ height: 24, width: 24, resizeMode: 'contain'}, layoutStyles.mr_1]}
+              />
+            </Pressable>
+          </TripleHeader>
+          
         )
       });
     }
@@ -112,7 +116,7 @@ const GroupView: React.FC<Props> = ({ navigation, route }) => {
     }
   }, [navigation, groupId]);
 
-  const memberNumber = (selectedGroup?.groupAdmins ? selectedGroup.groupAdmins.length : 0) + (selectedGroup?.users ? selectedGroup.users.length : 0);
+  const memberNumber = selectedGroup?.users ? selectedGroup.users.length : 0;
 
   const adminUser = useCallback(() => {
     let adminPermission = false;
@@ -124,7 +128,7 @@ const GroupView: React.FC<Props> = ({ navigation, route }) => {
         adminPermission = true;
       }
     return adminPermission;
-  }, [currentUser]);
+  }, [currentUser, groupId, selectedGroup]);
 
   const onRefresh = async () => {
     setRefreshing(true);
@@ -251,23 +255,24 @@ const GroupView: React.FC<Props> = ({ navigation, route }) => {
                   currentGroupEvents.groupEvents &&
                   currentGroupEvents.groupEvents.length > 0 &&
                   currentGroupEvents.groupEvents.map((event) => (
-                    <EventCard
-                      key={`eventCard-${event.id}`}
-                      userPosted={{
-                        name: event.creator.firstName,
-                        profile: event.creator.imageGetUrl ? { uri: event.creator.imageGetUrl } : require('../../assets/150x150.png'),
-                      }}
-                      event={{
-                        id: event.id,
-                        postImage: event.imageGetUrl ? { uri: event.imageGetUrl } : undefined,
-                        title: event.title,
-                        createdAt: event.createdAt,
-                        eventDate: event.eventDate,
-                      }}
-                      responseCount={event.responses ? event.responses.length : 0}
-                      joiningCount={event.attendingUsers ? event.attendingUsers.length : 0}
-                      navigation={navigation}
-                    />
+                    <View key={`eventCard-${event.id}`} style={[layoutStyles.mb_2]}>
+                      <EventCard
+                        userPosted={{
+                          name: event.creator.firstName,
+                          profile: event.creator.imageGetUrl ? { uri: event.creator.imageGetUrl } : require('../../assets/150x150.png'),
+                        }}
+                        event={{
+                          id: event.id,
+                          postImage: event.imageGetUrl ? { uri: event.imageGetUrl } : undefined,
+                          title: event.title,
+                          createdAt: event.createdAt,
+                          eventDate: event.eventDate,
+                        }}
+                        responseCount={event.responses ? event.responses.length : 0}
+                        joiningCount={event.attendingUsers ? event.attendingUsers.length : 0}
+                        navigation={navigation}
+                      />
+                    </View>
                   ))
                 }
               </View>
@@ -288,7 +293,7 @@ const GroupView: React.FC<Props> = ({ navigation, route }) => {
         navigation={navigation}
         isVisible={userModal}
         closeModal={() => setUserModal(false)}
-        userList={[...new Set([...(selectedGroup.users || []), ...(selectedGroup.groupAdmins || [])])]}
+        userList={selectedGroup.users || []}
       />
       <GroupDescriptionModal
         isVisible={descripModal}

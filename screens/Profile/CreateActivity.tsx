@@ -15,6 +15,7 @@ import { postPresignedUrl, putImageOnS3 } from '../../api/s3API';
 import { getUserActivitiesAsync } from '../../store/userActivitySlice';
 import PrimaryButton from '../../components/PrimaryButton';
 import { NavigationProp } from '@react-navigation/native';
+import TitleWithBackButton from '../../components/headers/TitleBackButton';
 
 interface Props {
   navigation: NavigationProp<any, any>;
@@ -51,7 +52,12 @@ const CreateActivity: React.FC<Props> = ({ navigation }) => {
     if (!activityTypes || activityTypes.length <= 0) {
       dispatch(getAllActivityTypesAsync());
     }
-  }, []);
+    navigation.setOptions({
+      header: () => (
+        <TitleWithBackButton title='Create Activity' navigation={navigation} />
+      )
+    });
+  }, [navigation]);
 
   if (!newActivity || !currentUser) {
     return (<View />);
@@ -162,11 +168,12 @@ const CreateActivity: React.FC<Props> = ({ navigation }) => {
                     style={[{width: 24, height: 24}]}
                   />
                 </Pressable>
+                  <CustomText>Select Image</CustomText>
               </View>
             )
           }
           <View style={[layoutStyles.mt_2]}>
-            <CustomText h1 bold>
+            <CustomText h4 bold>
               Select Activity
             </CustomText>
             <DropdownSelect

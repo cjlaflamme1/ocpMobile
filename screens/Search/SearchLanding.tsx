@@ -18,6 +18,7 @@ interface Props {
 const SearchLanding: React.FC<Props> = ({ navigation }) => {
   const [refreshing, setRefreshing] = useState(false);
   const [selectedPreview, setSelectedPreview] = useState('');
+  const [debounceHandle, setDebounceHandle] = useState<any>();
   const dispatch = useAppDispatch();
   const searchForGroups = useAppSelector((state) => state.groupState.searchForGroups);
   const currentUser = useAppSelector((state) => state.userState.currentUser);
@@ -47,6 +48,36 @@ const SearchLanding: React.FC<Props> = ({ navigation }) => {
       }
     }))
     setRefreshing(false);
+  }
+
+  const submitNameSearch = (searchQuery: string) => {
+    if (searchQuery) {
+      dispatch(getAllGroupsAsync({
+        pagination: {
+          take: 8,
+          skip: 0,
+        },
+        filters: [
+          {
+            name: 'title',
+            value: searchQuery,
+          },
+          {
+            name: 'description',
+            value: searchQuery,
+          }
+        ],
+        filteredWithOr: true
+      }));
+
+    } else {
+      dispatch(getAllGroupsAsync({
+        pagination: {
+          take: 8,
+          skip: 0,
+        }
+      }));
+    }
   }
 
   const joinGroup = async (groupid: string, userid: string) => {
@@ -97,6 +128,13 @@ const SearchLanding: React.FC<Props> = ({ navigation }) => {
           <TextInput
             placeholder='Search'
             style={[searchLandingStyle.searchBar]}
+            onChangeText={(e) => {
+              if (debounceHandle) {
+                clearTimeout(debounceHandle);
+              }
+              const handle = setTimeout(() => submitNameSearch(e), 750);
+              setDebounceHandle(handle);
+            }}
           />
         </View>
         <View style={[layoutStyles.mt_2]}>
@@ -127,7 +165,10 @@ const SearchLanding: React.FC<Props> = ({ navigation }) => {
               //   }
               // })
               .map((group) => (
-              <Pressable key={`userGroupCard-${group.id}`} onPress={() => setSelectedPreview(group.id)}>
+              <Pressable 
+                key={`userGroupCard-${group.id}`}
+                onPress={() => group.users.find((u) => u.id === currentUser.id) ? navigation.navigate('Groups', { screen: 'View Group', params: { groupId: group.id}}) : setSelectedPreview(group.id)}
+              >
                 <GroupCard
                   groupTitle={group.title}
                   numberOfMembers={group.users ? group.users.length : 0}

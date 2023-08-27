@@ -38,7 +38,8 @@
     "react-native-screens": "~3.22.0",
     "react-native-web": "~0.19.6",
     "react-redux": "^8.0.5",
-    "redux": "^4.2.1"
+    "redux": "^4.2.1",
+    "expo-background-fetch": "~11.3.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

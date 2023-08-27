@@ -10,6 +10,7 @@ import profileLandingStyles from '../../styles/screenStyles/profileLanding';
 import imageStyles from '../../styles/images';
 import ProfileActivityCard from '../../components/ProfileActivityCard';
 import { clearSelectedUserActivity, getOneUserActivityAsync } from '../../store/userActivitySlice';
+import TitleWithBackButton from '../../components/headers/TitleBackButton';
 
 interface Props {
   navigation: NavigationProp<any, any>;
@@ -23,7 +24,12 @@ const ViewUserActivity: React.FC<Props> = ({ navigation, route }) => {
   const userActivityId = route.params.userActivityId;
 
   useEffect(() => {
-    dispatch(getOneUserActivityAsync(userActivityId))
+    dispatch(getOneUserActivityAsync(userActivityId));
+    navigation.setOptions({
+      header: () => (
+        <TitleWithBackButton title='View User' navigation={navigation} />
+      )
+    });
     return () => {
       dispatch(clearSelectedUserActivity());
     }

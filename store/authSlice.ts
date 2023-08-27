@@ -91,6 +91,8 @@ const authSlice = createSlice({
       state.currentAuth = action.payload;
     },
     logoutAction(state) {
+      SecureStore.deleteItemAsync('accessToken');
+      SecureStore.deleteItemAsync('refreshToken');
       state.currentAuth = null;
     }
   },

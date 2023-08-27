@@ -2,6 +2,7 @@ import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import globalStyles from '../styles/global';
 import NotificationLanding from '../screens/Notifications/NotificationLanding';
+import TitleOnly from '../components/headers/TitleOnly';
 
 
 
@@ -16,8 +17,10 @@ const NotificationNavigation: React.FC = () => {
           component={NotificationLanding}
           options={
             {
-              title: 'Notifications',
               contentStyle: globalStyles.navigationStackScreen,
+              header: () => (
+                <TitleOnly title='Notifications' />
+              )
             }
           }
         />

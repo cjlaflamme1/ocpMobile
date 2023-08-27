@@ -23,6 +23,7 @@ import { dateOnly } from '../../services/timeAndDate';
 import { createGroupEventAsync, getAllGroupEventsAsync } from '../../store/groupEventSlice';
 import { SortOrder } from '../../models/QueryObject';
 import { NavigationProp } from '@react-navigation/native';
+import TitleWithBackButton from '../../components/headers/TitleBackButton';
 
 interface Props {
   navigation: NavigationProp<any, any>;
@@ -66,6 +67,11 @@ const CreateGroupEvent: React.FC<Props> = ({ navigation }) => {
         description: '',
       });
     }
+    navigation.setOptions({
+      header: () => (
+        <TitleWithBackButton title='Create Event' navigation={navigation} />
+      )
+    });
   }, [navigation]);
 
   if (!currentUser || !selectedTime || !groupEvent || !selectedGroup) {

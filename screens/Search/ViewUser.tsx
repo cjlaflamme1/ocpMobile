@@ -9,6 +9,7 @@ import CustomText from '../../components/CustomText';
 import profileLandingStyles from '../../styles/screenStyles/profileLanding';
 import imageStyles from '../../styles/images';
 import ProfileActivityCard from '../../components/ProfileActivityCard';
+import TitleWithBackButton from '../../components/headers/TitleBackButton';
 
 interface Props {
   navigation: NavigationProp<any, any>;
@@ -22,7 +23,12 @@ const ViewUser: React.FC<Props> = ({ navigation, route }) => {
   const userId = route.params.userId;
 
   useEffect(() => {
-    dispatch(getOneUserAsync(userId))
+    dispatch(getOneUserAsync(userId));
+    navigation.setOptions({
+      header: () => (
+        <TitleWithBackButton title='View User' navigation={navigation} />
+      )
+    });
     return () => {
       dispatch(clearSelectedUser());
     }
@@ -33,7 +39,7 @@ const ViewUser: React.FC<Props> = ({ navigation, route }) => {
   }
 
   const viewUserActivity = (id: string): void => {
-    navigation.navigate('View User Activity', { userActivityId: id })
+    navigation.navigate('group-view-user-activity', { userActivityId: id })
   }
 
   return (

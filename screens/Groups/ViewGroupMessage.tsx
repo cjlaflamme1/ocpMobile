@@ -14,6 +14,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import { NavigationProp, useRoute } from '@react-navigation/native';
 import CommentResponse from '../../components/groups/CommentResponse';
 import { timeSince } from '../../services/timeAndDate';
+import TitleWithBackButton from '../../components/headers/TitleBackButton';
 
 interface Props {
   navigation: NavigationProp<any, any>;
@@ -41,6 +42,11 @@ const ViewGroupMessage: React.FC<Props> = ({ navigation, route }) => {
     if (!selectedPost || selectedPost.id !== postId) {
       dispatch(getOneGroupPostAsync(postId));
     }
+    navigation.setOptions({
+      header: () => (
+        <TitleWithBackButton title='View Message' navigation={navigation} />
+      )
+    });
     return () => {
       dispatch(clearSelectedPost());
     }

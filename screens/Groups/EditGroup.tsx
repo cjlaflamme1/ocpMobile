@@ -19,6 +19,7 @@ import { clearUserList, getAllUsersAsync, User } from '../../store/userSlice';
 import DropdownSelect, { DropdownData } from '../../components/DropdownSelect';
 import UserSearchDropdown from '../../components/UserSearchDropdown';
 import { NavigationProp } from '@react-navigation/native';
+import TitleWithBackButton from '../../components/headers/TitleBackButton';
 
 interface Props {
   navigation: NavigationProp<any, any>;
@@ -54,6 +55,11 @@ const EditGroup: React.FC<Props> = ({ navigation, route }) => {
         addingUserIds: [],
       });
     }
+    navigation.setOptions({
+      header: () => (
+        <TitleWithBackButton title='Edit Group' navigation={navigation} />
+      )
+    });
   }, [navigation, groupId]);
 
   if (!currentUser || !groupObj) {

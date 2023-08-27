@@ -20,6 +20,7 @@ interface Props {
 const GroupsLanding: React.FC<Props> = ({ navigation, route }) => {
   const [refreshing, setRefreshing] = useState(false);
   const [selectedInvite, setSelectedInvite] = useState('');
+  const [debounceHandle, setDebounceHandle] = useState<any>();
   const [exploreInvitations, setExploreInvitations] = useState(false);
   const dispatch = useAppDispatch();
   const openInvite = route.params?.invite;
@@ -33,7 +34,8 @@ const GroupsLanding: React.FC<Props> = ({ navigation, route }) => {
         pagination: {
           take: 8,
           skip: 0,
-        }
+        },
+        filteredWithOr: true,
       }))
     }
     if (!allInvitations || allInvitations.length <= 0) {
@@ -55,8 +57,9 @@ const GroupsLanding: React.FC<Props> = ({ navigation, route }) => {
           pagination: {
             take: 8,
             skip: 0,
-          }
-        })),
+          },
+          filteredWithOr: true,
+        })), 
         dispatch(getAllInvitationsAsync()),
       ],
     )
@@ -83,6 +86,32 @@ const GroupsLanding: React.FC<Props> = ({ navigation, route }) => {
     }))
     setSelectedInvite('');
   }
+
+  const submitNameSearch = (searchQuery: string) => {
+    if (searchQuery) {
+      dispatch(getAllUserGroupsAsync({
+        pagination: {
+          take: 8,
+          skip: 0,
+        },
+        filters: [
+          {
+            name: 'title',
+            value: searchQuery,
+          }
+        ],
+      }));
+
+    } else {
+      dispatch(getAllUserGroupsAsync({
+        pagination: {
+          take: 8,
+          skip: 0,
+        }
+      }));
+    }
+  }
+
   return (
     <View style={[layoutStyles.screenContainer]}>
       <ScrollView showsVerticalScrollIndicator={false} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
@@ -117,6 +146,13 @@ const GroupsLanding: React.FC<Props> = ({ navigation, route }) => {
           <TextInput
             placeholder='Search'
             style={[groupsLandingStyle.searchBar]}
+            onChangeText={(e) => {
+              if (debounceHandle) {
+                clearTimeout(debounceHandle);
+              }
+              const handle = setTimeout(() => submitNameSearch(e), 750);
+              setDebounceHandle(handle);
+            }}
           />
         </View>
         <View style={[groupsLandingStyle.radioTextContainer]}>
@@ -177,6 +213,7 @@ const GroupsLanding: React.FC<Props> = ({ navigation, route }) => {
                       imageSource={group.imageGetUrl ? {
                         uri: group.imageGetUrl
                       } : require('../../assets/150x150.png')}
+                      hideCount
                     />
                   </Pressable>
                 )) : (
