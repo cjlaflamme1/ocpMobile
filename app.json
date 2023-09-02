@@ -40,12 +40,6 @@
       "backgroundColor": "#FAFAFA",
       "config": {
         "usesNonExemptEncryption": false
-      },
-      "infoPlist": {
-        "UIBackgroundModes": [
-          "fetch",
-          "processing"
-        ]
       }
       // "backgroundColor": "#9DBDC6"
     },
