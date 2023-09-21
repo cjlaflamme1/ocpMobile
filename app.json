@@ -4,21 +4,21 @@
     "slug": "outdoor-community-project",
     "version": "1.0.12",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/logoOnlyApp.png",
     "userInterfaceStyle": "light",
     "backgroundColor": "#FAFAFA",
       // "backgroundColor": "#9DBDC6",
     "splash": {
-      "image": "./assets/rbt_logo.png",
+      "image": "./assets/originalLogo.png",
       "resizeMode": "contain",
-      "backgroundColor": "#9DBDC6"
+      "backgroundColor": "#000000"
     },
     "plugins": [
       [
         "expo-notifications",
         {
-          "icon": "./assets/icon.png",
-          "color": "#ffffff"
+          "icon": "./assets/logoOnlyApp.png",
+          "color": "#000000"
         }
       ],
       [
@@ -47,8 +47,8 @@
       "versionCode": 10,
       "package": "com.outdoorcommunityproject",
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#FFFFFF"
+        "foregroundImage": "./assets/logoDroid.png",
+        "backgroundColor": "#000000"
       },
       "backgroundColor": "#FAFAFA"
       // "backgroundColor": "#9DBDC6"
