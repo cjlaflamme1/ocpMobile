@@ -11,6 +11,7 @@ import SignUp from '../screens/Auth/SignUp';
 import globalStyles from '../styles/global';
 import * as Notifications from 'expo-notifications';
 import { getNotificationsAsync } from '../store/notificationSlice';
+import ResetPassword from '../screens/Auth/ResetPassword';
 
 interface Props {
   expoPushToken: string;
@@ -77,7 +78,6 @@ const RootNavigation: React.FC<Props> = ({ expoPushToken }) => {
                   title: 'Welcome',
                 }
               }
-
             />
             <RootStack.Screen
               name="SignUp"
@@ -88,7 +88,16 @@ const RootNavigation: React.FC<Props> = ({ expoPushToken }) => {
                   title: 'Welcome',
                 }
               }
-
+            />
+            <RootStack.Screen
+              name="ResetPW"
+              component={ResetPassword}
+              options={
+                {
+                  contentStyle: globalStyles.navigationStackScreen,
+                  title: 'Welcome',
+                }
+              }
             />
           </RootStack.Navigator >
         ) : (

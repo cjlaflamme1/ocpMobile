@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import * as SecureStore from 'expo-secure-store';
 import { SignupObject } from '../models/SignupObject';
-import { login, signUp } from '../api/authAPI';
+import { login, postReset, requestReset, ResetDTO, signUp } from '../api/authAPI';
 
 interface AuthState {
   loggedIn: boolean;
@@ -11,12 +11,17 @@ interface AuthState {
 
 interface InitialState {
   currentAuth: AuthState | null;
+  resetPass: {
+    email: string;
+    token: number;
+  } | null;
   status: 'idle' | 'loading' | 'failed';
   error: any;
 }
 
 const initialState: InitialState = {
   currentAuth: null,
+  resetPass: null,
   status: 'idle',
   error: null,
 };
@@ -62,6 +67,7 @@ const signInAsync = createAsyncThunk(
         email: '',
         accessToken: null,
       }
+      console.log(response);
       if (response.data.accessToken) {
         await SecureStore.setItemAsync('accessToken', response.data.accessToken);
         response.data.accessToken = null;
@@ -75,6 +81,7 @@ const signInAsync = createAsyncThunk(
       }
       return newUserAuth;
     } catch (err: any) {
+      console.error(err);
       return rejectWithValue({
         name: err.name,
         message: err.message,
@@ -82,6 +89,38 @@ const signInAsync = createAsyncThunk(
     }
   },
 );
+
+const requestResetAsync = createAsyncThunk(
+  'auth/resetReq',
+  async (email: string, { rejectWithValue }) => {
+    try {
+      const response: any = await requestReset(email);
+      return response.data;
+    } catch (err: any) {
+      console.error(err);
+      return rejectWithValue({
+        name: err.name,
+        message: err.message,
+      });
+    }
+  }
+)
+
+const postResetAsync = createAsyncThunk(
+  'auth/postReset',
+  async (body: ResetDTO, { rejectWithValue }) => {
+    try {
+      const response: any = await postReset(body);
+      return response.data;
+    } catch (err: any) {
+      console.error(err);
+      return rejectWithValue({
+        name: err.name,
+        message: err.message,
+      });
+    }
+  }
+)
 
 const authSlice = createSlice({
   name: 'auth',
@@ -123,6 +162,32 @@ const authSlice = createSlice({
         state.status = 'failed';
         state.currentAuth = null;
         state.error = action.payload;
+      })
+      .addCase(requestResetAsync.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(requestResetAsync.fulfilled, (state, action) => {
+        state.status = 'idle';
+        state.resetPass = action.payload;
+        state.error = null;
+      })
+      .addCase(requestResetAsync.rejected, (state, action) => {
+        state.status = 'failed';
+        state.resetPass = null;
+        state.error = action.payload;
+      })
+      .addCase(postResetAsync.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(postResetAsync.fulfilled, (state) => {
+        state.status = 'idle';
+        state.resetPass = null;
+        state.error = null;
+      })
+      .addCase(postResetAsync.rejected, (state, action) => {
+        state.status = 'failed';
+        state.resetPass = null;
+        state.error = action.payload;
       });
   }
 })
@@ -133,4 +198,6 @@ export default authSlice.reducer;
 export {
   signUpAsync,
   signInAsync,
+  requestResetAsync,
+  postResetAsync,
 };
