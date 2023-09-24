@@ -7,7 +7,7 @@ import groupViewStyle from '../../styles/screenStyles/groups/groupView';
 import PostMessageCard from '../../components/groups/PostMessage';
 import MessageCard from '../../components/groups/MessageCard';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { clearSelectedGroup, createGroupInvitesAsync, getOneGroupAsync } from '../../store/groupSlice';
+import { clearSelectedGroup, createGroupInvitesAsync, getAllUserGroupsAsync, getOneGroupAsync, updateGroupAsync } from '../../store/groupSlice';
 import { clearPosts, createGroupPostAsync, CreateGroupPostDto, getAllGroupPostsAsync } from '../../store/groupPostSlice';
 import { QueryObject, SortOrder } from '../../models/QueryObject';
 import SendInviteModal from '../../components/groups/SendInviteModal';
@@ -46,6 +46,7 @@ const GroupView: React.FC<Props> = ({ navigation, route }) => {
   const [refreshing, setRefreshing] = useState(false);
   const [radioSelector, setRadioSelector] = useState(0);
   const dispatch = useAppDispatch();
+
   const selectedGroup = useAppSelector((state) => state.groupState.selectedGroup);
   const currentGroupsPosts = useAppSelector((state) => state.groupPostState.currentGroupsPosts);
   const currentGroupEvents = useAppSelector((state) => state.groupEventState.currentGroupEvents);
@@ -62,36 +63,34 @@ const GroupView: React.FC<Props> = ({ navigation, route }) => {
       dispatch(getOneGroupAsync(groupId));
     }
     if (selectedGroup || groupId) {
-      if (!currentGroupsPosts || currentGroupsPosts.count <= 0) {
-        dispatch(getAllGroupPostsAsync({
-          pagination: {
-            skip: 0,
-            take: 10,
-          },
-          orderBy: {
-            column: 'createdAt',
-            order: SortOrder.DESC,
-          },
-          filters: [{
-            name: 'group.id',
-            value: groupId,
-          }]
-        }));
-        dispatch(getAllGroupEventsAsync({
-          pagination: {
-            skip: 0,
-            take: 10,
-          },
-          orderBy: {
-            column: 'createdAt',
-            order: SortOrder.DESC,
-          },
-          filters: [{
-            name: 'group.id',
-            value: groupId,
-          }]
-        }))
-      }
+      dispatch(getAllGroupPostsAsync({
+        pagination: {
+          skip: 0,
+          take: 10,
+        },
+        orderBy: {
+          column: 'createdAt',
+          order: SortOrder.DESC,
+        },
+        filters: [{
+          name: 'group.id',
+          value: groupId,
+        }]
+      }));
+      dispatch(getAllGroupEventsAsync({
+        pagination: {
+          skip: 0,
+          take: 10,
+        },
+        orderBy: {
+          column: 'createdAt',
+          order: SortOrder.DESC,
+        },
+        filters: [{
+          name: 'group.id',
+          value: groupId,
+        }]
+      }));
       navigation.setOptions({
         header: () => (
           <TripleHeader navigation={navigation} title='View Group'>
@@ -132,14 +131,32 @@ const GroupView: React.FC<Props> = ({ navigation, route }) => {
 
   const onRefresh = async () => {
     setRefreshing(true);
-      await dispatch(getOneGroupAsync(groupId));
-      await dispatch(getAllGroupPostsAsync({
-        ...queryParams,
-        filters: [{
-          name: 'group.id',
-          value: groupId,
-        }]
-      }));
+      await Promise.all(
+        [
+          dispatch(getOneGroupAsync(groupId)),
+          dispatch(getAllGroupPostsAsync({
+            ...queryParams,
+            filters: [{
+              name: 'group.id',
+              value: groupId,
+            }]
+          })),
+          dispatch(getAllGroupEventsAsync({
+            pagination: {
+              skip: 0,
+              take: 10,
+            },
+            orderBy: {
+              column: 'createdAt',
+              order: SortOrder.DESC,
+            },
+            filters: [{
+              name: 'group.id',
+              value: groupId,
+            }]
+          }))
+        ]
+      );
     setRefreshing(false);
   }
 
@@ -166,6 +183,27 @@ const GroupView: React.FC<Props> = ({ navigation, route }) => {
       onRefresh();
     }
   }
+
+  const leaveGroup = async () => {
+    if (currentUser && selectedGroup) {
+      const res = await dispatch(updateGroupAsync({
+        id: selectedGroup.id,
+        body: {
+          removeUserIds: [currentUser.id],
+        }
+      }));
+      if (res.meta.requestStatus === 'fulfilled') {
+        dispatch(getAllUserGroupsAsync({
+          pagination: {
+            take: 8,
+            skip: 0,
+          },
+          filteredWithOr: true,
+        }));
+        navigation.goBack();
+      }
+    }
+  };
 
   if (!selectedGroup) {
     return (<View />);
@@ -261,13 +299,7 @@ const GroupView: React.FC<Props> = ({ navigation, route }) => {
                           name: event.creator.firstName,
                           profile: event.creator.imageGetUrl ? { uri: event.creator.imageGetUrl } : require('../../assets/150x150.png'),
                         }}
-                        event={{
-                          id: event.id,
-                          postImage: event.imageGetUrl ? { uri: event.imageGetUrl } : undefined,
-                          title: event.title,
-                          createdAt: event.createdAt,
-                          eventDate: event.eventDate,
-                        }}
+                        event={event}
                         responseCount={event.responses ? event.responses.length : 0}
                         joiningCount={event.attendingUsers ? event.attendingUsers.length : 0}
                         navigation={navigation}
@@ -303,11 +335,12 @@ const GroupView: React.FC<Props> = ({ navigation, route }) => {
       <SettingsSheet
         closeSheet={() => handleClosePress()}
         bottomSheetRef={bottomSheetRef}
-        customSnapPoints={['25%', '50%']}
+        customSnapPoints={['75%']}
         inviteMembers={() => setModalVisible(true)}
         adminView={adminUser()}
         viewMembers={() => setUserModal(true)}
         viewDescription={() => setDescripModal(true)}
+        leaveGroup={leaveGroup}
         editGroup={() => navigation.navigate('Edit Group', { groupId: selectedGroup.id })}
       />
     </View>

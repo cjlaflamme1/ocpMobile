@@ -7,16 +7,18 @@ import layoutStyles from '../../styles/layout';
 import globalStyles from '../../styles/global';
 import PrimaryButton from '../../components/PrimaryButton';
 import { SigninObject } from '../../models/SigninObject';
-import { signInAsync } from '../../store/authSlice';
+import { requestResetAsync, signInAsync } from '../../store/authSlice';
 import { getCurrentUserAsync } from '../../store/userSlice';
 import { NavigationProp } from '@react-navigation/native';
+import { requestReset } from '../../api/authAPI';
 interface Props {
   navigation: NavigationProp<any, any>;
 };
 
 const SignIn: React.FC<Props> = ({ navigation }) => {
   const [passwordVisible, setPasswordVisible] = useState(true);
-  const [signinError, setSigninError] = useState('');
+  const [signinError, setSigninError] = useState(false);
+  const [disableResetRequest, setDisabledResetRequest] = useState(false);
   const [signinObject, setSigninObject] = useState<SigninObject>()
   const dispatch = useAppDispatch();
   useEffect(() => {
@@ -27,15 +29,30 @@ const SignIn: React.FC<Props> = ({ navigation }) => {
       })
     }
   }, [])
-  const imageUri = "../../assets/favicon.png";
 
   const submitLogin = async() => {
     if (signinObject && signinObject.email && signinObject.password) {
       const res = await dispatch(signInAsync(signinObject));
       if (res.meta.requestStatus === 'fulfilled') {
         dispatch(getCurrentUserAsync());
+        setSigninError(false);
+      };
+      if (res.meta.requestStatus === 'rejected') {
+        setSigninError(true);
       };
     }
+  }
+
+  const resetPassword = async () => {
+    setDisabledResetRequest(true);
+    if (signinObject?.email) {
+      const res = await dispatch(requestResetAsync(signinObject.email));
+      if (res.meta.requestStatus === 'fulfilled') {
+        console.log('redirect to token page');
+        navigation.navigate('ResetPW');
+      }
+    }
+    setDisabledResetRequest(false);
   }
 
   if (!signinObject) {
@@ -76,6 +93,17 @@ const SignIn: React.FC<Props> = ({ navigation }) => {
           />
         </View>
       </View>
+      {
+        signinError
+        && (
+          <View style={[layoutStyles.mb_3, layoutStyles.dFlex, layoutStyles.jBetween]}>
+            <CustomText style={[layoutStyles.mb_2]}>Invalid email or password.</CustomText>
+            <Pressable disabled={disableResetRequest} onPress={resetPassword}>
+              <CustomText style={[globalStyles.redLink]}>Request password reset.</CustomText>
+            </Pressable>
+          </View>
+        )
+      }
       <View>
         <PrimaryButton
           buttonText='Sign in'

@@ -1,5 +1,5 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { View, Image, ScrollView, RefreshControl, Pressable, TextInput, Text } from 'react-native';
+import React, { useMemo } from 'react';
+import { View, Image, Pressable } from 'react-native';
 import layoutStyles from '../../styles/layout';
 import BottomSheet, { BottomSheetScrollView } from '@gorhom/bottom-sheet';
 import CustomText from '../CustomText';

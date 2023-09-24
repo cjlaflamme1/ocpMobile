@@ -4,6 +4,8 @@ import { NavigationContainer } from '@react-navigation/native';
 import { Subscription } from 'expo-modules-core';
 import * as Notifications from 'expo-notifications';
 import * as Device from 'expo-device';
+import * as BackgroundFetch from 'expo-background-fetch';
+import * as TaskManager from 'expo-task-manager';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Provider } from 'react-redux';
 import { store } from './store';
@@ -13,6 +15,19 @@ import * as SplashScreen from 'expo-splash-screen';
 import { Manrope_400Regular, Manrope_600SemiBold, Manrope_800ExtraBold } from '@expo-google-fonts/manrope';
 import { StatusBar } from 'expo-status-bar';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { getNotifications } from './api/notificationAPI';
+
+const BACKGROUND_FETCH_TASK = 'background-fetch';
+
+TaskManager.defineTask(BACKGROUND_FETCH_TASK, async () => {
+  const res = await getNotifications();
+  if (res.data && res.data.length > 0) {
+    const numberOfUnread = res.data.filter((i: any) => !i.viewed).length;
+    await Notifications.setBadgeCountAsync(numberOfUnread);
+  }
+  // Be sure to return the successful result type!
+  return BackgroundFetch.BackgroundFetchResult.NewData;
+});
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -72,6 +87,24 @@ export default function App() {
     return token;
   }
 
+  async function registerBackgroundFetchAsync() {
+    return BackgroundFetch.registerTaskAsync(BACKGROUND_FETCH_TASK, {
+      minimumInterval: 60 * 15, // 15 minutes
+      stopOnTerminate: false, // android only,
+      startOnBoot: true, // android only
+    });
+  }
+
+  const registerBackgroundTask = async () => {
+    const status = await BackgroundFetch.getStatusAsync();
+    const isRegistered = await TaskManager.isTaskRegisteredAsync(BACKGROUND_FETCH_TASK);
+    if (status === BackgroundFetch.BackgroundFetchStatus.Available) {
+      if (!isRegistered) {
+        await registerBackgroundFetchAsync();
+      }
+    }
+  };
+
   useEffect(() => {
     registerForPushNotificationsAsync().then((token) => {
       if (token) {
@@ -88,7 +121,7 @@ export default function App() {
     responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
 
     });
-
+    registerBackgroundTask();
     return () => {
       if (notificationListener.current) {
         Notifications.removeNotificationSubscription(notificationListener.current);

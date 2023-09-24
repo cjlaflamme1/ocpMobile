@@ -35,7 +35,7 @@ const ViewEvent: React.FC<Props> = memo(({ navigation, event, currentUser }) => 
 
   if (!event) {
     return (<View />);
-  }
+  };
 
   const joinEvent = async () => {
     setJoinButtonDisabled(true);
@@ -52,7 +52,7 @@ const ViewEvent: React.FC<Props> = memo(({ navigation, event, currentUser }) => 
     }
     setJoinButtonDisabled(false);
     return false;
-  }
+  };
 
   const submitPostResponse = async (postBody: string) => {
     const res = await dispatch(createPostResponseAsync({
@@ -65,7 +65,7 @@ const ViewEvent: React.FC<Props> = memo(({ navigation, event, currentUser }) => 
     } else {
       return false;
     }
-  }
+  };
 
   return (
     <View style={[{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', flexGrow: 1}]}>
@@ -84,7 +84,7 @@ const ViewEvent: React.FC<Props> = memo(({ navigation, event, currentUser }) => 
           }
           <View style={[layoutStyles.mt_1, layoutStyles.mb_1]}>
             <CustomText h1 bold>
-              {event.title}
+              {event.cancelled && 'CANCELLED - '}{event.title}
             </CustomText>
           </View>
           <View style={[layoutStyles.mt_1, layoutStyles.mb_1]}>

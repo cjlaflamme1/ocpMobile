@@ -22,6 +22,7 @@ import ProfileSettingsSheet from '../../components/bottomsheet/ProfileSettingsSh
 import BottomSheet from '@gorhom/bottom-sheet';
 import TitleAndAction from '../../components/headers/TitleAndAction';
 import PrimaryButton from '../../components/PrimaryButton';
+import { selectDefaultImage } from '../../services/defaultImage';
 
 interface Props {
   navigation: NavigationProp<any, any>
@@ -279,7 +280,7 @@ const ProfileLanding: React.FC<Props> = ({ navigation }) => {
                           imageSource={
                             activity.getImageUrl ?
                               { uri: activity.getImageUrl } :
-                              require('../../assets/profilePhotos/testSportImage.jpg')
+                              selectDefaultImage(activity.activityType)
                           }
                         >
                           {activity.activityType ? activity.activityType.activityTitle : 'No Activity Type'}

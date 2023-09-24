@@ -9,55 +9,58 @@ interface Props {
   customSnapPoints: number[] | string[];
   bottomSheetRef: React.RefObject<any>;
   closeSheet: () => void;
-  inviteMembers: () => void;
-  viewMembers: () => void;
-  viewDescription: () => void;
-  editGroup: () => void;
-  leaveGroup: () => void;
-  adminView: boolean;
+  quitEvent: () => void;
+  joinEvent: () => void;
+  editEvent: () => void;
+  cancelEvent: () => void;
+  creatorView: boolean;
+  attending: boolean;
+  expiredEvent: boolean;
 };
 
-const SettingsSheet: React.FC<Props> = (props) => {
+const EventBottomSheet: React.FC<Props> = (props) => {
   const {
     customSnapPoints,
     closeSheet,
+    quitEvent,
+    joinEvent,
+    editEvent,
+    cancelEvent,
     bottomSheetRef,
-    inviteMembers,
-    viewMembers,
-    viewDescription,
-    editGroup,
-    leaveGroup,
-    adminView,
+    creatorView,
+    attending,
+    expiredEvent,
   } = props;
   
 
   const snapPoints = useMemo(() => customSnapPoints, [customSnapPoints]);
 
-  const inviteOthers = () => {
+  const onLeaveClick = () => {
     closeSheet();
-    inviteMembers();
+    quitEvent();
   };
 
-  const viewList = () => {
+  const onJoinClick = () => {
     closeSheet();
-    viewMembers();
+    joinEvent();
   };
 
-  const openDescription = () => {
-    closeSheet();
-    viewDescription();
-  };
-
-  const submitEditGroup = () => {
-    if (adminView) {
+  const onEditClick = () => {
+    if (creatorView) {
       closeSheet();
-      editGroup();
-    };
+      editEvent();
+    }
   };
 
-  const submitLeaveGroup = () => {
-    closeSheet();
-    leaveGroup();
+  const onCancelClick = () => {
+    if (creatorView) {
+      closeSheet();
+      cancelEvent();
+    }
+  };
+
+  if (expiredEvent) {
+    return <View />;
   };
 
   return (
@@ -68,123 +71,96 @@ const SettingsSheet: React.FC<Props> = (props) => {
       enablePanDownToClose
     >
       <BottomSheetScrollView contentContainerStyle={[bottomSheet.scrollView]}>
-        <View style={[bottomSheet.itemContainer]}>
+        {/* <View style={[bottomSheet.itemContainer]}>
           <Pressable
             style={[layoutStyles.flexRow,
             layoutStyles.alignItemCenter]}
-            onPress={() => inviteOthers()}
-          >
-            <Image
-              source={require('../../assets/icons/Plus.png')}
-              style={[bottomSheet.itemIcon]}
-            />
-            <CustomText>Invite Members</CustomText>
-          </Pressable>
-        </View>
-        <View style={[bottomSheet.itemContainer]}>
-          <Pressable
-            style={[layoutStyles.flexRow,
-            layoutStyles.alignItemCenter]}
-            onPress={() => viewList()}
+            onPress={() => console.log('TODO view attending list')}
           >
             <Image
               source={require('../../assets/icons/GroupBlack.png')}
               style={[bottomSheet.itemIcon]}
             />
-            <CustomText>View Member List</CustomText>
+            <CustomText>View Attending List</CustomText>
           </Pressable>
-        </View>
-        <View style={[bottomSheet.itemContainer]}>
-          <Pressable
-            style={[layoutStyles.flexRow,
-            layoutStyles.alignItemCenter]}
-            onPress={() => openDescription()}
-          >
-            <Image
-              source={require('../../assets/icons/DescriptionBlack.png')}
-              style={[bottomSheet.itemIcon]}
-            />
-            <CustomText>View Member Description</CustomText>
-          </Pressable>
-        </View>
+        </View> */}
         {
-          !adminView &&
+          !creatorView &&
+          attending &&
           (
             <View style={[bottomSheet.itemContainer]}>
               <Pressable
                 style={[layoutStyles.flexRow,
                 layoutStyles.alignItemCenter]}
-                onPress={submitLeaveGroup}
-              >
-                <Image
-                  source={require('../../assets/icons/Logout.png')}
-                  style={[bottomSheet.itemIcon]}
-                />
-                <CustomText>Leave Group</CustomText>
-              </Pressable>
-            </View>
-          )
-        }
-        {
-          adminView &&
-          (
-            <View style={[bottomSheet.itemContainer]}>
-              <Pressable
-                style={[layoutStyles.flexRow,
-                layoutStyles.alignItemCenter]}
-                onPress={() => submitEditGroup()}
-              >
-                <Image
-                  source={require('../../assets/icons/Edit.png')}
-                  style={[bottomSheet.itemIcon]}
-                />
-                <CustomText>Edit Group</CustomText>
-              </Pressable>
-            </View>
-            
-          )
-        }
-        {
-          adminView &&
-          (
-            <View style={[bottomSheet.itemContainer]}>
-              <Pressable
-                style={[layoutStyles.flexRow,
-                layoutStyles.alignItemCenter]}
-                onPress={() => console.log('TODO: invite admins')}
+                onPress={onLeaveClick}
               >
                 <Image
                   source={require('../../assets/icons/Plus.png')}
                   style={[bottomSheet.itemIcon]}
                 />
-                <CustomText>Invite Admins</CustomText>
+                <CustomText>Quit Event</CustomText>
               </Pressable>
             </View>
-            
           )
         }
-        {/* {
-          adminView &&
+        {
+          !creatorView &&
+          !attending &&
           (
             <View style={[bottomSheet.itemContainer]}>
               <Pressable
                 style={[layoutStyles.flexRow,
                 layoutStyles.alignItemCenter]}
-                onPress={() => submitBlockUser()}
+                onPress={onJoinClick}
               >
                 <Image
-                  source={require('../../assets/icons/Hide.png')}
+                  source={require('../../assets/icons/Plus.png')}
                   style={[bottomSheet.itemIcon]}
                 />
-                <CustomText>Block User</CustomText>
+                <CustomText>Join Event</CustomText>
               </Pressable>
             </View>
-            
           )
-        } */}
+        }
+        {
+          creatorView &&
+          (
+            <View style={[bottomSheet.itemContainer]}>
+              <Pressable
+                style={[layoutStyles.flexRow,
+                layoutStyles.alignItemCenter]}
+                onPress={onEditClick}
+              >
+                <Image
+                  source={require('../../assets/icons/Logout.png')}
+                  style={[bottomSheet.itemIcon]}
+                />
+                <CustomText>Edit Event</CustomText>
+              </Pressable>
+            </View>
+          )
+        }
+        {
+          creatorView &&
+          (
+            <View style={[bottomSheet.itemContainer]}>
+              <Pressable
+                style={[layoutStyles.flexRow,
+                layoutStyles.alignItemCenter]}
+                onPress={onCancelClick}
+              >
+                <Image
+                  source={require('../../assets/icons/Edit.png')}
+                  style={[bottomSheet.itemIcon]}
+                />
+                <CustomText>Cancel Event</CustomText>
+              </Pressable>
+            </View>
+          )
+        }
       </BottomSheetScrollView>
     </BottomSheet>
   );
 };
 
-export default SettingsSheet;
+export default EventBottomSheet;

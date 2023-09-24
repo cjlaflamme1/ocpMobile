@@ -10,6 +10,7 @@ import profileLandingStyles from '../../styles/screenStyles/profileLanding';
 import imageStyles from '../../styles/images';
 import ProfileActivityCard from '../../components/ProfileActivityCard';
 import TitleWithBackButton from '../../components/headers/TitleBackButton';
+import { selectDefaultImage } from '../../services/defaultImage';
 
 interface Props {
   navigation: NavigationProp<any, any>;
@@ -86,7 +87,7 @@ const ViewUser: React.FC<Props> = ({ navigation, route }) => {
                       imageSource={
                         activity.getImageUrl ?
                           { uri: activity.getImageUrl } :
-                          require('../../assets/profilePhotos/testSportImage.jpg')
+                          selectDefaultImage(activity.activityType)
                       }
                     >
                       {activity.activityType ? activity.activityType.activityTitle : 'No Activity Type'}
