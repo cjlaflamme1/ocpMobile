@@ -7,7 +7,7 @@ import groupViewStyle from '../../styles/screenStyles/groups/groupView';
 import PostMessageCard from '../../components/groups/PostMessage';
 import MessageCard from '../../components/groups/MessageCard';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { clearSelectedGroup, createGroupInvitesAsync, getOneGroupAsync } from '../../store/groupSlice';
+import { clearSelectedGroup, createGroupInvitesAsync, getAllUserGroupsAsync, getOneGroupAsync, updateGroupAsync } from '../../store/groupSlice';
 import { clearPosts, createGroupPostAsync, CreateGroupPostDto, getAllGroupPostsAsync } from '../../store/groupPostSlice';
 import { QueryObject, SortOrder } from '../../models/QueryObject';
 import SendInviteModal from '../../components/groups/SendInviteModal';
@@ -167,6 +167,27 @@ const GroupView: React.FC<Props> = ({ navigation, route }) => {
     }
   }
 
+  const leaveGroup = async () => {
+    if (currentUser && selectedGroup) {
+      const res = await dispatch(updateGroupAsync({
+        id: selectedGroup.id,
+        body: {
+          removeUserIds: [currentUser.id],
+        }
+      }));
+      if (res.meta.requestStatus === 'fulfilled') {
+        dispatch(getAllUserGroupsAsync({
+          pagination: {
+            take: 8,
+            skip: 0,
+          },
+          filteredWithOr: true,
+        }));
+        navigation.goBack();
+      }
+    }
+  };
+
   if (!selectedGroup) {
     return (<View />);
   }
@@ -303,11 +324,12 @@ const GroupView: React.FC<Props> = ({ navigation, route }) => {
       <SettingsSheet
         closeSheet={() => handleClosePress()}
         bottomSheetRef={bottomSheetRef}
-        customSnapPoints={['25%', '50%']}
+        customSnapPoints={['75%']}
         inviteMembers={() => setModalVisible(true)}
         adminView={adminUser()}
         viewMembers={() => setUserModal(true)}
         viewDescription={() => setDescripModal(true)}
+        leaveGroup={leaveGroup}
         editGroup={() => navigation.navigate('Edit Group', { groupId: selectedGroup.id })}
       />
     </View>

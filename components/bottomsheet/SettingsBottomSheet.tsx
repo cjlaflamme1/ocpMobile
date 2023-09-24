@@ -13,6 +13,7 @@ interface Props {
   viewMembers: () => void;
   viewDescription: () => void;
   editGroup: () => void;
+  leaveGroup: () => void;
   adminView: boolean;
 };
 
@@ -25,6 +26,7 @@ const SettingsSheet: React.FC<Props> = (props) => {
     viewMembers,
     viewDescription,
     editGroup,
+    leaveGroup,
     adminView,
   } = props;
   
@@ -51,6 +53,11 @@ const SettingsSheet: React.FC<Props> = (props) => {
       closeSheet();
       editGroup();
     };
+  };
+
+  const submitLeaveGroup = () => {
+    closeSheet();
+    leaveGroup();
   };
 
   return (
@@ -101,6 +108,24 @@ const SettingsSheet: React.FC<Props> = (props) => {
           </Pressable>
         </View>
         {
+          !adminView &&
+          (
+            <View style={[bottomSheet.itemContainer]}>
+              <Pressable
+                style={[layoutStyles.flexRow,
+                layoutStyles.alignItemCenter]}
+                onPress={submitLeaveGroup}
+              >
+                <Image
+                  source={require('../../assets/icons/Logout.png')}
+                  style={[bottomSheet.itemIcon]}
+                />
+                <CustomText>Leave Group</CustomText>
+              </Pressable>
+            </View>
+          )
+        }
+        {
           adminView &&
           (
             <View style={[bottomSheet.itemContainer]}>
@@ -116,6 +141,45 @@ const SettingsSheet: React.FC<Props> = (props) => {
                 <CustomText>Edit Group</CustomText>
               </Pressable>
             </View>
+            
+          )
+        }
+        {
+          adminView &&
+          (
+            <View style={[bottomSheet.itemContainer]}>
+              <Pressable
+                style={[layoutStyles.flexRow,
+                layoutStyles.alignItemCenter]}
+                onPress={() => console.log('TODO: invite admins')}
+              >
+                <Image
+                  source={require('../../assets/icons/Plus.png')}
+                  style={[bottomSheet.itemIcon]}
+                />
+                <CustomText>Invite Admins</CustomText>
+              </Pressable>
+            </View>
+            
+          )
+        }
+        {
+          adminView &&
+          (
+            <View style={[bottomSheet.itemContainer]}>
+              <Pressable
+                style={[layoutStyles.flexRow,
+                layoutStyles.alignItemCenter]}
+                onPress={() => console.log('TODO: block users')}
+              >
+                <Image
+                  source={require('../../assets/icons/Hide.png')}
+                  style={[bottomSheet.itemIcon]}
+                />
+                <CustomText>Block User</CustomText>
+              </Pressable>
+            </View>
+            
           )
         }
       </BottomSheetScrollView>

@@ -22,6 +22,7 @@ export interface CreateGroupDto {
 export interface UpdateGroupDto extends Partial<Group> {
   addingUserIds?: string[];
   addingAdminIds?: string[];
+  removeUserIds?: string[];
 }
 
 export interface GroupInvitation {
