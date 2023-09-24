@@ -1,14 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { View, Image, ScrollView, RefreshControl, Pressable, TextInput } from 'react-native';
+import { View, Image, ScrollView, RefreshControl } from 'react-native';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import globalStyles from '../../styles/global';
 import layoutStyles from '../../styles/layout';
 import { NavigationProp } from '@react-navigation/native';
-import { clearSelectedUser, getOneUserAsync } from '../../store/userSlice';
 import CustomText from '../../components/CustomText';
-import profileLandingStyles from '../../styles/screenStyles/profileLanding';
-import imageStyles from '../../styles/images';
-import ProfileActivityCard from '../../components/ProfileActivityCard';
 import { clearSelectedUserActivity, getOneUserActivityAsync } from '../../store/userActivitySlice';
 import TitleWithBackButton from '../../components/headers/TitleBackButton';
 
