@@ -66,8 +66,7 @@ const signInAsync = createAsyncThunk(
         loggedIn: false,
         email: '',
         accessToken: null,
-      }
-      console.log(response);
+      };
       if (response.data.accessToken) {
         await SecureStore.setItemAsync('accessToken', response.data.accessToken);
         response.data.accessToken = null;

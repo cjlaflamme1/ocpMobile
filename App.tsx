@@ -20,13 +20,9 @@ import { getNotifications } from './api/notificationAPI';
 const BACKGROUND_FETCH_TASK = 'background-fetch';
 
 TaskManager.defineTask(BACKGROUND_FETCH_TASK, async () => {
-  const now = Date.now();
-
-  console.log(`Got background fetch call at date: ${new Date(now).toISOString()}`);
   const res = await getNotifications();
   if (res.data && res.data.length > 0) {
     const numberOfUnread = res.data.filter((i: any) => !i.viewed).length;
-    console.log(numberOfUnread);
     await Notifications.setBadgeCountAsync(numberOfUnread);
   }
   // Be sure to return the successful result type!
