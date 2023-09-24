@@ -84,7 +84,7 @@ const ViewEvent: React.FC<Props> = memo(({ navigation, event, currentUser }) => 
           }
           <View style={[layoutStyles.mt_1, layoutStyles.mb_1]}>
             <CustomText h1 bold>
-              {event.title}
+              {event.cancelled && 'CANCELLED - '}{event.title}
             </CustomText>
           </View>
           <View style={[layoutStyles.mt_1, layoutStyles.mb_1]}>

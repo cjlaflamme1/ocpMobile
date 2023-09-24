@@ -93,6 +93,21 @@ const ViewGroupEvent: React.FC<Props> = ({ navigation, route }) => {
     navigation.navigate('Edit Group Event', { eventId: eventId })
   };
 
+  const cancelEvent = async () => {
+    if (currentUser && selectedGroupEvent) {
+      const res = await dispatch(updateGroupEventAsync({
+        id: selectedGroupEvent.id,
+        data: {
+          cancelled: true,
+        },
+      }));
+      console.log(res);
+      if (res.meta.requestStatus === 'fulfilled') {
+        dispatch(getOneGroupEventAsync(eventId));
+      }
+    }
+  };
+
   if (!selectedGroupEvent || !currentUser) {
     return (<View />);
   };
@@ -117,6 +132,7 @@ const ViewGroupEvent: React.FC<Props> = ({ navigation, route }) => {
         creatorView={selectedGroupEvent.creator.id === currentUser.id}
         quitEvent={leaveEvent}
         joinEvent={joinEvent}
+        cancelEvent={cancelEvent}
         attending={!!selectedGroupEvent.attendingUsers && !!selectedGroupEvent.attendingUsers.find((u) => u.id === currentUser.id)}
         editEvent={editEvent}
         expiredEvent={new Date(selectedGroupEvent.eventDate).valueOf() < new Date().valueOf()}

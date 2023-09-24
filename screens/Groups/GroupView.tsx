@@ -63,36 +63,34 @@ const GroupView: React.FC<Props> = ({ navigation, route }) => {
       dispatch(getOneGroupAsync(groupId));
     }
     if (selectedGroup || groupId) {
-      if (!currentGroupsPosts || currentGroupsPosts.count <= 0) {
-        dispatch(getAllGroupPostsAsync({
-          pagination: {
-            skip: 0,
-            take: 10,
-          },
-          orderBy: {
-            column: 'createdAt',
-            order: SortOrder.DESC,
-          },
-          filters: [{
-            name: 'group.id',
-            value: groupId,
-          }]
-        }));
-        dispatch(getAllGroupEventsAsync({
-          pagination: {
-            skip: 0,
-            take: 10,
-          },
-          orderBy: {
-            column: 'createdAt',
-            order: SortOrder.DESC,
-          },
-          filters: [{
-            name: 'group.id',
-            value: groupId,
-          }]
-        }))
-      }
+      dispatch(getAllGroupPostsAsync({
+        pagination: {
+          skip: 0,
+          take: 10,
+        },
+        orderBy: {
+          column: 'createdAt',
+          order: SortOrder.DESC,
+        },
+        filters: [{
+          name: 'group.id',
+          value: groupId,
+        }]
+      }));
+      dispatch(getAllGroupEventsAsync({
+        pagination: {
+          skip: 0,
+          take: 10,
+        },
+        orderBy: {
+          column: 'createdAt',
+          order: SortOrder.DESC,
+        },
+        filters: [{
+          name: 'group.id',
+          value: groupId,
+        }]
+      }));
       navigation.setOptions({
         header: () => (
           <TripleHeader navigation={navigation} title='View Group'>
@@ -133,14 +131,32 @@ const GroupView: React.FC<Props> = ({ navigation, route }) => {
 
   const onRefresh = async () => {
     setRefreshing(true);
-      await dispatch(getOneGroupAsync(groupId));
-      await dispatch(getAllGroupPostsAsync({
-        ...queryParams,
-        filters: [{
-          name: 'group.id',
-          value: groupId,
-        }]
-      }));
+      await Promise.all(
+        [
+          dispatch(getOneGroupAsync(groupId)),
+          dispatch(getAllGroupPostsAsync({
+            ...queryParams,
+            filters: [{
+              name: 'group.id',
+              value: groupId,
+            }]
+          })),
+          dispatch(getAllGroupEventsAsync({
+            pagination: {
+              skip: 0,
+              take: 10,
+            },
+            orderBy: {
+              column: 'createdAt',
+              order: SortOrder.DESC,
+            },
+            filters: [{
+              name: 'group.id',
+              value: groupId,
+            }]
+          }))
+        ]
+      );
     setRefreshing(false);
   }
 
@@ -283,13 +299,7 @@ const GroupView: React.FC<Props> = ({ navigation, route }) => {
                           name: event.creator.firstName,
                           profile: event.creator.imageGetUrl ? { uri: event.creator.imageGetUrl } : require('../../assets/150x150.png'),
                         }}
-                        event={{
-                          id: event.id,
-                          postImage: event.imageGetUrl ? { uri: event.imageGetUrl } : undefined,
-                          title: event.title,
-                          createdAt: event.createdAt,
-                          eventDate: event.eventDate,
-                        }}
+                        event={event}
                         responseCount={event.responses ? event.responses.length : 0}
                         joiningCount={event.attendingUsers ? event.attendingUsers.length : 0}
                         navigation={navigation}

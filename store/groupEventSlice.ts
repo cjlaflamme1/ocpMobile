@@ -22,6 +22,7 @@ export interface GroupEvent {
   description: string | null;
   creator: User;
   group: Group;
+  cancelled: boolean;
   attendingUsers?: User[];
   imageGetUrl?: string;
   responses?: PostResponse[];

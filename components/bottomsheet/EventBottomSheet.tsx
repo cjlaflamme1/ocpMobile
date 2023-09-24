@@ -12,6 +12,7 @@ interface Props {
   quitEvent: () => void;
   joinEvent: () => void;
   editEvent: () => void;
+  cancelEvent: () => void;
   creatorView: boolean;
   attending: boolean;
   expiredEvent: boolean;
@@ -24,6 +25,7 @@ const EventBottomSheet: React.FC<Props> = (props) => {
     quitEvent,
     joinEvent,
     editEvent,
+    cancelEvent,
     bottomSheetRef,
     creatorView,
     attending,
@@ -48,13 +50,18 @@ const EventBottomSheet: React.FC<Props> = (props) => {
       closeSheet();
       editEvent();
     }
-  }
+  };
 
-  console.log(expiredEvent);
+  const onCancelClick = () => {
+    if (creatorView) {
+      closeSheet();
+      cancelEvent();
+    }
+  };
 
   if (expiredEvent) {
     return <View />;
-  }
+  };
 
   return (
     <BottomSheet
@@ -140,7 +147,7 @@ const EventBottomSheet: React.FC<Props> = (props) => {
               <Pressable
                 style={[layoutStyles.flexRow,
                 layoutStyles.alignItemCenter]}
-                onPress={() => console.log('TODO cancel event')}
+                onPress={onCancelClick}
               >
                 <Image
                   source={require('../../assets/icons/Edit.png')}

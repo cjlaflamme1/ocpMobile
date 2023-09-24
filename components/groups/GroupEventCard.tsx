@@ -7,11 +7,11 @@ import { dateAndTime, timeSince } from '../../services/timeAndDate';
 import { useAppDispatch } from '../../store/hooks';
 import { getOneGroupPostAsync } from '../../store/groupPostSlice';
 import { NavigationProp, useRoute } from '@react-navigation/native';
-import { getOneGroupEventAsync } from '../../store/groupEventSlice';
+import { GroupEvent, getOneGroupEventAsync } from '../../store/groupEventSlice';
 
 interface Props {
   userPosted: { name: string, profile: ImageSourcePropType },
-  event: { id: string, postImage?: ImageSourcePropType, title: string, createdAt: Date, eventDate: Date },
+  event: GroupEvent,
   responseCount: number;
   joiningCount: number;
   navigation: NavigationProp<any, any>;
@@ -32,7 +32,7 @@ const EventCard: React.FC<Props> = (props: Props) => {
   }
 
   return (
-    <View style={[eventStyle.cardContainer]}>
+    <View style={[eventStyle.cardContainer, (event.cancelled && eventStyle.cancelledEvent)]}>
       <Pressable
         onPress={() => viewEvent(event.id)}
       >
@@ -52,11 +52,11 @@ const EventCard: React.FC<Props> = (props: Props) => {
         </View>
         {
           event &&
-          event.postImage &&
+          event.imageGetUrl &&
           (
             <View>
               <Image
-                source={event.postImage}
+                source={{ uri: event.imageGetUrl }}
                 style={[{ width: '100%', height: 150, borderRadius: 25}]}
               />
             </View>
@@ -64,7 +64,7 @@ const EventCard: React.FC<Props> = (props: Props) => {
         }
         <View style={[layoutStyles.mt_1, layoutStyles.mb_1]}>
           <CustomText h3>
-            {event.title}
+            { event.cancelled && 'CANCELLED - ' }{event.title}
           </CustomText>
         </View>
         <View style={[layoutStyles.mt_1, layoutStyles.mb_1]}>
@@ -145,5 +145,9 @@ const eventStyle = StyleSheet.create({
     height: 25,
     width: 25,
     resizeMode: 'contain',
+  },
+  cancelledEvent: {
+    borderColor: 'red',
+    borderWidth: 1,
   }
 });
