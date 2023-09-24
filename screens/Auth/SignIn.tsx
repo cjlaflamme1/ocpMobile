@@ -47,7 +47,6 @@ const SignIn: React.FC<Props> = ({ navigation }) => {
     setDisabledResetRequest(true);
     if (signinObject?.email) {
       const res = await dispatch(requestResetAsync(signinObject.email));
-      console.log(res);
       if (res.meta.requestStatus === 'fulfilled') {
         console.log('redirect to token page');
         navigation.navigate('ResetPW');

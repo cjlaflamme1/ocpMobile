@@ -27,6 +27,7 @@ const ResetPassword: React.FC<Props> = ({ navigation }) => {
   const [resetObject, setResetObject] = useState<ResetObject>();
   const [pwError, setPwError] = useState('');
   const [matchingPW, setMatchingPW] = useState('');
+  const [disableResetRequest, setDisabledResetRequest] = useState(false);
   const [pwMatchError, setPwMatchError] = useState('');
   const scrollViewRef = useRef<KeyboardAwareScrollView|null>(null);
   const dispatch = useAppDispatch();
@@ -72,6 +73,7 @@ const ResetPassword: React.FC<Props> = ({ navigation }) => {
   };
 
   const submitReset = async () => {
+    setDisabledResetRequest(true);
     if (
       checkMatch()
       && resetObject
@@ -86,6 +88,7 @@ const ResetPassword: React.FC<Props> = ({ navigation }) => {
         navigation.navigate('SignIn');
       }
     }
+    setDisabledResetRequest(false);
   };
 
   if (!resetObject) {
@@ -171,6 +174,7 @@ const ResetPassword: React.FC<Props> = ({ navigation }) => {
             <PrimaryButton
               buttonText='Reset Password'
               callback={submitReset}
+              disabled={disableResetRequest}
             />
           </View>
         </View>
