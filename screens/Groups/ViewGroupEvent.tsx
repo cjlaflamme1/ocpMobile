@@ -1,12 +1,14 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { View, RefreshControl } from 'react-native';
+import { View, RefreshControl, Pressable, Image } from 'react-native';
 import layoutStyles from '../../styles/layout';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { QueryObject, SortOrder } from '../../models/QueryObject';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { clearSelectedEvent, getOneGroupEventAsync } from '../../store/groupEventSlice';
+import { clearSelectedEvent, getOneGroupEventAsync, updateGroupEventAsync } from '../../store/groupEventSlice';
 import ViewEvent from '../../components/events/ViewEvent';
 import { NavigationProp } from '@react-navigation/native';
+import EventBottomSheet from '../../components/bottomsheet/EventBottomSheet';
+import BottomSheet from '@gorhom/bottom-sheet';
+import TripleHeader from '../../components/headers/TripleHeader';
 import TitleWithBackButton from '../../components/headers/TitleBackButton';
 
 interface Props {
@@ -20,7 +22,13 @@ const ViewGroupEvent: React.FC<Props> = ({ navigation, route }) => {
   const dispatch = useAppDispatch();
   const scrollViewRef = useRef<KeyboardAwareScrollView|null>(null);
   const selectedGroupEvent = useAppSelector((state) => state.groupEventState.selectedGroupEvent);
-  const currentUser = useAppSelector((state) => state.userState.currentUser)
+  const currentUser = useAppSelector((state) => state.userState.currentUser);
+
+  const bottomSheetRef = useRef<BottomSheet>(null);
+
+  const handleClosePress = () => bottomSheetRef?.current?.close();
+
+  const handleOpen = () => bottomSheetRef?.current?.expand();
 
   useEffect(() => {
     if (!selectedGroupEvent || eventId !== selectedGroupEvent.id) {
@@ -28,23 +36,66 @@ const ViewGroupEvent: React.FC<Props> = ({ navigation, route }) => {
     }
     navigation.setOptions({
       header: () => (
-        <TitleWithBackButton title='View Event' navigation={navigation} />
+        <TripleHeader navigation={navigation} title='View Event'>
+            <Pressable
+              style={[layoutStyles.flexRow,
+              layoutStyles.alignItemCenter]}
+              onPress={() => handleOpen()}
+            >
+              <Image
+                source={require('../../assets/icons/Setting.png')}
+                style={[{ height: 24, width: 24, resizeMode: 'contain'}, layoutStyles.mr_1]}
+              />
+            </Pressable>
+          </TripleHeader>
       )
     });
     return () => {
       dispatch(clearSelectedEvent());
     }
-  }, [navigation]);
-
-  if (!selectedGroupEvent || !currentUser) {
-    return (<View />);
-  }
+  }, [navigation, eventId]);
 
   const onRefresh = async () => {
     setRefreshing(true);
     await dispatch(getOneGroupEventAsync(eventId));
     setRefreshing(false);
-  }
+  };
+
+  const leaveEvent = async () => {
+    if (currentUser && selectedGroupEvent) {
+      const res = await dispatch(updateGroupEventAsync({
+        id: selectedGroupEvent.id,
+        data: {
+          removeUserIds: [currentUser.id]
+        },
+      }));
+      if (res.meta.requestStatus === 'fulfilled') {
+        dispatch(getOneGroupEventAsync(eventId));
+      }
+    }
+  };
+
+  const joinEvent = async () => {
+    if (currentUser && selectedGroupEvent) {
+      const res = await dispatch(updateGroupEventAsync({
+        id: selectedGroupEvent.id,
+        data: {
+          attendingUserIds: [currentUser.id]
+        },
+      }));
+      if (res.meta.requestStatus === 'fulfilled') {
+        dispatch(getOneGroupEventAsync(eventId));
+      }
+    }
+  };
+
+  const editEvent = () => {
+    navigation.navigate('Edit Group Event', { eventId: eventId })
+  };
+
+  if (!selectedGroupEvent || !currentUser) {
+    return (<View />);
+  };
 
   return (
     <View style={[layoutStyles.screenContainer, { display: 'flex', flexDirection: 'column', justifyContent: 'space-between', flexGrow: 1}]}>
@@ -59,6 +110,17 @@ const ViewGroupEvent: React.FC<Props> = ({ navigation, route }) => {
           </View>
         </View>
       </KeyboardAwareScrollView>
+      <EventBottomSheet
+        closeSheet={() => handleClosePress()}
+        bottomSheetRef={bottomSheetRef}
+        customSnapPoints={['50%']}
+        creatorView={selectedGroupEvent.creator.id === currentUser.id}
+        quitEvent={leaveEvent}
+        joinEvent={joinEvent}
+        attending={!!selectedGroupEvent.attendingUsers && !!selectedGroupEvent.attendingUsers.find((u) => u.id === currentUser.id)}
+        editEvent={editEvent}
+        expiredEvent={new Date(selectedGroupEvent.eventDate).valueOf() < new Date().valueOf()}
+      />
     </View>
   );
 };

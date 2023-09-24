@@ -16,6 +16,7 @@ import ViewUserActivity from '../screens/Search/ViewUserActivity';
 import TitleWithBackButton from '../components/headers/TitleBackButton';
 import TitleOnly from '../components/headers/TitleOnly';
 import TripleHeader from '../components/headers/TripleHeader';
+import EditGroupEvent from '../screens/Groups/EditGroupEvent';
 
 
 
@@ -113,6 +114,18 @@ const GroupsNavigation: React.FC = () => {
               contentStyle: globalStyles.navigationStackScreen,
               header: () => (
                 <TitleWithBackButton title='View Event' />
+              )
+            }
+          }
+        />
+        <RootStack.Screen
+          name="Edit Group Event"
+          component={EditGroupEvent}
+          options={
+            {
+              contentStyle: globalStyles.navigationStackScreen,
+              header: () => (
+                <TitleWithBackButton title='Edit Event' />
               )
             }
           }

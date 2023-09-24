@@ -28,6 +28,11 @@ export interface GroupEvent {
   createdAt: Date;
 }
 
+export interface UpdateGroupEventDto extends Partial<GroupEvent> {
+  removeUserIds?: string[];
+  attendingUserIds?: string[];
+}
+
 interface GroupEventState {
   currentGroupEvents: {
     groupEvents: GroupEvent[] | null;
@@ -95,7 +100,7 @@ const getOneGroupEventAsync = createAsyncThunk(
 
 const updateGroupEventAsync = createAsyncThunk(
   'groupEvent/updateOne',
-  async (body: { id: string, data: Partial<GroupEvent | CreateGroupEventDto>}, { rejectWithValue }) => {
+  async (body: { id: string, data: UpdateGroupEventDto}, { rejectWithValue }) => {
     try {
       const response: any = await updateGroupEvent(body.id, body.data);
       return response.data;

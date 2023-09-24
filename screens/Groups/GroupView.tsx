@@ -46,6 +46,7 @@ const GroupView: React.FC<Props> = ({ navigation, route }) => {
   const [refreshing, setRefreshing] = useState(false);
   const [radioSelector, setRadioSelector] = useState(0);
   const dispatch = useAppDispatch();
+
   const selectedGroup = useAppSelector((state) => state.groupState.selectedGroup);
   const currentGroupsPosts = useAppSelector((state) => state.groupPostState.currentGroupsPosts);
   const currentGroupEvents = useAppSelector((state) => state.groupEventState.currentGroupEvents);
