@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { ScrollView, View, Image, RefreshControl, AppState, Text, Button, Pressable, TextInput, Platform } from 'react-native';
+import { View, RefreshControl, Pressable, TextInput, Platform } from 'react-native';
+import { Image } from 'expo-image';
 import ProfileActivityCard from '../../components/ProfileActivityCard';
 import CustomText from '../../components/CustomText';
 import globalStyles from '../../styles/global';
@@ -10,7 +11,6 @@ import { logoutAction } from '../../store/authSlice';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import * as ImagePicker from 'expo-image-picker';
 import {Buffer} from "buffer";
-import * as FileSystem from "expo-file-system";
 import { postPresignedUrl, putImageOnS3 } from '../../api/s3API';
 import { getCurrentUserAsync, updateCurrentUserAsync } from '../../store/userSlice';
 import { NavigationProp } from '@react-navigation/native';
@@ -61,6 +61,7 @@ const ProfileLanding: React.FC<Props> = ({ navigation }) => {
           >
             <Image
               source={require('../../assets/icons/Setting.png')}
+              contentFit='contain'
               style={[{ height: 24, width: 24, resizeMode: 'contain'}, layoutStyles.mr_1]}
             />
           </Pressable>
@@ -152,6 +153,7 @@ const ProfileLanding: React.FC<Props> = ({ navigation }) => {
                     : require("../../assets/150x150.png")
                 }
                 style={[imageStyles.profileImage]}
+                contentFit='contain'
               />
               {
                 editMode
@@ -163,6 +165,7 @@ const ProfileLanding: React.FC<Props> = ({ navigation }) => {
                     <Image
                       source={require("../../assets/icons/CameraWhite.png")}
                       style={[profileLandingStyles.editImageIcon]}
+                      contentFit='contain'
                     />
                   </Pressable>
                 )

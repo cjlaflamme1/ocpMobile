@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { ScrollView, View, Image, RefreshControl, TextInput, Switch, Pressable, Platform } from 'react-native';
+import { ScrollView, View, RefreshControl, TextInput, Switch, Pressable, Platform } from 'react-native';
+import { Image } from 'expo-image';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import CustomText from '../../components/CustomText';
 import DropdownSelect, { DropdownData } from '../../components/DropdownSelect';
@@ -148,6 +149,7 @@ const CreateActivity: React.FC<Props> = ({ navigation }) => {
                     <Image
                       source={require("../../assets/icons/CameraWhite.png")}
                       style={[createActivityStyles.editImageIcon]}
+                      contentFit='contain'
                     />
                   </Pressable>
               </View>

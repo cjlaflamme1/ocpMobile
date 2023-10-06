@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, Platform, Text, Image, Button, TextInput, Pressable } from 'react-native';
+import { View, TextInput, Pressable } from 'react-native';
 import CustomText from '../../components/CustomText';
 import { useAppDispatch } from '../../store/hooks';
 import inputStyle from '../../styles/componentStyles/inputBar';
@@ -10,7 +10,6 @@ import { SigninObject } from '../../models/SigninObject';
 import { requestResetAsync, signInAsync } from '../../store/authSlice';
 import { getCurrentUserAsync } from '../../store/userSlice';
 import { NavigationProp } from '@react-navigation/native';
-import { requestReset } from '../../api/authAPI';
 interface Props {
   navigation: NavigationProp<any, any>;
 };

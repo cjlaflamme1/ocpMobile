@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { View, Image, ScrollView, RefreshControl, Pressable, TextInput } from 'react-native';
+import { View, ScrollView, RefreshControl, Pressable, TextInput } from 'react-native';
+import { Image } from 'expo-image';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import globalStyles from '../../styles/global';
 import layoutStyles from '../../styles/layout';

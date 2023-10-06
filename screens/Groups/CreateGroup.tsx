@@ -1,22 +1,19 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { View, Image, ScrollView, RefreshControl, Pressable, TextInput, Platform } from 'react-native';
+import { View, Pressable, TextInput, Platform } from 'react-native';
+import { Image } from 'expo-image';
 import CustomText from '../../components/CustomText';
 import * as ImagePicker from 'expo-image-picker';
 import {Buffer} from "buffer";
-import GroupCard from '../../components/GroupCard';
 import PrimaryButton from '../../components/PrimaryButton';
 import UserIconSmall from '../../components/UserIconSmall';
 import inputStyle from '../../styles/componentStyles/inputBar';
-import globalStyles from '../../styles/global';
 import layoutStyles from '../../styles/layout';
 import createGroupStyles from '../../styles/screenStyles/groups/createGroup';
-import groupsLandingStyle from '../../styles/screenStyles/groups/groupsLanding';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { createGroupAsync, CreateGroupDto, getAllGroupsAsync, getAllUserGroupsAsync } from '../../store/groupSlice';
+import { createGroupAsync, CreateGroupDto, getAllUserGroupsAsync } from '../../store/groupSlice';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { postPresignedUrl, putImageOnS3 } from '../../api/s3API';
-import { clearUserList, getAllUsersAsync, User } from '../../store/userSlice';
-import DropdownSelect, { DropdownData } from '../../components/DropdownSelect';
+import { User } from '../../store/userSlice';
 import UserSearchDropdown from '../../components/UserSearchDropdown';
 import { NavigationProp } from '@react-navigation/native';
 import TitleWithBackButton from '../../components/headers/TitleBackButton';
@@ -130,6 +127,7 @@ const CreateGroup: React.FC<Props> = ({ navigation }) => {
                     <Image
                       source={require("../../assets/icons/CameraWhite.png")}
                       style={[createGroupStyles.editImageIcon]}
+                      contentFit='contain'
                     />
                   </Pressable>
               </View>

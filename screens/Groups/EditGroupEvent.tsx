@@ -1,27 +1,20 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { View, Image, ScrollView, RefreshControl, Pressable, TextInput, Button, Platform } from 'react-native';
+import { View, Pressable, TextInput, Platform } from 'react-native';
+import { Image } from 'expo-image';
 import CustomText from '../../components/CustomText';
 import * as ImagePicker from 'expo-image-picker';
 import {Buffer} from "buffer";
-import GroupCard from '../../components/GroupCard';
 import PrimaryButton from '../../components/PrimaryButton';
-import UserIconSmall from '../../components/UserIconSmall';
 import inputStyle from '../../styles/componentStyles/inputBar';
 import { Picker } from '@react-native-picker/picker';
-import globalStyles from '../../styles/global';
 import layoutStyles from '../../styles/layout';
 import createGroupStyles from '../../styles/screenStyles/groups/createGroup';
-import groupsLandingStyle from '../../styles/screenStyles/groups/groupsLanding';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { createGroupAsync, CreateGroupDto, getAllGroupsAsync, getAllUserGroupsAsync } from '../../store/groupSlice';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { postPresignedUrl, putImageOnS3 } from '../../api/s3API';
-import { clearUserList, getAllUsersAsync, User } from '../../store/userSlice';
-import UserSearchDropdown from '../../components/UserSearchDropdown';
-import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
+import DateTimePicker from '@react-native-community/datetimepicker';
 import { dateOnly } from '../../services/timeAndDate';
-import { GroupEvent, UpdateGroupEventDto, createGroupEventAsync, getAllGroupEventsAsync, getOneGroupEventAsync, updateGroupEventAsync } from '../../store/groupEventSlice';
-import { SortOrder } from '../../models/QueryObject';
+import { GroupEvent, UpdateGroupEventDto, getOneGroupEventAsync, updateGroupEventAsync } from '../../store/groupEventSlice';
 import { NavigationProp } from '@react-navigation/native';
 import TitleWithBackButton from '../../components/headers/TitleBackButton';
 
@@ -184,6 +177,7 @@ const EditGroupEvent: React.FC<Props> = ({ navigation, route }) => {
                     <Image
                       source={require("../../assets/icons/CameraWhite.png")}
                       style={[createGroupStyles.editImageIcon]}
+                      contentFit='contain'
                     />
                   </Pressable>
               </View>
@@ -204,6 +198,7 @@ const EditGroupEvent: React.FC<Props> = ({ navigation, route }) => {
                     <Image
                       source={require("../../assets/icons/CameraWhite.png")}
                       style={[createGroupStyles.editImageIcon]}
+                      contentFit='contain'
                     />
                   </Pressable>
               </View>

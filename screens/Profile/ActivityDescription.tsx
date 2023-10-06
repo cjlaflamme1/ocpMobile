@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { ScrollView, View, Image, RefreshControl, Pressable, TextInput, Switch, Alert, Platform } from 'react-native';
+import { ScrollView, View, RefreshControl, Pressable, TextInput, Switch, Alert, Platform } from 'react-native';
+import { Image } from 'expo-image';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import * as ImagePicker from 'expo-image-picker';
 import {Buffer} from "buffer";
@@ -110,7 +111,8 @@ const ActivityDescription: React.FC<Props> = ({ navigation }) => {
           >
             <Image
               source={require('../../assets/icons/Setting.png')}
-              style={[{ height: 24, width: 24, resizeMode: 'contain'}, layoutStyles.mr_1]}
+              style={[{ height: 24, width: 24}, layoutStyles.mr_1]}
+              contentFit='contain'
             />
           </Pressable>
         </TripleHeader>
@@ -152,6 +154,7 @@ const ActivityDescription: React.FC<Props> = ({ navigation }) => {
                     <Image
                       source={require("../../assets/icons/CameraWhite.png")}
                       style={[createActivityStyles.editImageIcon]}
+                      contentFit='contain'
                     />
                   </Pressable>
               </View>

@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { View, RefreshControl, Pressable, Image } from 'react-native';
+import { View, RefreshControl, Pressable } from 'react-native';
+import { Image } from 'expo-image';
 import layoutStyles from '../../styles/layout';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
@@ -9,7 +10,6 @@ import { NavigationProp } from '@react-navigation/native';
 import EventBottomSheet from '../../components/bottomsheet/EventBottomSheet';
 import BottomSheet from '@gorhom/bottom-sheet';
 import TripleHeader from '../../components/headers/TripleHeader';
-import TitleWithBackButton from '../../components/headers/TitleBackButton';
 
 interface Props {
   navigation: NavigationProp<any, any>;
@@ -43,8 +43,9 @@ const ViewGroupEvent: React.FC<Props> = ({ navigation, route }) => {
               onPress={() => handleOpen()}
             >
               <Image
+                contentFit='contain'
                 source={require('../../assets/icons/Setting.png')}
-                style={[{ height: 24, width: 24, resizeMode: 'contain'}, layoutStyles.mr_1]}
+                style={[{ height: 24, width: 24 }, layoutStyles.mr_1]}
               />
             </Pressable>
           </TripleHeader>
