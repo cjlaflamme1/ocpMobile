@@ -68,7 +68,7 @@ const EditGroup: React.FC<Props> = ({ navigation, route }) => {
     if (selectedImage && selectedImage.base64) {
       const imageExt = selectedImage.uri.split('.').pop();
       const imageFileName = `${groupObj.title}-${selectedImage.fileName}`;
-      const resizedImage = await manipulateAsync(selectedImage.uri, [{ resize: { width: 500 } }], { base64: true });
+      const resizedImage = await manipulateAsync(selectedImage.uri, [{ resize: { width: 700 } }], { base64: true });
       if (!resizedImage.base64) {
         console.log('error');
         setUpdating(false);

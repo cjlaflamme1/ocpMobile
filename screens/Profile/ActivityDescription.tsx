@@ -59,7 +59,7 @@ const ActivityDescription: React.FC<Props> = ({ navigation }) => {
       });
       if ((result.canceled === false) && result.assets.length > 0 && result.assets[0].base64) {
         const currentFile = result.assets[0];
-        const resizedImage = await manipulateAsync(currentFile.uri, [{ resize: { width: 500 } }], { base64: true });
+        const resizedImage = await manipulateAsync(currentFile.uri, [{ resize: { width: 700 } }], { base64: true });
         if (!resizedImage.base64) {
           console.log('error');
           return;

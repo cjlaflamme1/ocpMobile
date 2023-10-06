@@ -111,7 +111,7 @@ const EditGroupEvent: React.FC<Props> = ({ navigation, route }) => {
     setSubmitting(true);
     let newCoverImage = eventObj.coverPhoto || '';
     if (selectedImage && selectedImage.base64) {
-      const resizedImage = await manipulateAsync(selectedImage.uri, [{ resize: { width: 500 } }], { base64: true });
+      const resizedImage = await manipulateAsync(selectedImage.uri, [{ resize: { width: 700 } }], { base64: true });
       if (!resizedImage.base64) {
         console.log('error');
         return;
