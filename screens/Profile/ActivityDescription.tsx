@@ -17,6 +17,7 @@ import { NavigationProp } from '@react-navigation/native';
 import TripleHeader from '../../components/headers/TripleHeader';
 import BottomSheet from '@gorhom/bottom-sheet';
 import ActivitySettingsSheet from '../../components/bottomsheet/ActivitySettingsSheet';
+import { manipulateAsync } from 'expo-image-manipulator';
 
 interface Props {
   navigation: NavigationProp<any, any>;
@@ -58,10 +59,15 @@ const ActivityDescription: React.FC<Props> = ({ navigation }) => {
       });
       if ((result.canceled === false) && result.assets.length > 0 && result.assets[0].base64) {
         const currentFile = result.assets[0];
+        const resizedImage = await manipulateAsync(currentFile.uri, [{ resize: { width: 500 } }], { base64: true });
+        if (!resizedImage.base64) {
+          console.log('error');
+          return;
+        }
         const imageExt = currentFile.uri.split('.').pop();
           const imageFileName = `${userId}/${selectedUserActivity?.activityType.id}`;
   
-        const buff = Buffer.from(result.assets[0].base64, "base64");
+        const buff = Buffer.from(resizedImage.base64, "base64");
         const preAuthPostUrl = await postPresignedUrl({ fileName: imageFileName, fileType: `${result.assets[0].type}/${imageExt}`, fileDirectory: 'userActivityImages'}).then((response) => response).catch((e) => {
           return e;
         });

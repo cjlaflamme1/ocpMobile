@@ -8,6 +8,7 @@ import { postPresignedUrl, putImageOnS3 } from '../../api/s3API';
 import { View, Image, ImageSourcePropType, Pressable, TextInput } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import {Buffer} from "buffer";
+import { manipulateAsync } from 'expo-image-manipulator';
 
 interface Props {
   placeholderText: string,
@@ -59,8 +60,12 @@ const PostMessageCard: React.FC<Props> = (props: Props) => {
       if (selectedImage && selectedImage.base64) {
         const imageExt = selectedImage.uri.split('.').pop();
         const imageFileName = `${new Date().valueOf()}-${selectedImage.fileName}`;
-
-        const buff = Buffer.from(selectedImage.base64, "base64");
+        const resizedImage = await manipulateAsync(selectedImage.uri, [{ resize: { width: 500 } }], { base64: true });
+        if (!resizedImage.base64) {
+          console.log('error');
+          return;
+        }
+        const buff = Buffer.from(resizedImage.base64, "base64");
         const preAuthPostUrl = await postPresignedUrl({ fileName: imageFileName, fileType: `${selectedImage.type}/${imageExt}`, fileDirectory: 'groupPosts'}).then((response) => response).catch((e) => {
           return e;
         });

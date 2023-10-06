@@ -15,6 +15,7 @@ import { postPresignedUrl, putImageOnS3 } from '../../api/s3API';
 import { User } from '../../store/userSlice';
 import { NavigationProp } from '@react-navigation/native';
 import TitleWithBackButton from '../../components/headers/TitleBackButton';
+import { manipulateAsync } from 'expo-image-manipulator';
 
 interface Props {
   navigation: NavigationProp<any, any>;
@@ -67,8 +68,13 @@ const EditGroup: React.FC<Props> = ({ navigation, route }) => {
     if (selectedImage && selectedImage.base64) {
       const imageExt = selectedImage.uri.split('.').pop();
       const imageFileName = `${groupObj.title}-${selectedImage.fileName}`;
-
-      const buff = Buffer.from(selectedImage.base64, "base64");
+      const resizedImage = await manipulateAsync(selectedImage.uri, [{ resize: { width: 500 } }], { base64: true });
+      if (!resizedImage.base64) {
+        console.log('error');
+        setUpdating(false);
+        return;
+      }
+      const buff = Buffer.from(resizedImage.base64, "base64");
       const preAuthPostUrl = await postPresignedUrl({ fileName: imageFileName, fileType: `${selectedImage.type}/${imageExt}`, fileDirectory: 'groupImages'}).then((response) => response).catch((e) => {
         return e;
       });

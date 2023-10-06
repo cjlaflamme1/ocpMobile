@@ -17,6 +17,7 @@ import { dateOnly } from '../../services/timeAndDate';
 import { GroupEvent, UpdateGroupEventDto, getOneGroupEventAsync, updateGroupEventAsync } from '../../store/groupEventSlice';
 import { NavigationProp } from '@react-navigation/native';
 import TitleWithBackButton from '../../components/headers/TitleBackButton';
+import { manipulateAsync } from 'expo-image-manipulator';
 
 interface Props {
   navigation: NavigationProp<any, any>;
@@ -110,10 +111,15 @@ const EditGroupEvent: React.FC<Props> = ({ navigation, route }) => {
     setSubmitting(true);
     let newCoverImage = eventObj.coverPhoto || '';
     if (selectedImage && selectedImage.base64) {
+      const resizedImage = await manipulateAsync(selectedImage.uri, [{ resize: { width: 500 } }], { base64: true });
+      if (!resizedImage.base64) {
+        console.log('error');
+        return;
+      }
       const imageExt = selectedImage.uri.split('.').pop();
       const imageFileName = `${eventObj.title}-${selectedImage.fileName}`;
 
-      const buff = Buffer.from(selectedImage.base64, "base64");
+      const buff = Buffer.from(resizedImage.base64, "base64");
       const preAuthPostUrl = await postPresignedUrl({ fileName: imageFileName, fileType: `${selectedImage.type}/${imageExt}`, fileDirectory: 'groupEventImages'}).then((response) => response).catch((e) => {
         return e;
       });

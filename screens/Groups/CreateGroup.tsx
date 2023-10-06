@@ -17,6 +17,7 @@ import { User } from '../../store/userSlice';
 import UserSearchDropdown from '../../components/UserSearchDropdown';
 import { NavigationProp } from '@react-navigation/native';
 import TitleWithBackButton from '../../components/headers/TitleBackButton';
+import { manipulateAsync } from 'expo-image-manipulator';
 
 interface Props {
   navigation: NavigationProp<any, any>;
@@ -57,8 +58,12 @@ const CreateGroup: React.FC<Props> = ({ navigation }) => {
     if (selectedImage && selectedImage.base64) {
       const imageExt = selectedImage.uri.split('.').pop();
       const imageFileName = `${newGroupObj.title}-${selectedImage.fileName}`;
-
-      const buff = Buffer.from(selectedImage.base64, "base64");
+      const resizedImage = await manipulateAsync(selectedImage.uri, [{ resize: { width: 500 } }], { base64: true });
+      if (!resizedImage.base64) {
+        console.log('error');
+        return;
+      }
+      const buff = Buffer.from(resizedImage.base64, "base64");
       const preAuthPostUrl = await postPresignedUrl({ fileName: imageFileName, fileType: `${selectedImage.type}/${imageExt}`, fileDirectory: 'groupImages'}).then((response) => response).catch((e) => {
         return e;
       });
