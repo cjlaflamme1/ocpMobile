@@ -12,7 +12,6 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import { getOneGroupAsync, updateGroupAsync, UpdateGroupDto } from '../../store/groupSlice';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { postPresignedUrl, putImageOnS3 } from '../../api/s3API';
-import { User } from '../../store/userSlice';
 import { NavigationProp } from '@react-navigation/native';
 import TitleWithBackButton from '../../components/headers/TitleBackButton';
 import { manipulateAsync } from 'expo-image-manipulator';
@@ -24,7 +23,6 @@ interface Props {
 
 const EditGroup: React.FC<Props> = ({ navigation, route }) => {
   const [groupObj, setGroupObj] = useState<UpdateGroupDto>();
-  const [selectedUserIds, setSelectedUserIds] = useState<Partial<User>[]>([]);
   const [updating, setUpdating] = useState(false);
   const [selectedImage, setSelectedImage] = useState<ImagePicker.ImagePickerAsset>();
   const scrollViewRef = useRef<KeyboardAwareScrollView|null>(null);
@@ -46,6 +44,7 @@ const EditGroup: React.FC<Props> = ({ navigation, route }) => {
       setGroupObj({
         coverPhoto: '',
         title: '',
+        location: '',
         description: '',
         addingAdminIds: [],
         addingUserIds: [],
@@ -89,6 +88,7 @@ const EditGroup: React.FC<Props> = ({ navigation, route }) => {
         body: {
           title: groupObj.title,
           description: groupObj.description,
+          location: groupObj.location,
           coverPhoto: newCoverImage,
         }
       }));
@@ -177,6 +177,24 @@ const EditGroup: React.FC<Props> = ({ navigation, route }) => {
                   setGroupObj({
                     ...groupObj,
                     title: e,
+                  })
+                }}
+              />
+            </View>
+          </View>
+          <View style={[layoutStyles.mt_2]}>
+            <CustomText style={[layoutStyles.mb_1]}>
+              Group Location
+            </CustomText>
+            <View style={[inputStyle.fullWidthInputContainer]}>
+              <TextInput
+                placeholder='Enter general location of group'
+                defaultValue={groupObj.location}
+                style={[inputStyle.fullWidthInput]}
+                onChangeText={(e) => {
+                  setGroupObj({
+                    ...groupObj,
+                    location: e,
                   })
                 }}
               />

@@ -226,6 +226,19 @@ const GroupView: React.FC<Props> = ({ navigation, route }) => {
             <CustomText h1 bold>
               { selectedGroup.title }
             </CustomText>
+            {
+              selectedGroup.location
+              && (
+                <View style={[layoutStyles.flexRow, layoutStyles.jStart, layoutStyles.m_1]}>
+                  <Image 
+                    source={require('../../assets/icons/location.png')}
+                    style={[{width: 16, height: 16, alignSelf: 'center'}]}
+                    contentFit='contain'
+                  />
+                  <CustomText style={[globalStyles.mutedText]}>{selectedGroup.location}</CustomText>
+                </View>
+              )
+            }
             <View style={[layoutStyles.dFlex, layoutStyles.flexRow]}>
               <Pressable style={[groupViewStyle.viewMembersButton]} onPress={() => setUserModal(true)}>
                 <CustomText style={[globalStyles.mutedText, { textDecorationLine: 'underline' }]}>

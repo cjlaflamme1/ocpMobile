@@ -25,6 +25,7 @@ interface Props {
 
 const CreateGroup: React.FC<Props> = ({ navigation }) => {
   const [newGroupObj, setNewGroupObj] = useState<CreateGroupDto>();
+  const [submitting, setSubmitting] = useState(false);
   const [selectedUserIds, setSelectedUserIds] = useState<Partial<User>[]>([]);
   const [selectedImage, setSelectedImage] = useState<ImagePicker.ImagePickerAsset>();
   const scrollViewRef = useRef<KeyboardAwareScrollView|null>(null);
@@ -37,6 +38,7 @@ const CreateGroup: React.FC<Props> = ({ navigation }) => {
       setNewGroupObj({
         coverPhoto: '',
         title: '',
+        location: '',
         description: '',
         groupAdminIds: [],
         pendingInvitationUserIds: [],
@@ -54,6 +56,7 @@ const CreateGroup: React.FC<Props> = ({ navigation }) => {
   }
 
   const submitNewGroup = async () => {
+    setSubmitting(true);
     let newCoverImage = '';
     if (selectedImage && selectedImage.base64) {
       const imageExt = selectedImage.uri.split('.').pop();
@@ -61,6 +64,7 @@ const CreateGroup: React.FC<Props> = ({ navigation }) => {
       const resizedImage = await manipulateAsync(selectedImage.uri, [{ resize: { width: 700 } }], { base64: true });
       if (!resizedImage.base64) {
         console.log('error');
+        setSubmitting(false);
         return;
       }
       const buff = Buffer.from(resizedImage.base64, "base64");
@@ -86,6 +90,7 @@ const CreateGroup: React.FC<Props> = ({ navigation }) => {
           skip: 0,
         }
       }));
+      setSubmitting(false);
       navigation.navigate('Groups Landing');
     }
   };
@@ -175,6 +180,23 @@ const CreateGroup: React.FC<Props> = ({ navigation }) => {
           </View>
           <View style={[layoutStyles.mt_2]}>
             <CustomText style={[layoutStyles.mb_1]}>
+              Group Location
+            </CustomText>
+            <View style={[inputStyle.fullWidthInputContainer]}>
+              <TextInput
+                placeholder='Enter general location of group'
+                style={[inputStyle.fullWidthInput]}
+                onChangeText={(e) => {
+                  setNewGroupObj({
+                    ...newGroupObj,
+                    location: e,
+                  })
+                }}
+              />
+            </View>
+          </View>
+          <View style={[layoutStyles.mt_2]}>
+            <CustomText style={[layoutStyles.mb_1]}>
               Group Description
             </CustomText>
             <View style={[inputStyle.fullWidthInputContainer]}>
@@ -224,7 +246,7 @@ const CreateGroup: React.FC<Props> = ({ navigation }) => {
           <View style={[layoutStyles.mt_3]}>
             <PrimaryButton
               buttonText='Create'
-              disabled={!newGroupObj.title || !newGroupObj.description}
+              disabled={!newGroupObj.title || !newGroupObj.description || submitting}
               callback={submitNewGroup}
             />
           </View>
