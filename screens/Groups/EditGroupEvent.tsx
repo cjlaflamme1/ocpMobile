@@ -320,14 +320,14 @@ const EditGroupEvent: React.FC<Props> = ({ navigation, route }) => {
             {
               Platform.OS === 'ios'
               && (
-              <View>
+              <View style={[layoutStyles.mb_2]}>
                 <CustomText>Select Date</CustomText>
                 <DateTimePicker
                   testID="dateTimePicker"
                   value={selectedDate ? new Date(selectedDate) : new Date()}
                   minimumDate={new Date()}
                   mode={'date'}
-                  is24Hour={true}
+                  display='inline'
                   onChange={(value) => {
                     if (value.nativeEvent.timestamp) {
                       setSelectedDate(new Date(value.nativeEvent.timestamp));
@@ -335,6 +335,7 @@ const EditGroupEvent: React.FC<Props> = ({ navigation, route }) => {
                   }}
                   style={[{ alignSelf: 'center', paddingTop: 10, paddingBottom: 10 }]}
                 />
+                <CustomText center>{(selectedDate || new Date()).toDateString()}</CustomText>
               </View>
               )
             }

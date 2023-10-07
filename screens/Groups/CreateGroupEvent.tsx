@@ -311,14 +311,14 @@ const CreateGroupEvent: React.FC<Props> = ({ navigation }) => {
             {
               Platform.OS === 'ios'
               && (
-              <View>
-                <CustomText>Select Date</CustomText>
+              <View style={[layoutStyles.mb_2]}>
+                <CustomText bold>Select Date</CustomText>
                 <DateTimePicker
                   testID="dateTimePicker"
                   value={selectedDate ? new Date(selectedDate) : new Date()}
                   minimumDate={new Date()}
                   mode={'date'}
-                  is24Hour={true}
+                  display='inline'
                   onChange={(value) => {
                     if (value.nativeEvent.timestamp) {
                       setSelectedDate(new Date(value.nativeEvent.timestamp));
@@ -326,6 +326,7 @@ const CreateGroupEvent: React.FC<Props> = ({ navigation }) => {
                   }}
                   style={[{ alignSelf: 'center', paddingTop: 10, paddingBottom: 10 }]}
                 />
+                <CustomText center>{selectedDate.toDateString()}</CustomText>
               </View>
               )
             }
