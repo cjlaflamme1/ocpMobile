@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { View, Pressable, TextInput, Platform } from 'react-native';
+import { View, Pressable, TextInput, Platform, Dimensions } from 'react-native';
 import { Image } from 'expo-image';
 import CustomText from '../../components/CustomText';
 import * as ImagePicker from 'expo-image-picker';
@@ -113,6 +113,8 @@ const EditGroup: React.FC<Props> = ({ navigation, route }) => {
     };
   };
 
+  const { width } = Dimensions.get('window');
+
   return (
     <View style={[layoutStyles.screenContainer]}>
       <KeyboardAwareScrollView
@@ -131,7 +133,7 @@ const EditGroup: React.FC<Props> = ({ navigation, route }) => {
               <View style={[layoutStyles.mt_2]}>
                 <Image
                   source={{uri: selectedImage.uri}}
-                  style={[{ width: '100%', height: 200, borderRadius: 25}]}
+                  style={[{ width: '100%', height: (width * 0.75), borderRadius: 25}]}
                 />
                 <Pressable
                     onPress={pickImage}

@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { ScrollView, View, RefreshControl, Pressable, TextInput, Switch, Alert, Platform } from 'react-native';
+import { ScrollView, View, RefreshControl, Pressable, TextInput, Switch, Alert, Platform, Dimensions } from 'react-native';
 import { Image } from 'expo-image';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import * as ImagePicker from 'expo-image-picker';
@@ -104,7 +104,9 @@ const ActivityDescription: React.FC<Props> = ({ navigation }) => {
     dispatch(getUserActivitiesAsync());
     navigation.goBack();
     dispatch(clearSelectedUserActivity());
-  }
+  };
+
+  const { width } = Dimensions.get('window');
 
   useEffect(() => {
     navigation.setOptions({
@@ -151,7 +153,7 @@ const ActivityDescription: React.FC<Props> = ({ navigation }) => {
                       {uri: updatedActivity.getImageUrl}
                     ) : require('../../assets/300x200.png')
                   }
-                  style={[{ width: '100%', height: 200, borderRadius: 25}]}
+                  style={[{ width: '100%', height: (width * 0.75), borderRadius: 25}]}
                 />
                 <Pressable
                     onPress={() => pickImage(currentUser.id)}
@@ -362,7 +364,7 @@ const ActivityDescription: React.FC<Props> = ({ navigation }) => {
                   selectedUserActivity.getImageUrl && (
                     <Image
                       source={{ uri: selectedUserActivity.getImageUrl }}
-                      style={[{ width: '100%', height: 200, borderRadius: 25}]}
+                      style={[{ width: '100%', height: (width * 0.75), borderRadius: 25}]}
                     />
                   )
                 }

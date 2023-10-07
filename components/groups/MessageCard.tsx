@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, ImageSourcePropType, Pressable, StyleSheet } from 'react-native';
+import { View, ImageSourcePropType, Pressable, StyleSheet, Dimensions } from 'react-native';
 import { Image } from 'expo-image';
 import CustomText from '../CustomText';
 import globalStyles from '../../styles/global';
@@ -25,7 +25,8 @@ const MessageCard: React.FC<Props> = (props: Props) => {
 
   const viewResponses = async (id: string) => {
     navigation.navigate('View Comment', { postId: id });
-  }
+  };
+  const { width } = Dimensions.get('window');
 
   return (
     <View style={[messageStyle.cardContainer]}>
@@ -51,7 +52,7 @@ const MessageCard: React.FC<Props> = (props: Props) => {
           <View>
             <Image
               source={postId.postImage}
-              style={[{ width: '100%', height: 150, borderRadius: 25}]}
+              style={[{ width: '100%', height: (width * 0.75), borderRadius: 25}]}
             />
           </View>
         )

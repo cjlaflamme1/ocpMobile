@@ -2,8 +2,8 @@ import axios from 'axios';
 import * as SecureStore from 'expo-secure-store';
 
 const api = axios.create({
-  // baseURL: 'https://prod.outdoorcommunityproject.com',
-  baseURL: 'https://staging.outdoorcommunityproject.com',
+  baseURL: 'https://prod.outdoorcommunityproject.com',
+  // baseURL: 'https://staging.outdoorcommunityproject.com',
   // baseURL: Platform.OS === 'ios' ? 'http://localhost:3000' : 'http://10.0.2.2:3000',
   headers: {
     'Content-Type': 'application/json',

@@ -1,5 +1,5 @@
 import React, { memo, useEffect, useState } from 'react';
-import { StyleSheet, View, Pressable } from 'react-native';
+import { StyleSheet, View, Pressable, Dimensions } from 'react-native';
 import { Image } from 'expo-image';
 import CustomText from '../../components/CustomText';
 import layoutStyles from '../../styles/layout';
@@ -66,6 +66,8 @@ const ViewEvent: React.FC<Props> = memo(({ navigation, event, currentUser }) => 
     }
   };
 
+  const { width } = Dimensions.get('window');
+
   return (
     <View style={[{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', flexGrow: 1}]}>
       <View style={[layoutStyles.mb_3]}>
@@ -76,14 +78,14 @@ const ViewEvent: React.FC<Props> = memo(({ navigation, event, currentUser }) => 
               <View>
                 <Image
                   source={{ uri: event.imageGetUrl }}
-                  style={[{ width: '100%', height: 150, borderRadius: 25}]}
+                  style={[{ width: '100%', height: (width * 0.75), borderRadius: 25}]}
                 />
               </View>
             )
           }
           <View style={[layoutStyles.mt_1, layoutStyles.mb_1]}>
             <CustomText h1 bold>
-              {event.cancelled && 'CANCELLED - '}{event.title}
+              {event.cancelled && 'CANCELED - '}{event.title}
             </CustomText>
           </View>
           <View style={[layoutStyles.mt_1, layoutStyles.mb_1]}>

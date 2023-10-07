@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { View, RefreshControl, Pressable } from 'react-native';
+import { View, RefreshControl, Pressable, Dimensions } from 'react-native';
 import { Image } from 'expo-image';
 import layoutStyles from '../../styles/layout';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
