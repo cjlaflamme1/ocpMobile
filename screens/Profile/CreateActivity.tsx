@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { ScrollView, View, RefreshControl, TextInput, Switch, Pressable, Platform } from 'react-native';
+import { ScrollView, View, RefreshControl, TextInput, Switch, Pressable, Platform, Dimensions } from 'react-native';
 import { Image } from 'expo-image';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import CustomText from '../../components/CustomText';
@@ -113,7 +113,7 @@ const CreateActivity: React.FC<Props> = ({ navigation }) => {
     } else {
       return null;
     }
-  }
+  };
 
   const pickImage = async () => {
     // No permissions request is necessary for launching the image library
@@ -129,6 +129,8 @@ const CreateActivity: React.FC<Props> = ({ navigation }) => {
       setSelectedImage(currentFile);
     };
   };
+
+  const { width } = Dimensions.get('window');
 
   return (
     <View style={[layoutStyles.screenContainer]}>
@@ -146,7 +148,7 @@ const CreateActivity: React.FC<Props> = ({ navigation }) => {
               <View style={[layoutStyles.mt_2]}>
                 <Image
                   source={{uri: selectedImage.uri}}
-                  style={[{ width: '100%', height: 200, borderRadius: 25}]}
+                  style={[{ width: '100%', height: (width * 0.75), borderRadius: 25}]}
                 />
                 <Pressable
                     onPress={pickImage}

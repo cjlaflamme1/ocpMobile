@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, ScrollView, RefreshControl } from 'react-native';
+import { View, ScrollView, RefreshControl, Dimensions } from 'react-native';
 import { Image } from 'expo-image';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import layoutStyles from '../../styles/layout';
@@ -31,6 +31,8 @@ const ViewUserActivity: React.FC<Props> = ({ navigation, route }) => {
     }
   }, [userActivityId]);
 
+  const { width } = Dimensions.get('window');
+
   if (!selectedUserActivity) {
     return (<View />);
   }
@@ -44,7 +46,7 @@ const ViewUserActivity: React.FC<Props> = ({ navigation, route }) => {
               selectedUserActivity.getImageUrl && (
                 <Image
                   source={{ uri: selectedUserActivity.getImageUrl }}
-                  style={[{ width: '100%', height: 200, borderRadius: 25}]}
+                  style={[{ width: '100%', height: (width * 0.75), borderRadius: 25}]}
                 />
               )
             }

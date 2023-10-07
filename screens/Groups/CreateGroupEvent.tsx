@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { View, ScrollView, RefreshControl, Pressable, TextInput, Button, Platform } from 'react-native';
+import { View, ScrollView, RefreshControl, Pressable, TextInput, Button, Platform, Dimensions } from 'react-native';
 import { Image } from 'expo-image';
 import CustomText from '../../components/CustomText';
 import * as ImagePicker from 'expo-image-picker';
@@ -159,6 +159,8 @@ const CreateGroupEvent: React.FC<Props> = ({ navigation }) => {
     setSubmitting(false);
   };
 
+  const { width } = Dimensions.get('window');
+
   return (
     <View style={[layoutStyles.screenContainer]}>
       <KeyboardAwareScrollView
@@ -177,7 +179,7 @@ const CreateGroupEvent: React.FC<Props> = ({ navigation }) => {
               <View style={[layoutStyles.mt_2]}>
                 <Image
                   source={{uri: selectedImage.uri}}
-                  style={[{ width: '100%', height: 200, borderRadius: 25}]}
+                  style={[{ width: '100%', height: (width * 0.75), borderRadius: 25}]}
                 />
                 <Pressable
                     onPress={pickImage}

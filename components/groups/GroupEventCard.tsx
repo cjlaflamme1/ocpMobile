@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { View, ImageSourcePropType, Pressable, TextInput, StyleSheet } from 'react-native';
+import { View, ImageSourcePropType, Pressable, TextInput, StyleSheet, Dimensions } from 'react-native';
 import { Image } from 'expo-image';
 import CustomText from '../CustomText';
 import globalStyles from '../../styles/global';
@@ -30,7 +30,8 @@ const EventCard: React.FC<Props> = (props: Props) => {
 
   const viewEvent = (id: string) => {
     navigation.navigate('View Group Event', { eventId: id });
-  }
+  };
+  const { width } = Dimensions.get('window');
 
   return (
     <View style={[eventStyle.cardContainer, (event.cancelled && eventStyle.cancelledEvent)]}>
@@ -59,7 +60,7 @@ const EventCard: React.FC<Props> = (props: Props) => {
             <View>
               <Image
                 source={{ uri: event.imageGetUrl }}
-                style={[{ width: '100%', height: 150, borderRadius: 25}]}
+                style={[{ width: '100%', height: (width * 0.75), borderRadius: 25}]}
               />
             </View>
           )

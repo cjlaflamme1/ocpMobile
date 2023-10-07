@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { ScrollView, View, RefreshControl, Pressable } from 'react-native';
+import { ScrollView, View, RefreshControl, Pressable, Dimensions } from 'react-native';
 import { Image } from 'expo-image';
 import CustomText from '../../components/CustomText';
 import layoutStyles from '../../styles/layout';
@@ -205,6 +205,7 @@ const GroupView: React.FC<Props> = ({ navigation, route }) => {
       }
     }
   };
+  const { width } = Dimensions.get('window');
 
   if (!selectedGroup) {
     return (<View />);
@@ -219,7 +220,7 @@ const GroupView: React.FC<Props> = ({ navigation, route }) => {
               source={ selectedGroup.imageGetUrl ? {
                 uri: selectedGroup.imageGetUrl
               } : require('../../assets/300x200.png')}
-              style={[{ width: '100%', height: 200, borderRadius: 25}]}
+              style={[{ width: '100%', height: (width * 0.75), borderRadius: 25}]}
             />
           </View>
           <View style={[layoutStyles.mt_2]}>
