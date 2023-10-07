@@ -9,7 +9,6 @@ const titleWithButtonStyle = StyleSheet.create({
   icon: {
     width: 16,
     height: 16,
-    resizeMode: 'contain',
   },
   iconButton: {
     width: 24,

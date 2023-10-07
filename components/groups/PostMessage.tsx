@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
+import { View, Pressable, TextInput } from 'react-native';
+import { Image } from 'expo-image';
 import { Platform, StyleSheet } from 'react-native';
 import inputStyle from '../../styles/componentStyles/inputBar';
 import layoutStyles from '../../styles/layout';
 import CustomText from '../CustomText';
 import { CreateGroupPostDto } from '../../store/groupPostSlice';
 import { postPresignedUrl, putImageOnS3 } from '../../api/s3API';
-import { View, Image, ImageSourcePropType, Pressable, TextInput } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import {Buffer} from "buffer";
 import { manipulateAsync } from 'expo-image-manipulator';
@@ -113,7 +114,8 @@ const PostMessageCard: React.FC<Props> = (props: Props) => {
           >
             <Image
               source={require('../../assets/icons/photo.png')}
-              style={[{ width: 24, height: 24, resizeMode: 'contain'}]}
+              style={[{ width: 24, height: 24 }]}
+              contentFit='contain'
             />
           </Pressable>
           {/* <Pressable

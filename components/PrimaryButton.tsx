@@ -1,8 +1,5 @@
 import React from 'react';
-import { View, Image, ImageSourcePropType, Pressable, ViewStyle, StyleProp } from 'react-native';
-import globalStyles from '../styles/global';
-import layoutStyles from '../styles/layout';
-import groupCardStyles from '../styles/screenStyles/groups/groupCard';
+import { Pressable, ViewStyle, StyleProp } from 'react-native';
 import CustomText from './CustomText';
 
 interface Props {

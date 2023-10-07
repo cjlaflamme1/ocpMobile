@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { View, Image, ImageSourcePropType, Animated, ViewStyle, TextInputProps, TextInput, TouchableOpacity, Pressable, StyleSheet, ScrollView } from 'react-native';
+import { View, Animated, ViewStyle, TextInputProps, TextInput, TouchableOpacity, Pressable, StyleSheet, ScrollView } from 'react-native';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { clearUserList, getAllUsersAsync, User } from '../store/userSlice';
 import inputStyle from '../styles/componentStyles/inputBar';

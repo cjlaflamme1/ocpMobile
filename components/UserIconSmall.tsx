@@ -1,8 +1,7 @@
 import React from 'react';
-import { View, Image, ImageSourcePropType } from 'react-native';
-import globalStyles from '../styles/global';
+import { View, ImageSourcePropType } from 'react-native';
+import { Image } from 'expo-image';
 import layoutStyles from '../styles/layout';
-import groupCardStyles from '../styles/screenStyles/groups/groupCard';
 import CustomText from './CustomText';
 
 interface Props {

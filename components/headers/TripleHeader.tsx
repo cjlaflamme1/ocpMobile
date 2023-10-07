@@ -1,7 +1,8 @@
 import React from 'react';
 import {
-  View, Image, Pressable,
+  View, Pressable,
 } from 'react-native';
+import { Image } from 'expo-image';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import layoutStyles from '../../styles/layout';
 import CustomText from '../CustomText';
@@ -30,6 +31,7 @@ const TripleHeader: React.FC<Props> = ({ navigation, title, children }) => {
           <Image
             style={[titleWithButtonStyle.icon]}
             source={require('../../assets/icons/backButtonIcon.png')}
+            contentFit='contain'
           />
         </Pressable>
       </View>

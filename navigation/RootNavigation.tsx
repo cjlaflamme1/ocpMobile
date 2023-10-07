@@ -1,7 +1,5 @@
 import React, { useEffect } from 'react';
-import { View, StyleSheet, Platform, Text, Image, Button } from 'react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import LoginSignup from '../screens/Auth/SignIn';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import TabNavigator from './TabNavigator';
 import { getCurrentUserAsync, updateCurrentUserAsync } from '../store/userSlice';

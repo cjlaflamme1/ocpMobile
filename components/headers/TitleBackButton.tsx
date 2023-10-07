@@ -1,7 +1,8 @@
 import React from 'react';
 import {
-  View, Image, Pressable,
+  View, Pressable,
 } from 'react-native';
+import { Image } from 'expo-image';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import layoutStyles from '../../styles/layout';
 import CustomText from '../CustomText';
@@ -29,6 +30,7 @@ const TitleWithBackButton: React.FC<Props> = ({ navigation, title }) => {
           <Image
             style={[titleWithButtonStyle.icon]}
             source={require('../../assets/icons/backButtonIcon.png')}
+            contentFit='contain'
           />
         </Pressable>
       </View>
