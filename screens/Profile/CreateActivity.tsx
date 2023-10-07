@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { ScrollView, View, Image, RefreshControl, TextInput, Switch, Pressable, Platform } from 'react-native';
+import { ScrollView, View, RefreshControl, TextInput, Switch, Pressable, Platform } from 'react-native';
+import { Image } from 'expo-image';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import CustomText from '../../components/CustomText';
 import DropdownSelect, { DropdownData } from '../../components/DropdownSelect';
@@ -16,6 +17,7 @@ import { getUserActivitiesAsync } from '../../store/userActivitySlice';
 import PrimaryButton from '../../components/PrimaryButton';
 import { NavigationProp } from '@react-navigation/native';
 import TitleWithBackButton from '../../components/headers/TitleBackButton';
+import { manipulateAsync } from 'expo-image-manipulator';
 
 interface Props {
   navigation: NavigationProp<any, any>;
@@ -67,10 +69,15 @@ const CreateActivity: React.FC<Props> = ({ navigation }) => {
     if (newActivity && currentUser) {
       const activityDTO: CreateUserActivityDTO = {...newActivity};
       if (selectedImage && selectedImage.base64) {
+        const resizedImage = await manipulateAsync(selectedImage.uri, [{ resize: { width: 700 } }], { base64: true });
+        if (!resizedImage.base64) {
+          console.log('error');
+          return;
+        }
         const imageExt = selectedImage.uri.split('.').pop();
         const imageFileName = `${currentUser.id}/${activityDTO.activityTypeId}`;
   
-        const buff = Buffer.from(selectedImage.base64, "base64");
+        const buff = Buffer.from(resizedImage.base64, "base64");
         const preAuthPostUrl = await postPresignedUrl({ fileName: imageFileName, fileType: `${selectedImage.type}/${imageExt}`, fileDirectory: 'userActivityImages'}).then((response) => response).catch((e) => {
           return e;
         });
@@ -148,6 +155,7 @@ const CreateActivity: React.FC<Props> = ({ navigation }) => {
                     <Image
                       source={require("../../assets/icons/CameraWhite.png")}
                       style={[createActivityStyles.editImageIcon]}
+                      contentFit='contain'
                     />
                   </Pressable>
               </View>

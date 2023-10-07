@@ -1,12 +1,11 @@
 import React from 'react';
 import {
-  View, Image, Pressable,
+  View,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import layoutStyles from '../../styles/layout';
 import CustomText from '../CustomText';
 import titleWithButtonStyle from '../../styles/headerStyles/titleWithButton';
-import { NavigationProp } from '@react-navigation/native';
 
 interface Props {
   title: string;

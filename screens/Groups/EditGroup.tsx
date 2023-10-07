@@ -1,25 +1,20 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { View, Image, ScrollView, RefreshControl, Pressable, TextInput, Platform } from 'react-native';
+import { View, Pressable, TextInput, Platform } from 'react-native';
+import { Image } from 'expo-image';
 import CustomText from '../../components/CustomText';
 import * as ImagePicker from 'expo-image-picker';
 import {Buffer} from "buffer";
-import GroupCard from '../../components/GroupCard';
 import PrimaryButton from '../../components/PrimaryButton';
-import UserIconSmall from '../../components/UserIconSmall';
 import inputStyle from '../../styles/componentStyles/inputBar';
-import globalStyles from '../../styles/global';
 import layoutStyles from '../../styles/layout';
 import createGroupStyles from '../../styles/screenStyles/groups/createGroup';
-import groupsLandingStyle from '../../styles/screenStyles/groups/groupsLanding';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { createGroupAsync, CreateGroupDto, getAllGroupsAsync, getAllUserGroupsAsync, getOneGroupAsync, updateGroupAsync, UpdateGroupDto } from '../../store/groupSlice';
+import { getOneGroupAsync, updateGroupAsync, UpdateGroupDto } from '../../store/groupSlice';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { postPresignedUrl, putImageOnS3 } from '../../api/s3API';
-import { clearUserList, getAllUsersAsync, User } from '../../store/userSlice';
-import DropdownSelect, { DropdownData } from '../../components/DropdownSelect';
-import UserSearchDropdown from '../../components/UserSearchDropdown';
 import { NavigationProp } from '@react-navigation/native';
 import TitleWithBackButton from '../../components/headers/TitleBackButton';
+import { manipulateAsync } from 'expo-image-manipulator';
 
 interface Props {
   navigation: NavigationProp<any, any>;
@@ -28,7 +23,6 @@ interface Props {
 
 const EditGroup: React.FC<Props> = ({ navigation, route }) => {
   const [groupObj, setGroupObj] = useState<UpdateGroupDto>();
-  const [selectedUserIds, setSelectedUserIds] = useState<Partial<User>[]>([]);
   const [updating, setUpdating] = useState(false);
   const [selectedImage, setSelectedImage] = useState<ImagePicker.ImagePickerAsset>();
   const scrollViewRef = useRef<KeyboardAwareScrollView|null>(null);
@@ -50,6 +44,7 @@ const EditGroup: React.FC<Props> = ({ navigation, route }) => {
       setGroupObj({
         coverPhoto: '',
         title: '',
+        location: '',
         description: '',
         addingAdminIds: [],
         addingUserIds: [],
@@ -72,8 +67,13 @@ const EditGroup: React.FC<Props> = ({ navigation, route }) => {
     if (selectedImage && selectedImage.base64) {
       const imageExt = selectedImage.uri.split('.').pop();
       const imageFileName = `${groupObj.title}-${selectedImage.fileName}`;
-
-      const buff = Buffer.from(selectedImage.base64, "base64");
+      const resizedImage = await manipulateAsync(selectedImage.uri, [{ resize: { width: 700 } }], { base64: true });
+      if (!resizedImage.base64) {
+        console.log('error');
+        setUpdating(false);
+        return;
+      }
+      const buff = Buffer.from(resizedImage.base64, "base64");
       const preAuthPostUrl = await postPresignedUrl({ fileName: imageFileName, fileType: `${selectedImage.type}/${imageExt}`, fileDirectory: 'groupImages'}).then((response) => response).catch((e) => {
         return e;
       });
@@ -88,6 +88,7 @@ const EditGroup: React.FC<Props> = ({ navigation, route }) => {
         body: {
           title: groupObj.title,
           description: groupObj.description,
+          location: groupObj.location,
           coverPhoto: newCoverImage,
         }
       }));
@@ -139,6 +140,7 @@ const EditGroup: React.FC<Props> = ({ navigation, route }) => {
                     <Image
                       source={require("../../assets/icons/CameraWhite.png")}
                       style={[createGroupStyles.editImageIcon]}
+                      contentFit='contain'
                     />
                   </Pressable>
               </View>
@@ -175,6 +177,24 @@ const EditGroup: React.FC<Props> = ({ navigation, route }) => {
                   setGroupObj({
                     ...groupObj,
                     title: e,
+                  })
+                }}
+              />
+            </View>
+          </View>
+          <View style={[layoutStyles.mt_2]}>
+            <CustomText style={[layoutStyles.mb_1]}>
+              Group Location
+            </CustomText>
+            <View style={[inputStyle.fullWidthInputContainer]}>
+              <TextInput
+                placeholder='Enter general location of group'
+                defaultValue={groupObj.location}
+                style={[inputStyle.fullWidthInput]}
+                onChangeText={(e) => {
+                  setGroupObj({
+                    ...groupObj,
+                    location: e,
                   })
                 }}
               />

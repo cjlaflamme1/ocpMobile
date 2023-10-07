@@ -20,7 +20,6 @@ const createGroupStyles = StyleSheet.create({
   editImageIcon: {
     height: 30,
     width: 30,
-    resizeMode: 'contain',
     padding: 10,
   },
   editImagePressable: {

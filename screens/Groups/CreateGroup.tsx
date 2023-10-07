@@ -1,25 +1,23 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { View, Image, ScrollView, RefreshControl, Pressable, TextInput, Platform } from 'react-native';
+import { View, Pressable, TextInput, Platform } from 'react-native';
+import { Image } from 'expo-image';
 import CustomText from '../../components/CustomText';
 import * as ImagePicker from 'expo-image-picker';
 import {Buffer} from "buffer";
-import GroupCard from '../../components/GroupCard';
 import PrimaryButton from '../../components/PrimaryButton';
 import UserIconSmall from '../../components/UserIconSmall';
 import inputStyle from '../../styles/componentStyles/inputBar';
-import globalStyles from '../../styles/global';
 import layoutStyles from '../../styles/layout';
 import createGroupStyles from '../../styles/screenStyles/groups/createGroup';
-import groupsLandingStyle from '../../styles/screenStyles/groups/groupsLanding';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { createGroupAsync, CreateGroupDto, getAllGroupsAsync, getAllUserGroupsAsync } from '../../store/groupSlice';
+import { createGroupAsync, CreateGroupDto, getAllUserGroupsAsync } from '../../store/groupSlice';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { postPresignedUrl, putImageOnS3 } from '../../api/s3API';
-import { clearUserList, getAllUsersAsync, User } from '../../store/userSlice';
-import DropdownSelect, { DropdownData } from '../../components/DropdownSelect';
+import { User } from '../../store/userSlice';
 import UserSearchDropdown from '../../components/UserSearchDropdown';
 import { NavigationProp } from '@react-navigation/native';
 import TitleWithBackButton from '../../components/headers/TitleBackButton';
+import { manipulateAsync } from 'expo-image-manipulator';
 
 interface Props {
   navigation: NavigationProp<any, any>;
@@ -27,6 +25,7 @@ interface Props {
 
 const CreateGroup: React.FC<Props> = ({ navigation }) => {
   const [newGroupObj, setNewGroupObj] = useState<CreateGroupDto>();
+  const [submitting, setSubmitting] = useState(false);
   const [selectedUserIds, setSelectedUserIds] = useState<Partial<User>[]>([]);
   const [selectedImage, setSelectedImage] = useState<ImagePicker.ImagePickerAsset>();
   const scrollViewRef = useRef<KeyboardAwareScrollView|null>(null);
@@ -39,6 +38,7 @@ const CreateGroup: React.FC<Props> = ({ navigation }) => {
       setNewGroupObj({
         coverPhoto: '',
         title: '',
+        location: '',
         description: '',
         groupAdminIds: [],
         pendingInvitationUserIds: [],
@@ -56,12 +56,18 @@ const CreateGroup: React.FC<Props> = ({ navigation }) => {
   }
 
   const submitNewGroup = async () => {
+    setSubmitting(true);
     let newCoverImage = '';
     if (selectedImage && selectedImage.base64) {
       const imageExt = selectedImage.uri.split('.').pop();
       const imageFileName = `${newGroupObj.title}-${selectedImage.fileName}`;
-
-      const buff = Buffer.from(selectedImage.base64, "base64");
+      const resizedImage = await manipulateAsync(selectedImage.uri, [{ resize: { width: 700 } }], { base64: true });
+      if (!resizedImage.base64) {
+        console.log('error');
+        setSubmitting(false);
+        return;
+      }
+      const buff = Buffer.from(resizedImage.base64, "base64");
       const preAuthPostUrl = await postPresignedUrl({ fileName: imageFileName, fileType: `${selectedImage.type}/${imageExt}`, fileDirectory: 'groupImages'}).then((response) => response).catch((e) => {
         return e;
       });
@@ -84,6 +90,7 @@ const CreateGroup: React.FC<Props> = ({ navigation }) => {
           skip: 0,
         }
       }));
+      setSubmitting(false);
       navigation.navigate('Groups Landing');
     }
   };
@@ -130,6 +137,7 @@ const CreateGroup: React.FC<Props> = ({ navigation }) => {
                     <Image
                       source={require("../../assets/icons/CameraWhite.png")}
                       style={[createGroupStyles.editImageIcon]}
+                      contentFit='contain'
                     />
                   </Pressable>
               </View>
@@ -165,6 +173,23 @@ const CreateGroup: React.FC<Props> = ({ navigation }) => {
                   setNewGroupObj({
                     ...newGroupObj,
                     title: e,
+                  })
+                }}
+              />
+            </View>
+          </View>
+          <View style={[layoutStyles.mt_2]}>
+            <CustomText style={[layoutStyles.mb_1]}>
+              Group Location
+            </CustomText>
+            <View style={[inputStyle.fullWidthInputContainer]}>
+              <TextInput
+                placeholder='Enter general location of group'
+                style={[inputStyle.fullWidthInput]}
+                onChangeText={(e) => {
+                  setNewGroupObj({
+                    ...newGroupObj,
+                    location: e,
                   })
                 }}
               />
@@ -221,7 +246,7 @@ const CreateGroup: React.FC<Props> = ({ navigation }) => {
           <View style={[layoutStyles.mt_3]}>
             <PrimaryButton
               buttonText='Create'
-              disabled={!newGroupObj.title || !newGroupObj.description}
+              disabled={!newGroupObj.title || !newGroupObj.description || submitting}
               callback={submitNewGroup}
             />
           </View>

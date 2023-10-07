@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { View, Image, ImageSourcePropType, Pressable, TextInput, StyleSheet, Modal } from 'react-native';
+import { View, ImageSourcePropType, Pressable, TextInput, StyleSheet, Modal } from 'react-native';
+import { Image } from 'expo-image';
 import CustomText from '../CustomText';
 import globalStyles from '../../styles/global';
 import layoutStyles from '../../styles/layout';
@@ -31,7 +32,8 @@ const PreviewGroupModal: React.FC<Props> = (props: Props) => {
           <Pressable style={[{ position: 'absolute', right: 20, top: 20}]} onPress={closeModal}>
             <Image
               source={require('../../assets/icons/Close-Square.png')}
-              style={[{ height: 24, width: 24, resizeMode: 'contain'}]}
+              style={[{ height: 24, width: 24 }]}
+              contentFit='contain'
             />
           </Pressable>
           <View style={[layoutStyles.mb_3]}>
@@ -72,7 +74,6 @@ const inviteStyle = StyleSheet.create({
     width: 32,
     height: 32,
     borderRadius: 25,
-    resizeMode: 'contain',
   },
   iconStyle: {
     height: 25,

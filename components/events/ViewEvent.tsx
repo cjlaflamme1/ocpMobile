@@ -1,14 +1,13 @@
-import React, { memo, useEffect, useRef, useState } from 'react';
-import { StyleSheet, ScrollView, View, Image, RefreshControl, AppState, Text, Button, Pressable, FlatList, KeyboardAvoidingView, Platform } from 'react-native';
+import React, { memo, useEffect, useState } from 'react';
+import { StyleSheet, View, Pressable } from 'react-native';
+import { Image } from 'expo-image';
 import CustomText from '../../components/CustomText';
 import layoutStyles from '../../styles/layout';
 import globalStyles from '../../styles/global';
 import groupViewStyle from '../../styles/screenStyles/groups/groupView';
-import PostMessageCard from '../../components/groups/PostMessage';
-import MessageCard from '../../components/groups/MessageCard';
-import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { clearPosts, clearSelectedPost, createGroupPostAsync, CreateGroupPostDto, createPostResponseAsync, getAllGroupPostsAsync, getOneGroupPostAsync } from '../../store/groupPostSlice';
-import { NavigationProp, useRoute } from '@react-navigation/native';
+import { useAppDispatch } from '../../store/hooks';
+import { createPostResponseAsync } from '../../store/groupPostSlice';
+import { NavigationProp } from '@react-navigation/native';
 import CommentResponse from '../../components/groups/CommentResponse';
 import { dateAndTime, timeSince } from '../../services/timeAndDate';
 import { GroupEvent, clearSelectedEvent, getOneGroupEventAsync, updateGroupEventAsync } from '../../store/groupEventSlice';
@@ -151,6 +150,7 @@ const ViewEvent: React.FC<Props> = memo(({ navigation, event, currentUser }) => 
                           { uri: postResponse.author.imageGetUrl } :
                           require('../../assets/150x150.png')
                     }
+                    contentFit='contain'
                     style={[eventStyle.postProfileImage, layoutStyles.mr_2]}
                   />
                   <CustomText>{`${postResponse.author.firstName} ${postResponse.author.lastName}`}</CustomText>
@@ -196,11 +196,5 @@ const eventStyle = StyleSheet.create({
     width: 32,
     height: 32,
     borderRadius: 25,
-    resizeMode: 'contain',
-  },
-  iconStyle: {
-    height: 25,
-    width: 25,
-    resizeMode: 'contain',
   }
 });

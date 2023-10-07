@@ -1,5 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { View, Image, ImageSourcePropType, Animated, ViewStyle, TextInputProps, TextInput, TouchableOpacity, Pressable, StyleSheet, ScrollView } from 'react-native';
+import React, { useRef, useState } from 'react';
+import { View, Animated, ViewStyle, TextInputProps, TextInput, TouchableOpacity, Pressable, StyleSheet, ScrollView } from 'react-native';
 import inputStyle from '../styles/componentStyles/inputBar';
 import CustomText from './CustomText';
 

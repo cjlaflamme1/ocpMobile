@@ -1,5 +1,6 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { Pressable, View, Image, StyleProp, ViewStyle } from 'react-native';
+import React, { useCallback } from 'react';
+import { Pressable, View, StyleProp, ViewStyle } from 'react-native';
+import { Image } from 'expo-image';
 import { Notifications, getNotificationsAsync, updateNotificationAsync } from '../../store/notificationSlice';
 import CustomText from '../CustomText';
 import layoutStyles from '../../styles/layout';
@@ -43,10 +44,10 @@ const NotificationItem: React.FC<Props> = (props: Props) => {
       navigation.navigate('Groups', { screen: 'View Group Event', initial: false, params: { eventId: eventId } });
     }
     if (invite) {
-      navigation.navigate('Groups', { screen: 'Groups Landing', params: { invite: true }});
+      navigation.navigate('Groups', { screen: 'Groups Landing', initial: false, params: { invite: true }});
     }
     return null;
-  }, [groupId, postId, eventId]);
+  }, [groupId, postId, eventId, invite]);
 
   const clickAction = () => {
     if (!viewed) {
@@ -75,6 +76,7 @@ const NotificationItem: React.FC<Props> = (props: Props) => {
       <Image
         source={require('../../assets/icons/chevronRight.png')}
         style={[notificationItemStyles.chevronIcon]}
+        contentFit='contain'
       />
     </Pressable>
   );

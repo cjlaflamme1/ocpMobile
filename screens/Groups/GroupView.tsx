@@ -1,5 +1,6 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { ScrollView, View, Image, RefreshControl, AppState, Text, Button, Pressable, FlatList } from 'react-native';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { ScrollView, View, RefreshControl, Pressable } from 'react-native';
+import { Image } from 'expo-image';
 import CustomText from '../../components/CustomText';
 import layoutStyles from '../../styles/layout';
 import globalStyles from '../../styles/global';
@@ -11,7 +12,6 @@ import { clearSelectedGroup, createGroupInvitesAsync, getAllUserGroupsAsync, get
 import { clearPosts, createGroupPostAsync, CreateGroupPostDto, getAllGroupPostsAsync } from '../../store/groupPostSlice';
 import { QueryObject, SortOrder } from '../../models/QueryObject';
 import SendInviteModal from '../../components/groups/SendInviteModal';
-import InviteModal from '../../components/groups/InviteModal';
 import { User } from '../../store/userSlice';
 import PrimaryButton from '../../components/PrimaryButton';
 import { getAllGroupEventsAsync } from '../../store/groupEventSlice';
@@ -101,7 +101,8 @@ const GroupView: React.FC<Props> = ({ navigation, route }) => {
             >
               <Image
                 source={require('../../assets/icons/Setting.png')}
-                style={[{ height: 24, width: 24, resizeMode: 'contain'}, layoutStyles.mr_1]}
+                contentFit='contain'
+                style={[{ height: 24, width: 24 }, layoutStyles.mr_1]}
               />
             </Pressable>
           </TripleHeader>
@@ -225,6 +226,19 @@ const GroupView: React.FC<Props> = ({ navigation, route }) => {
             <CustomText h1 bold>
               { selectedGroup.title }
             </CustomText>
+            {
+              selectedGroup.location
+              && (
+                <View style={[layoutStyles.flexRow, layoutStyles.jStart, layoutStyles.m_1]}>
+                  <Image 
+                    source={require('../../assets/icons/location.png')}
+                    style={[{width: 16, height: 16, alignSelf: 'center'}]}
+                    contentFit='contain'
+                  />
+                  <CustomText style={[globalStyles.mutedText]}>{selectedGroup.location}</CustomText>
+                </View>
+              )
+            }
             <View style={[layoutStyles.dFlex, layoutStyles.flexRow]}>
               <Pressable style={[groupViewStyle.viewMembersButton]} onPress={() => setUserModal(true)}>
                 <CustomText style={[globalStyles.mutedText, { textDecorationLine: 'underline' }]}>

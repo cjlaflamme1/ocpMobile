@@ -1,17 +1,15 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { StyleSheet, ScrollView, View, Image, RefreshControl, AppState, Text, Button, Pressable, FlatList, KeyboardAvoidingView, Platform } from 'react-native';
+import { StyleSheet, View, RefreshControl } from 'react-native';
+import { Image } from 'expo-image';
 import CustomText from '../../components/CustomText';
 import layoutStyles from '../../styles/layout';
 import globalStyles from '../../styles/global';
-import groupViewStyle from '../../styles/screenStyles/groups/groupView';
-import PostMessageCard from '../../components/groups/PostMessage';
 import MessageCard from '../../components/groups/MessageCard';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { clearSelectedGroup, getOneGroupAsync } from '../../store/groupSlice';
-import { clearPosts, clearSelectedPost, createGroupPostAsync, CreateGroupPostDto, createPostResponseAsync, getAllGroupPostsAsync, getOneGroupPostAsync } from '../../store/groupPostSlice';
+import { clearSelectedPost, createPostResponseAsync, getOneGroupPostAsync } from '../../store/groupPostSlice';
 import { QueryObject, SortOrder } from '../../models/QueryObject';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { NavigationProp, useRoute } from '@react-navigation/native';
+import { NavigationProp } from '@react-navigation/native';
 import CommentResponse from '../../components/groups/CommentResponse';
 import { timeSince } from '../../services/timeAndDate';
 import TitleWithBackButton from '../../components/headers/TitleBackButton';
@@ -121,6 +119,7 @@ const ViewGroupMessage: React.FC<Props> = ({ navigation, route }) => {
                            { uri: postResponse.author.imageGetUrl } :
                             require('../../assets/150x150.png')
                       }
+                      contentFit='contain'
                       style={[messageStyle.postProfileImage, layoutStyles.mr_2]}
                     />
                     <CustomText>{`${postResponse.author.firstName} ${postResponse.author.lastName}`}</CustomText>
@@ -161,11 +160,9 @@ const messageStyle = StyleSheet.create({
     width: 32,
     height: 32,
     borderRadius: 25,
-    resizeMode: 'contain',
   },
   iconStyle: {
     height: 25,
     width: 25,
-    resizeMode: 'contain',
   }
 });

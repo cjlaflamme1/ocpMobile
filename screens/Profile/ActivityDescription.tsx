@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { ScrollView, View, Image, RefreshControl, Pressable, TextInput, Switch, Alert, Platform } from 'react-native';
+import { ScrollView, View, RefreshControl, Pressable, TextInput, Switch, Alert, Platform } from 'react-native';
+import { Image } from 'expo-image';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import * as ImagePicker from 'expo-image-picker';
 import {Buffer} from "buffer";
@@ -16,6 +17,7 @@ import { NavigationProp } from '@react-navigation/native';
 import TripleHeader from '../../components/headers/TripleHeader';
 import BottomSheet from '@gorhom/bottom-sheet';
 import ActivitySettingsSheet from '../../components/bottomsheet/ActivitySettingsSheet';
+import { manipulateAsync } from 'expo-image-manipulator';
 
 interface Props {
   navigation: NavigationProp<any, any>;
@@ -57,10 +59,15 @@ const ActivityDescription: React.FC<Props> = ({ navigation }) => {
       });
       if ((result.canceled === false) && result.assets.length > 0 && result.assets[0].base64) {
         const currentFile = result.assets[0];
+        const resizedImage = await manipulateAsync(currentFile.uri, [{ resize: { width: 700 } }], { base64: true });
+        if (!resizedImage.base64) {
+          console.log('error');
+          return;
+        }
         const imageExt = currentFile.uri.split('.').pop();
           const imageFileName = `${userId}/${selectedUserActivity?.activityType.id}`;
   
-        const buff = Buffer.from(result.assets[0].base64, "base64");
+        const buff = Buffer.from(resizedImage.base64, "base64");
         const preAuthPostUrl = await postPresignedUrl({ fileName: imageFileName, fileType: `${result.assets[0].type}/${imageExt}`, fileDirectory: 'userActivityImages'}).then((response) => response).catch((e) => {
           return e;
         });
@@ -110,7 +117,8 @@ const ActivityDescription: React.FC<Props> = ({ navigation }) => {
           >
             <Image
               source={require('../../assets/icons/Setting.png')}
-              style={[{ height: 24, width: 24, resizeMode: 'contain'}, layoutStyles.mr_1]}
+              style={[{ height: 24, width: 24}, layoutStyles.mr_1]}
+              contentFit='contain'
             />
           </Pressable>
         </TripleHeader>
@@ -152,6 +160,7 @@ const ActivityDescription: React.FC<Props> = ({ navigation }) => {
                     <Image
                       source={require("../../assets/icons/CameraWhite.png")}
                       style={[createActivityStyles.editImageIcon]}
+                      contentFit='contain'
                     />
                   </Pressable>
               </View>

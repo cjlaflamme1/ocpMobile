@@ -1,9 +1,7 @@
 import React from 'react';
-import { View, Image, ImageSourcePropType, Modal, StyleSheet, Pressable, ScrollView } from 'react-native';
-import { User } from '../../store/userSlice';
+import { View, Modal, StyleSheet, Pressable, ScrollView } from 'react-native';
+import { Image } from 'expo-image';
 import CustomText from '../CustomText';
-import UserIconSmall from '../UserIconSmall';
-import { NavigationProp } from '@react-navigation/native';
 
 interface Props {
   isVisible: boolean;
@@ -30,7 +28,8 @@ const GroupDescriptionModal: React.FC<Props> = (props: Props) => {
           <Pressable style={[{ position: 'absolute', right: 20, top: 20}]} onPress={closeModal}>
             <Image
               source={require('../../assets/icons/Close-Square.png')}
-              style={[{ height: 24, width: 24, resizeMode: 'contain'}]}
+              style={[{ height: 24, width: 24 }]}
+              contentFit='contain'
             />
           </Pressable>
           <View style={[{ maxHeight: 500, paddingTop: 20, paddingBottom: 20 }]}>

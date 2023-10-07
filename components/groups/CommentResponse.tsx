@@ -1,11 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { View, Image, ImageSourcePropType, Pressable, TextInput, StyleSheet } from 'react-native';
+import { View, Pressable, TextInput, StyleSheet } from 'react-native';
 import inputStyle from '../../styles/componentStyles/inputBar';
 import layoutStyles from '../../styles/layout';
 import CustomText from '../CustomText';
-import { CreateGroupPostDto } from '../../store/groupPostSlice';
-import * as ImagePicker from 'expo-image-picker';
-import {Buffer} from "buffer";
 import { NavigationProp } from '@react-navigation/native';
 
 interface Props {

@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { View, StyleSheet, Platform, Text, Image, Button, TextInput, Pressable, ScrollView } from 'react-native';
+import { View, TextInput, Pressable } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import CustomText from '../../components/CustomText';
 import { useAppDispatch } from '../../store/hooks';

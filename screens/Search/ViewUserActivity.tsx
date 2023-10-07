@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { View, Image, ScrollView, RefreshControl } from 'react-native';
+import { View, ScrollView, RefreshControl } from 'react-native';
+import { Image } from 'expo-image';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import layoutStyles from '../../styles/layout';
 import { NavigationProp } from '@react-navigation/native';

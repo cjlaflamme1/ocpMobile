@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { ScrollView, View, Image, RefreshControl, AppState, Text, Button, Pressable, TextInput, Platform } from 'react-native';
+import { View, RefreshControl, Pressable, TextInput, Platform } from 'react-native';
+import { Image } from 'expo-image';
 import ProfileActivityCard from '../../components/ProfileActivityCard';
 import CustomText from '../../components/CustomText';
 import globalStyles from '../../styles/global';
@@ -10,7 +11,6 @@ import { logoutAction } from '../../store/authSlice';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import * as ImagePicker from 'expo-image-picker';
 import {Buffer} from "buffer";
-import * as FileSystem from "expo-file-system";
 import { postPresignedUrl, putImageOnS3 } from '../../api/s3API';
 import { getCurrentUserAsync, updateCurrentUserAsync } from '../../store/userSlice';
 import { NavigationProp } from '@react-navigation/native';
@@ -23,6 +23,7 @@ import BottomSheet from '@gorhom/bottom-sheet';
 import TitleAndAction from '../../components/headers/TitleAndAction';
 import PrimaryButton from '../../components/PrimaryButton';
 import { selectDefaultImage } from '../../services/defaultImage';
+import { manipulateAsync } from 'expo-image-manipulator';
 
 interface Props {
   navigation: NavigationProp<any, any>
@@ -61,6 +62,7 @@ const ProfileLanding: React.FC<Props> = ({ navigation }) => {
           >
             <Image
               source={require('../../assets/icons/Setting.png')}
+              contentFit='contain'
               style={[{ height: 24, width: 24, resizeMode: 'contain'}, layoutStyles.mr_1]}
             />
           </Pressable>
@@ -110,10 +112,15 @@ const ProfileLanding: React.FC<Props> = ({ navigation }) => {
     });
 
     if ((result.canceled === false) && result.assets.length > 0 && result.assets[0].base64) {
+      const resizedImage = await manipulateAsync(result.assets[0].uri, [{ resize: { width: 300 } }], { base64: true });
+      if (!resizedImage.base64) {
+        console.log('error');
+        return;
+      }
       const imageExt = result.assets[0].uri.split('.').pop();
       const imageFileName = currentUser.id;
 
-      const buff = Buffer.from(result.assets[0].base64, "base64");
+      const buff = Buffer.from(resizedImage.base64, "base64");
       const preAuthPostUrl = await postPresignedUrl({ fileName: imageFileName, fileType: `${result.assets[0].type}/${imageExt}`, fileDirectory: 'profileImage'}).then((response) => response).catch((e) => {
         return e;
       });
@@ -152,6 +159,7 @@ const ProfileLanding: React.FC<Props> = ({ navigation }) => {
                     : require("../../assets/150x150.png")
                 }
                 style={[imageStyles.profileImage]}
+                contentFit='contain'
               />
               {
                 editMode
@@ -163,6 +171,7 @@ const ProfileLanding: React.FC<Props> = ({ navigation }) => {
                     <Image
                       source={require("../../assets/icons/CameraWhite.png")}
                       style={[profileLandingStyles.editImageIcon]}
+                      contentFit='contain'
                     />
                   </Pressable>
                 )

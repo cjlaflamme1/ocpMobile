@@ -7,7 +7,6 @@ import inputStyle from '../../styles/componentStyles/inputBar';
 import layoutStyles from '../../styles/layout';
 import globalStyles from '../../styles/global';
 import PrimaryButton from '../../components/PrimaryButton';
-import { getCurrentUserAsync } from '../../store/userSlice';
 import { NavigationProp } from '@react-navigation/native';
 import { postResetAsync } from '../../store/authSlice';
 

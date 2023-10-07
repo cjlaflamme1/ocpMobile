@@ -1,29 +1,23 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { View, Image, ScrollView, RefreshControl, Pressable, TextInput, Button, Platform } from 'react-native';
+import { View, ScrollView, RefreshControl, Pressable, TextInput, Button, Platform } from 'react-native';
+import { Image } from 'expo-image';
 import CustomText from '../../components/CustomText';
 import * as ImagePicker from 'expo-image-picker';
-import {Buffer} from "buffer";
-import GroupCard from '../../components/GroupCard';
 import PrimaryButton from '../../components/PrimaryButton';
-import UserIconSmall from '../../components/UserIconSmall';
 import inputStyle from '../../styles/componentStyles/inputBar';
 import { Picker } from '@react-native-picker/picker';
-import globalStyles from '../../styles/global';
 import layoutStyles from '../../styles/layout';
 import createGroupStyles from '../../styles/screenStyles/groups/createGroup';
-import groupsLandingStyle from '../../styles/screenStyles/groups/groupsLanding';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { createGroupAsync, CreateGroupDto, getAllGroupsAsync, getAllUserGroupsAsync } from '../../store/groupSlice';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { postPresignedUrl, putImageOnS3 } from '../../api/s3API';
-import { clearUserList, getAllUsersAsync, User } from '../../store/userSlice';
-import UserSearchDropdown from '../../components/UserSearchDropdown';
-import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
+import DateTimePicker from '@react-native-community/datetimepicker';
 import { dateOnly } from '../../services/timeAndDate';
 import { createGroupEventAsync, getAllGroupEventsAsync } from '../../store/groupEventSlice';
 import { SortOrder } from '../../models/QueryObject';
 import { NavigationProp } from '@react-navigation/native';
 import TitleWithBackButton from '../../components/headers/TitleBackButton';
+import { manipulateAsync } from 'expo-image-manipulator';
 
 interface Props {
   navigation: NavigationProp<any, any>;
@@ -112,8 +106,13 @@ const CreateGroupEvent: React.FC<Props> = ({ navigation }) => {
     if (selectedImage && selectedImage.base64) {
       const imageExt = selectedImage.uri.split('.').pop();
       const imageFileName = `${groupEvent.title}-${selectedImage.fileName}`;
-
-      const buff = Buffer.from(selectedImage.base64, "base64");
+      const resizedImage = await manipulateAsync(selectedImage.uri, [{ resize: { width: 700 } }], { base64: true });
+      if (!resizedImage.base64) {
+        setSubmitting(false);
+        console.log('error');
+        return;
+      }
+      const buff = Buffer.from(resizedImage.base64, "base64");
       const preAuthPostUrl = await postPresignedUrl({ fileName: imageFileName, fileType: `${selectedImage.type}/${imageExt}`, fileDirectory: 'groupEventImages'}).then((response) => response).catch((e) => {
         return e;
       });
@@ -187,6 +186,7 @@ const CreateGroupEvent: React.FC<Props> = ({ navigation }) => {
                     <Image
                       source={require("../../assets/icons/CameraWhite.png")}
                       style={[createGroupStyles.editImageIcon]}
+                      contentFit='contain'
                     />
                   </Pressable>
               </View>
@@ -311,14 +311,14 @@ const CreateGroupEvent: React.FC<Props> = ({ navigation }) => {
             {
               Platform.OS === 'ios'
               && (
-              <View>
-                <CustomText>Select Date</CustomText>
+              <View style={[layoutStyles.mb_2]}>
+                <CustomText bold>Select Date</CustomText>
                 <DateTimePicker
                   testID="dateTimePicker"
                   value={selectedDate ? new Date(selectedDate) : new Date()}
                   minimumDate={new Date()}
                   mode={'date'}
-                  is24Hour={true}
+                  display='inline'
                   onChange={(value) => {
                     if (value.nativeEvent.timestamp) {
                       setSelectedDate(new Date(value.nativeEvent.timestamp));
@@ -326,6 +326,7 @@ const CreateGroupEvent: React.FC<Props> = ({ navigation }) => {
                   }}
                   style={[{ alignSelf: 'center', paddingTop: 10, paddingBottom: 10 }]}
                 />
+                <CustomText center>{selectedDate.toDateString()}</CustomText>
               </View>
               )
             }

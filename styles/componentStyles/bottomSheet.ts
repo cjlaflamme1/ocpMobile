@@ -14,7 +14,6 @@ const bottomSheet = StyleSheet.create({
     marginRight: 40
   },
   itemIcon: {
-    resizeMode: 'contain',
     height: 24,
     width: 24,
     marginRight: 10

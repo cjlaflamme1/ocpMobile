@@ -14,6 +14,7 @@ export interface CreateGroupInviteDto {
 export interface CreateGroupDto {
   coverPhoto: string | null;
   title: string;
+  location?: string;
   description: string;
   groupAdminIds: string[];
   pendingInvitationUserIds?: string[];
@@ -40,6 +41,7 @@ export interface Group {
   id: string;
   coverPhoto: string;
   title: string;
+  location?: string;
   description: string;
   groupAdmins: User[];
   users: User[];

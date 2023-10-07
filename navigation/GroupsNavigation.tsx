@@ -1,13 +1,13 @@
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { Button, Image, Pressable } from 'react-native';
+import { Pressable } from 'react-native';
+import { Image } from 'expo-image';
 import GroupsLanding from '../screens/Groups/GroupsLanding';
 import globalStyles from '../styles/global';
 import CreateGroup from '../screens/Groups/CreateGroup';
 import GroupView from '../screens/Groups/GroupView';
 import ViewGroupMessage from '../screens/Groups/ViewGroupMessage';
 import layoutStyles from '../styles/layout';
-import CustomText from '../components/CustomText';
 import CreateGroupEvent from '../screens/Groups/CreateGroupEvent';
 import ViewGroupEvent from '../screens/Groups/ViewGroupEvent';
 import EditGroup from '../screens/Groups/EditGroup';
@@ -74,7 +74,8 @@ const GroupsNavigation: React.FC = () => {
                   <Pressable style={[layoutStyles.flexRow, layoutStyles.alignItemCenter]}>
                     <Image
                       source={require('../assets/icons/Setting.png')}
-                      style={[{ height: 24, width: 24, resizeMode: 'contain'}, layoutStyles.mr_1]}
+                      style={[{ height: 24, width: 24 }, layoutStyles.mr_1]}
+                      contentFit='contain'
                     />
                   </Pressable>
                 </TripleHeader>

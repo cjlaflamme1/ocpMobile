@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { View, Image, ScrollView, RefreshControl, Pressable, TextInput } from 'react-native';
+import { View, ScrollView, RefreshControl, Pressable, TextInput } from 'react-native';
+import { Image } from 'expo-image';
 import CustomText from '../../components/CustomText';
 import GroupCard from '../../components/GroupCard';
 import PreviewGroupModal from '../../components/groups/PreviewGroupModal';

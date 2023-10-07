@@ -1,5 +1,6 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { View, Image, ScrollView, RefreshControl, Pressable, TextInput, Text } from 'react-native';
+import React, { useMemo } from 'react';
+import { View, Pressable } from 'react-native';
+import { Image } from 'expo-image';
 import layoutStyles from '../../styles/layout';
 import BottomSheet, { BottomSheetScrollView } from '@gorhom/bottom-sheet';
 import CustomText from '../CustomText';
@@ -97,6 +98,7 @@ const EventBottomSheet: React.FC<Props> = (props) => {
                 <Image
                   source={require('../../assets/icons/Plus.png')}
                   style={[bottomSheet.itemIcon]}
+                  contentFit='contain'
                 />
                 <CustomText>Quit Event</CustomText>
               </Pressable>
@@ -116,6 +118,7 @@ const EventBottomSheet: React.FC<Props> = (props) => {
                 <Image
                   source={require('../../assets/icons/Plus.png')}
                   style={[bottomSheet.itemIcon]}
+                  contentFit='contain'
                 />
                 <CustomText>Join Event</CustomText>
               </Pressable>
@@ -134,6 +137,7 @@ const EventBottomSheet: React.FC<Props> = (props) => {
                 <Image
                   source={require('../../assets/icons/Logout.png')}
                   style={[bottomSheet.itemIcon]}
+                  contentFit='contain'
                 />
                 <CustomText>Edit Event</CustomText>
               </Pressable>
@@ -152,6 +156,7 @@ const EventBottomSheet: React.FC<Props> = (props) => {
                 <Image
                   source={require('../../assets/icons/Edit.png')}
                   style={[bottomSheet.itemIcon]}
+                  contentFit='contain'
                 />
                 <CustomText>Cancel Event</CustomText>
               </Pressable>

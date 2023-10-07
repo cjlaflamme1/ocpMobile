@@ -1,5 +1,6 @@
 import React from 'react';
-import { View, Image, ImageSourcePropType } from 'react-native';
+import { View, ImageSourcePropType } from 'react-native';
+import { Image } from 'expo-image';
 import globalStyles from '../styles/global';
 import groupCardStyles from '../styles/screenStyles/groups/groupCard';
 import CustomText from './CustomText';
@@ -38,9 +39,10 @@ const UpcomingEventCard: React.FC<Props> = (props: Props) => {
         </CustomText>
         <View style={[layoutStyles.flexRow]}>
           <Image 
-              source={require('../assets/icons/CalendarUnfocused.png')}
-              style={[{width: 16, height: 16, alignSelf: 'center', resizeMode: 'contain'}]}
-            />
+            source={require('../assets/icons/CalendarUnfocused.png')}
+            style={[{width: 16, height: 16, alignSelf: 'center' }]}
+            contentFit='contain'
+          />
           <CustomText style={[globalStyles.mutedText, layoutStyles.ml_1]}>
             {eventDate && dateOnly(eventDate)}
           </CustomText>

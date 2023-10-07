@@ -1,10 +1,10 @@
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { Button, Image, Pressable } from 'react-native';
+import { Pressable } from 'react-native';
+import { Image } from 'expo-image';
 import ProfileLanding from '../screens/Profile/ProfileLanding';
 import globalStyles from '../styles/global';
 import ActivityDescription from '../screens/Profile/ActivityDescription';
-import CustomText from '../components/CustomText';
 import layoutStyles from '../styles/layout';
 import CreateActivity from '../screens/Profile/CreateActivity';
 import TitleWithBackButton from '../components/headers/TitleBackButton';
@@ -31,7 +31,8 @@ const ProfileNavigation: React.FC = () => {
                   <Pressable style={[layoutStyles.flexRow, layoutStyles.alignItemCenter]}>
                     <Image
                       source={require('../assets/icons/Setting.png')}
-                      style={[{ height: 24, width: 24, resizeMode: 'contain'}, layoutStyles.mr_1]}
+                      style={[{ height: 24, width: 24 }, layoutStyles.mr_1]}
+                      contentFit='contain'
                     />
                   </Pressable>
                 </TitleAndAction>
@@ -51,7 +52,8 @@ const ProfileNavigation: React.FC = () => {
                   <Pressable style={[layoutStyles.flexRow, layoutStyles.alignItemCenter]}>
                     <Image
                       source={require('../assets/icons/Setting.png')}
-                      style={[{ height: 24, width: 24, resizeMode: 'contain'}, layoutStyles.mr_1]}
+                      style={[{ height: 24, width: 24 }, layoutStyles.mr_1]}
+                      contentFit='contain'
                     />
                   </Pressable>
                 </TripleHeader>
