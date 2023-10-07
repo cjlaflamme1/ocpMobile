@@ -34,7 +34,7 @@ const GroupCard: React.FC<Props> = (props: Props) => {
         }
       </View>
       <View style={[groupCardStyles.textContainer]}>
-        <CustomText bold>
+        <CustomText bold style={{ maxWidth: '90%' }}>
           {groupTitle}
         </CustomText>
         {

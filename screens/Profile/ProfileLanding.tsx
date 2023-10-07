@@ -145,6 +145,7 @@ const ProfileLanding: React.FC<Props> = ({ navigation }) => {
       <KeyboardAwareScrollView
         showsVerticalScrollIndicator={false}
         ref={scrollViewRef}
+        keyboardShouldPersistTaps="handled"
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
         // onLayout={() => scrollViewRef?.current?.scrollToEnd()}
         // onContentSizeChange={() => scrollViewRef?.current?.scrollToEnd()}

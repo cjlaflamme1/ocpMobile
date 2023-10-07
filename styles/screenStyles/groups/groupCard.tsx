@@ -20,6 +20,7 @@ const groupCardStyles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'space-around',
+    flexGrow: 1,
   },
   image: {
     width: '100%',
