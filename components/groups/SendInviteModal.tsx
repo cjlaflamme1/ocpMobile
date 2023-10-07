@@ -1,11 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { View, Image, ImageSourcePropType, Pressable, TextInput, StyleSheet, Modal, TouchableOpacity, Animated, ScrollView } from 'react-native';
+import { View, Pressable, TextInput, StyleSheet, Modal, TouchableOpacity, Animated, ScrollView } from 'react-native';
+import { Image } from 'expo-image';
 import CustomText from '../CustomText';
-import globalStyles from '../../styles/global';
 import layoutStyles from '../../styles/layout';
-import { Group, GroupInvitation } from '../../store/groupSlice';
+import { Group } from '../../store/groupSlice';
 import PrimaryButton from '../PrimaryButton';
-import UserSearchDropdown from '../UserSearchDropdown';
 import { clearUserList, getAllUsersAsync, User } from '../../store/userSlice';
 import UserIconSmall from '../UserIconSmall';
 import inputStyle from '../../styles/componentStyles/inputBar';
@@ -166,7 +165,8 @@ const SendInviteModal: React.FC<Props> = (props: Props) => {
           }}>
             <Image
               source={require('../../assets/icons/Close-Square.png')}
-              style={[{ height: 24, width: 24, resizeMode: 'contain'}]}
+              style={[{ height: 24, width: 24 }]}
+              contentFit='contain'
             />
           </Pressable>
           <View style={[layoutStyles.mb_3]}>

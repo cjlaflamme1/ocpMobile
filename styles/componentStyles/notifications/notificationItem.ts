@@ -9,7 +9,6 @@ const notificationItemStyles = StyleSheet.create({
   chevronIcon: {
     width: 7,
     height: 12,
-    resizeMode: 'contain',
   },
   clickableContainer: {
     backgroundColor: 'white',

@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
-import { View, Image, ImageSourcePropType, Pressable, TextInput, StyleSheet, Modal } from 'react-native';
+import React from 'react';
+import { View, Pressable, StyleSheet, Modal } from 'react-native';
+import { Image } from 'expo-image';
 import CustomText from '../CustomText';
-import globalStyles from '../../styles/global';
 import layoutStyles from '../../styles/layout';
 import { GroupInvitation } from '../../store/groupSlice';
 import PrimaryButton from '../PrimaryButton';
@@ -33,7 +33,8 @@ const InviteModal: React.FC<Props> = (props: Props) => {
           <Pressable style={[{ position: 'absolute', right: 20, top: 20}]} onPress={closeModal}>
             <Image
               source={require('../../assets/icons/Close-Square.png')}
-              style={[{ height: 24, width: 24, resizeMode: 'contain'}]}
+              style={[{ height: 24, width: 24 }]}
+              contentFit='contain'
             />
           </Pressable>
           <View style={[layoutStyles.mb_3]}>

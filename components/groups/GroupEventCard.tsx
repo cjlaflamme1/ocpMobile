@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
-import { View, Image, ImageSourcePropType, Pressable, TextInput, StyleSheet } from 'react-native';
+import { View, ImageSourcePropType, Pressable, TextInput, StyleSheet } from 'react-native';
+import { Image } from 'expo-image';
 import CustomText from '../CustomText';
 import globalStyles from '../../styles/global';
 import layoutStyles from '../../styles/layout';
@@ -41,6 +42,7 @@ const EventCard: React.FC<Props> = (props: Props) => {
             <Image
               source={userPosted.profile}
               style={[eventStyle.postProfileImage, layoutStyles.mr_2]}
+              contentFit='contain'
             />
             <CustomText>{userPosted.name}</CustomText>
           </View>
@@ -90,6 +92,7 @@ const EventCard: React.FC<Props> = (props: Props) => {
                 <Image
                   style={[eventStyle.iconStyle]}
                   source={require('../../assets/icons/comment.png')}
+                  contentFit='contain'
                 />
                 <CustomText style={[globalStyles.mutedText, layoutStyles.ml_1]}>
                   {`${responseCount} comment${(responseCount !== 1) ? 's' : ''}`}
@@ -104,6 +107,7 @@ const EventCard: React.FC<Props> = (props: Props) => {
                 <Image
                   style={[eventStyle.iconStyle]}
                   source={require('../../assets/icons/GroupsUnfocused.png')}
+                  contentFit='contain'
                 />
                 <CustomText style={[globalStyles.mutedText, layoutStyles.ml_1]}>
                   {`${joiningCount} joining`}
@@ -139,12 +143,10 @@ const eventStyle = StyleSheet.create({
     width: 32,
     height: 32,
     borderRadius: 25,
-    resizeMode: 'contain',
   },
   iconStyle: {
     height: 25,
     width: 25,
-    resizeMode: 'contain',
   },
   cancelledEvent: {
     borderColor: 'red',

@@ -1,8 +1,8 @@
 import React from 'react';
-import { View, Image, ImageSourcePropType, Modal, StyleSheet, Pressable, ScrollView } from 'react-native';
+import { View, Modal, StyleSheet, Pressable, ScrollView } from 'react-native';
+import { Image } from 'expo-image';
 import { User } from '../../store/userSlice';
 import CustomText from '../CustomText';
-import UserIconSmall from '../UserIconSmall';
 import { NavigationProp } from '@react-navigation/native';
 
 interface Props {
@@ -37,7 +37,8 @@ const UserListModal: React.FC<Props> = (props: Props) => {
           <Pressable style={[{ position: 'absolute', right: 20, top: 20}]} onPress={closeModal}>
             <Image
               source={require('../../assets/icons/Close-Square.png')}
-              style={[{ height: 24, width: 24, resizeMode: 'contain'}]}
+              style={[{ height: 24, width: 24 }]}
+              contentFit='contain'
             />
           </Pressable>
           <View style={[{ maxHeight: 500, paddingTop: 20, paddingBottom: 20 }]}>
@@ -83,17 +84,6 @@ const modalStyle = StyleSheet.create({
     backgroundColor: 'white',
     padding: 10,
     borderRadius: 16,
-  },
-  postProfileImage: {
-    width: 32,
-    height: 32,
-    borderRadius: 25,
-    resizeMode: 'contain',
-  },
-  iconStyle: {
-    height: 25,
-    width: 25,
-    resizeMode: 'contain',
   },
   centeredView: {
     flex: 1,

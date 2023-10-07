@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
-import { View, Image, Pressable } from 'react-native';
+import { View, Pressable } from 'react-native';
+import { Image } from 'expo-image';
 import layoutStyles from '../../styles/layout';
 import BottomSheet, { BottomSheetScrollView } from '@gorhom/bottom-sheet';
 import CustomText from '../CustomText';
@@ -50,7 +51,8 @@ const ProfileSettingsSheet: React.FC<Props> = (props) => {
           >
             <Image
               source={require('../../assets/icons/Edit.png')}
-              style={[{ height: 16, width: 16, resizeMode: 'contain'}, layoutStyles.mr_1]}
+              style={[{ height: 16, width: 16 }, layoutStyles.mr_1]}
+              contentFit='contain'
             />
             <CustomText>
               Edit Profile
@@ -64,7 +66,8 @@ const ProfileSettingsSheet: React.FC<Props> = (props) => {
           >
             <Image
               source={require('../../assets/icons/Logout.png')}
-              style={[{ height: 16, width: 16, resizeMode: 'contain'}, layoutStyles.mr_1]}
+              style={[{ height: 16, width: 16 }, layoutStyles.mr_1]}
+              contentFit='contain'
             />
             <CustomText>
               Logout

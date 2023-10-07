@@ -1,11 +1,10 @@
-import React, { useEffect } from 'react';
-import { View, Image, ImageSourcePropType, Pressable, TextInput, StyleSheet } from 'react-native';
+import React from 'react';
+import { View, ImageSourcePropType, Pressable, StyleSheet } from 'react-native';
+import { Image } from 'expo-image';
 import CustomText from '../CustomText';
 import globalStyles from '../../styles/global';
 import layoutStyles from '../../styles/layout';
 import { timeSince } from '../../services/timeAndDate';
-import { useAppDispatch } from '../../store/hooks';
-import { getOneGroupPostAsync } from '../../store/groupPostSlice';
 import { NavigationProp, useRoute } from '@react-navigation/native';
 
 interface Props {
@@ -35,6 +34,7 @@ const MessageCard: React.FC<Props> = (props: Props) => {
           <Image
             source={userPosted.profile}
             style={[messageStyle.postProfileImage, layoutStyles.mr_2]}
+            contentFit='contain'
           />
           <CustomText>{userPosted.name}</CustomText>
         </View>
@@ -80,6 +80,7 @@ const MessageCard: React.FC<Props> = (props: Props) => {
                 <Image
                   style={[messageStyle.iconStyle]}
                   source={require('../../assets/icons/comment.png')}
+                  contentFit='contain'
                 />
                 <CustomText style={[globalStyles.mutedText, layoutStyles.ml_1]}>
                   {`${responseCount} response${(responseCount !== 1) ? 's' : ''}`}
@@ -115,11 +116,9 @@ const messageStyle = StyleSheet.create({
     width: 32,
     height: 32,
     borderRadius: 25,
-    resizeMode: 'contain',
   },
   iconStyle: {
     height: 25,
     width: 25,
-    resizeMode: 'contain',
   }
 });
