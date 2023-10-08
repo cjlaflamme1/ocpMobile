@@ -5,6 +5,7 @@ import { ActivityType } from './activityTypeSlice';
 import { Group } from './groupSlice';
 
 export interface CreateUserActivityDTO {
+  activityName: string;
   information: string;
   favoriteLocations: string;
   yearsParticipating: string;
@@ -13,12 +14,12 @@ export interface CreateUserActivityDTO {
   mentorNeedsDetails: string;
   offeringMentorship: boolean;
   provideMentorshipDetails: string;
-  activityTypeId: string;
   coverPhoto: string;
 }
 
 export interface UserActivity {
   id: string;
+  activityName: string;
   information: string;
   favoriteLocations: string;
   yearsParticipating: string;
@@ -27,7 +28,6 @@ export interface UserActivity {
   mentorNeedsDetails: string;
   offeringMentorship: boolean;
   provideMentorshipDetails: string;
-  activityType: ActivityType;
   coverPhoto: string;
   getImageUrl: string | null;
 }

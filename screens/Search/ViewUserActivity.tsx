@@ -53,7 +53,7 @@ const ViewUserActivity: React.FC<Props> = ({ navigation, route }) => {
           </View>
           <View style={[layoutStyles.mt_2]}>
             <CustomText h1 bold>
-              {selectedUserActivity.activityType?.activityTitle || 'Activity type not selected.'}
+              {selectedUserActivity.activityName || 'Activity type not named.'}
             </CustomText>
           </View>
           <View style={[layoutStyles.mt_2]}>
