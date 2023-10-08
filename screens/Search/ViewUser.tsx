@@ -88,10 +88,10 @@ const ViewUser: React.FC<Props> = ({ navigation, route }) => {
                       imageSource={
                         activity.getImageUrl ?
                           { uri: activity.getImageUrl } :
-                          selectDefaultImage(activity.activityType)
+                          selectDefaultImage(activity.activityName)
                       }
                     >
-                      {activity.activityType ? activity.activityType.activityTitle : 'No Activity Type'}
+                      {activity.activityName || 'No Activity Name'}
                     </ProfileActivityCard>
                   </Pressable>
                 </View>

@@ -162,6 +162,7 @@ const EditGroupEvent: React.FC<Props> = ({ navigation, route }) => {
       <KeyboardAwareScrollView
         showsVerticalScrollIndicator={false}
         ref={scrollViewRef}
+        keyboardShouldPersistTaps="handled"
         // onLayout={() => scrollViewRef?.current?.scrollToEnd()}
         // onContentSizeChange={() => scrollViewRef?.current?.scrollToEnd()}
       >

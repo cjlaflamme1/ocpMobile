@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, ImageSourcePropType, Pressable, TextInput, StyleSheet, Modal } from 'react-native';
+import { View, ImageSourcePropType, Pressable, TextInput, StyleSheet, Modal, ScrollView } from 'react-native';
 import { Image } from 'expo-image';
 import CustomText from '../CustomText';
 import globalStyles from '../../styles/global';
@@ -27,7 +27,7 @@ const PreviewGroupModal: React.FC<Props> = (props: Props) => {
       transparent={true}
       visible={isVisible}
       onRequestClose={closeModal}>
-      <View style={inviteStyle.centeredView}>
+      <View style={[inviteStyle.centeredView]}>
         <View style={inviteStyle.modalView}>
           <Pressable style={[{ position: 'absolute', right: 20, top: 20}]} onPress={closeModal}>
             <Image
@@ -36,24 +36,37 @@ const PreviewGroupModal: React.FC<Props> = (props: Props) => {
               contentFit='contain'
             />
           </Pressable>
-          <View style={[layoutStyles.mb_3]}>
-            <View style={[layoutStyles.mt_2]}>
-              <Image
-                source={ group.imageGetUrl ? {
-                  uri: group.imageGetUrl
-                } : require('../../assets/300x200.png')}
-                style={[{ width: '100%', height: 200, borderRadius: 25}]}
-              />
+          <ScrollView>
+            <View style={[layoutStyles.mb_3]}>
+                <View style={[layoutStyles.mt_2]}>
+                  <Image
+                    source={ group.imageGetUrl ? {
+                      uri: group.imageGetUrl
+                    } : require('../../assets/300x200.png')}
+                    style={[{ width: '100%', height: 200, borderRadius: 25}]}
+                  />
+                </View>
+                <View style={[layoutStyles.mt_2]}>
+                  <CustomText h1 bold>
+                    { group.title }
+                  </CustomText>
+                  {
+                    group.location && (
+                      <View style={[layoutStyles.flexRow, layoutStyles.jStart, layoutStyles.m_1]}>
+                        <Image 
+                          source={require('../../assets/icons/location.png')}
+                          style={[{width: 16, height: 16, alignSelf: 'center'}]}
+                        />
+                        <CustomText style={[globalStyles.mutedText]}>{group.location}</CustomText>
+                      </View>
+                    )
+                  }
+                  <CustomText>
+                    { group.description }
+                  </CustomText>
+                </View>
             </View>
-            <View style={[layoutStyles.mt_2]}>
-              <CustomText h1 bold>
-                { group.title }
-              </CustomText>
-              <CustomText>
-                { group.description }
-              </CustomText>
-            </View>
-          </View>
+          </ScrollView>
           <PrimaryButton styles={[{ minWidth: '100%'}]} buttonText='Join Group' callback={acceptAction} />
           <PrimaryButton outline styles={[{ minWidth: '100%'}, layoutStyles.mt_2]} buttonText='Close' callback={closeModal} />
         </View>
@@ -85,6 +98,7 @@ const inviteStyle = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: 22,
+    maxHeight: '90%',
   },
   modalView: {
     margin: 20,

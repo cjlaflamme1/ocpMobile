@@ -1,5 +1,6 @@
 import axios from 'axios';
 import * as SecureStore from 'expo-secure-store';
+import { Platform } from 'react-native';
 
 const api = axios.create({
   baseURL: 'https://prod.outdoorcommunityproject.com',

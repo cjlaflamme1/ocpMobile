@@ -145,6 +145,7 @@ const ProfileLanding: React.FC<Props> = ({ navigation }) => {
       <KeyboardAwareScrollView
         showsVerticalScrollIndicator={false}
         ref={scrollViewRef}
+        keyboardShouldPersistTaps="handled"
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
         // onLayout={() => scrollViewRef?.current?.scrollToEnd()}
         // onContentSizeChange={() => scrollViewRef?.current?.scrollToEnd()}
@@ -289,10 +290,10 @@ const ProfileLanding: React.FC<Props> = ({ navigation }) => {
                           imageSource={
                             activity.getImageUrl ?
                               { uri: activity.getImageUrl } :
-                              selectDefaultImage(activity.activityType)
+                              selectDefaultImage(activity.activityName)
                           }
                         >
-                          {activity.activityType ? activity.activityType.activityTitle : 'No Activity Type'}
+                          {activity.activityName || 'No Activity Name'}
                         </ProfileActivityCard>
                       </Pressable>
                     </View>

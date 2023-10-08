@@ -1,10 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { ScrollView, View, RefreshControl, TextInput, Switch, Pressable, Platform, Dimensions } from 'react-native';
+import { View, TextInput, Switch, Pressable, Platform, Dimensions } from 'react-native';
 import { Image } from 'expo-image';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import CustomText from '../../components/CustomText';
-import DropdownSelect, { DropdownData } from '../../components/DropdownSelect';
-import { getAllActivityTypesAsync } from '../../store/activityTypeSlice';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import * as ImagePicker from 'expo-image-picker';
 import {Buffer} from "buffer";
@@ -26,14 +24,15 @@ interface Props {
 const CreateActivity: React.FC<Props> = ({ navigation }) => {
   const [newActivity, setNewActivity] = useState<CreateUserActivityDTO>();
   const [selectedImage, setSelectedImage] = useState<ImagePicker.ImagePickerAsset>();
+  const [savingActivity, setSavingActivity] = useState(false);
   const scrollViewRef = useRef<KeyboardAwareScrollView|null>(null);
 
   const dispatch = useAppDispatch();
-  const activityTypes = useAppSelector((state) => state.activityTypeState.activityTypes);
   const currentUser = useAppSelector((state) => state.userState.currentUser);
 
   const resetActivity = () => {
     setNewActivity({
+      activityName: '',
       information: '',
       favoriteLocations: '',
       yearsParticipating: '',
@@ -42,7 +41,6 @@ const CreateActivity: React.FC<Props> = ({ navigation }) => {
       mentorNeedsDetails: '',
       offeringMentorship: false,
       provideMentorshipDetails: '',
-      activityTypeId: '',
       coverPhoto: '',
     });
   };
@@ -50,9 +48,6 @@ const CreateActivity: React.FC<Props> = ({ navigation }) => {
   useEffect(() => {
     if (!newActivity) {
       resetActivity();
-    }
-    if (!activityTypes || activityTypes.length <= 0) {
-      dispatch(getAllActivityTypesAsync());
     }
     navigation.setOptions({
       header: () => (
@@ -66,16 +61,18 @@ const CreateActivity: React.FC<Props> = ({ navigation }) => {
   }
 
   const submitNewActivity = async () => {
+    setSavingActivity(true);
     if (newActivity && currentUser) {
       const activityDTO: CreateUserActivityDTO = {...newActivity};
       if (selectedImage && selectedImage.base64) {
         const resizedImage = await manipulateAsync(selectedImage.uri, [{ resize: { width: 700 } }], { base64: true });
         if (!resizedImage.base64) {
           console.log('error');
+          setSavingActivity(false);
           return;
         }
         const imageExt = selectedImage.uri.split('.').pop();
-        const imageFileName = `${currentUser.id}/${activityDTO.activityTypeId}`;
+        const imageFileName = `${currentUser.id}/${new Date().valueOf()}`;
   
         const buff = Buffer.from(resizedImage.base64, "base64");
         const preAuthPostUrl = await postPresignedUrl({ fileName: imageFileName, fileType: `${selectedImage.type}/${imageExt}`, fileDirectory: 'userActivityImages'}).then((response) => response).catch((e) => {
@@ -89,31 +86,11 @@ const CreateActivity: React.FC<Props> = ({ navigation }) => {
       await dispatch(createUserActivityAsync(activityDTO))
       dispatch(getUserActivitiesAsync());
       resetActivity();
+      setSavingActivity(false);
       navigation.navigate('Profile Landing');
     }
+    setSavingActivity(false);
   }
-
-  const getActivities = () => {
-    const newDropdown: DropdownData<string, string>[] = [];
-    if (activityTypes && activityTypes.length > 0) {
-      activityTypes.slice().map((type) => {
-        newDropdown.push({
-          key: type.id,
-          value: type.activityTitle,
-        });
-      })
-    }
-    return newDropdown;
-  }
-
-  const returnSelected = () => {
-    const activity = getActivities().find((item) => item.key === newActivity.activityTypeId);
-    if (activity) {
-      return activity;
-    } else {
-      return null;
-    }
-  };
 
   const pickImage = async () => {
     // No permissions request is necessary for launching the image library
@@ -137,6 +114,7 @@ const CreateActivity: React.FC<Props> = ({ navigation }) => {
       <KeyboardAwareScrollView
         showsVerticalScrollIndicator={false}
         ref={scrollViewRef}
+        keyboardShouldPersistTaps="handled"
         // onLayout={() => scrollViewRef?.current?.scrollToEnd()}
         // onContentSizeChange={() => scrollViewRef?.current?.scrollToEnd()}
       >
@@ -184,19 +162,22 @@ const CreateActivity: React.FC<Props> = ({ navigation }) => {
           }
           <View style={[layoutStyles.mt_2]}>
             <CustomText h4 bold>
-              Select Activity
+              Activity Name
             </CustomText>
-            <DropdownSelect
-              testID='1234'
-              testIDDropdown='1234567'
-              data={getActivities()}
-              placeholder={'Select activity.'}
-              selected={returnSelected()}
-              setSelected={(e) => setNewActivity({
-                ...newActivity,
-                activityTypeId: e.key,
-              })}
-            />
+            <View style={[inputStyle.fullWidthInputContainer]}>
+              <TextInput
+                defaultValue={newActivity.activityName || ''}
+                onChangeText={(e) => {
+                  setNewActivity({
+                    ...newActivity,
+                    activityName: e,
+                  })
+                }}
+                placeholder='Climbing, Hiking, etc...'
+                autoCorrect={true}
+                style={[inputStyle.fullWidthInput, inputStyle.multilineInput]}
+              />
+            </View>
           </View>
           <View style={[layoutStyles.mt_2]}>
             <CustomText bold h4 style={[layoutStyles.mb_1]}>
@@ -366,6 +347,7 @@ const CreateActivity: React.FC<Props> = ({ navigation }) => {
             <PrimaryButton
               buttonText='Save Activity'
               callback={() => submitNewActivity()}
+              disabled={savingActivity}
             />
           </View>
         </View>

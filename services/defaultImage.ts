@@ -1,10 +1,9 @@
 import { ImageSourcePropType } from "react-native";
-import { ActivityType } from "../store/activityTypeSlice";
 
-export const selectDefaultImage = (activityType: ActivityType): ImageSourcePropType => {
-  if (activityType?.activityTitle === 'Backcountry Skiing') {
+export const selectDefaultImage = (activityName: string): ImageSourcePropType => {
+  if (activityName?.toLowerCase().includes('skiing')) {
     return require('../assets/profilePhotos/testSportImage.jpg');
-  } else if (activityType?.activityTitle === 'Paddling') {
+  } else if (activityName?.toLowerCase().includes('paddling')) {
     return require('../assets/defaultImages/canoeDefault.png');
   }
   return require('../assets/defaultImages/defaultRunning.png');

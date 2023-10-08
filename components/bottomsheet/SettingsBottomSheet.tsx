@@ -108,7 +108,7 @@ const SettingsSheet: React.FC<Props> = (props) => {
               style={[bottomSheet.itemIcon]}
               contentFit='contain'
             />
-            <CustomText>View Member Description</CustomText>
+            <CustomText>View Group Description</CustomText>
           </Pressable>
         </View>
         {
@@ -150,7 +150,7 @@ const SettingsSheet: React.FC<Props> = (props) => {
             
           )
         }
-        {
+        {/* {
           adminView &&
           (
             <View style={[bottomSheet.itemContainer]}>
@@ -169,7 +169,7 @@ const SettingsSheet: React.FC<Props> = (props) => {
             </View>
             
           )
-        }
+        } */}
         {/* {
           adminView &&
           (

@@ -73,7 +73,8 @@ const modalStyle = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
-    width: '90%'
+    width: '90%',
+    maxHeight: '90%',
   },
   button: {
     borderRadius: 20,

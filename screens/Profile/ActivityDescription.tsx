@@ -65,7 +65,7 @@ const ActivityDescription: React.FC<Props> = ({ navigation }) => {
           return;
         }
         const imageExt = currentFile.uri.split('.').pop();
-          const imageFileName = `${userId}/${selectedUserActivity?.activityType.id}`;
+          const imageFileName = `${userId}/${new Date().valueOf()}`;
   
         const buff = Buffer.from(resizedImage.base64, "base64");
         const preAuthPostUrl = await postPresignedUrl({ fileName: imageFileName, fileType: `${result.assets[0].type}/${imageExt}`, fileDirectory: 'userActivityImages'}).then((response) => response).catch((e) => {
@@ -142,6 +142,7 @@ const ActivityDescription: React.FC<Props> = ({ navigation }) => {
           <KeyboardAwareScrollView
             showsVerticalScrollIndicator={false}
             ref={scrollViewRef}
+            keyboardShouldPersistTaps="handled"
             // onLayout={() => scrollViewRef?.current?.scrollToEnd()}
             // onContentSizeChange={() => scrollViewRef?.current?.scrollToEnd()}
           >
@@ -167,9 +168,23 @@ const ActivityDescription: React.FC<Props> = ({ navigation }) => {
                   </Pressable>
               </View>
               <View style={[layoutStyles.mt_2]}>
-                <CustomText h1 bold>
-                  {selectedUserActivity.activityType?.activityTitle || 'Activity type not selected.'}
-                </CustomText>
+              <CustomText h4 bold>
+                Activity Name
+              </CustomText>
+              <View style={[inputStyle.fullWidthInputContainer]}>
+                <TextInput
+                  defaultValue={updatedActivity.activityName || ''}
+                  onChangeText={(e) => {
+                    setUpdatedActivity({
+                      ...updatedActivity,
+                      activityName: e,
+                    })
+                  }}
+                  placeholder='Climbing, Hiking, etc...'
+                  autoCorrect={true}
+                  style={[inputStyle.fullWidthInput, inputStyle.multilineInput]}
+                />
+            </View>
               </View>
               <View style={[layoutStyles.mt_2]}>
                 <CustomText bold h4 style={[layoutStyles.mb_1]}>
@@ -371,7 +386,7 @@ const ActivityDescription: React.FC<Props> = ({ navigation }) => {
               </View>
               <View style={[layoutStyles.mt_2]}>
                 <CustomText h1 bold>
-                  {selectedUserActivity.activityType?.activityTitle || 'Activity type not selected.'}
+                  {selectedUserActivity.activityName || 'Activity name not provided.'}
                 </CustomText>
               </View>
               <View style={[layoutStyles.mt_2]}>

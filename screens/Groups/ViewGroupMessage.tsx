@@ -79,6 +79,7 @@ const ViewGroupMessage: React.FC<Props> = ({ navigation, route }) => {
         showsVerticalScrollIndicator={false}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
         ref={scrollViewRef}
+        keyboardShouldPersistTaps="handled"
       >
         <View style={[layoutStyles.mb_3]}>
           <View style={[layoutStyles.mt_2]}>
