@@ -82,3 +82,19 @@ export function getOneUser(id: string) {
     }
   })
 }
+
+export function requestDeleteUser(id: string) {
+  return new Promise<AxiosPromise>((resolve, reject) => {
+    try {
+      api.delete(`/user/${id}`)
+        .then((response: any) => {
+          resolve(response);
+        })
+        .catch((e: Error) => {
+          reject(e);
+        })
+    } catch (e) {
+      reject(e);
+    }
+  })
+}

@@ -12,7 +12,7 @@ import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import * as ImagePicker from 'expo-image-picker';
 import {Buffer} from "buffer";
 import { postPresignedUrl, putImageOnS3 } from '../../api/s3API';
-import { getCurrentUserAsync, updateCurrentUserAsync } from '../../store/userSlice';
+import { getCurrentUserAsync, requestDeleteUserAsync, updateCurrentUserAsync } from '../../store/userSlice';
 import { NavigationProp } from '@react-navigation/native';
 import inputStyle from '../../styles/componentStyles/inputBar';
 import { getOneUserActivityAsync, getUserActivitiesAsync } from '../../store/userActivitySlice';
@@ -24,6 +24,7 @@ import TitleAndAction from '../../components/headers/TitleAndAction';
 import PrimaryButton from '../../components/PrimaryButton';
 import { selectDefaultImage } from '../../services/defaultImage';
 import { manipulateAsync } from 'expo-image-manipulator';
+import RequestDeleteModal from '../../components/modals/RequestDeleteModal';
 
 interface Props {
   navigation: NavigationProp<any, any>
@@ -32,6 +33,7 @@ interface Props {
 const ProfileLanding: React.FC<Props> = ({ navigation }) => {
   const [refreshing, setRefreshing] = useState(false);
   const [editMode, setEditMode] = useState(false);
+  const [deleteModal, setDeleteModal] = useState(false);
   const [debounceHandle, setDebounceHandle] = useState<any>();
   const [debounceFNHandle, setDebounceFNHandle] = useState<any>();
   const scrollViewRef = useRef<KeyboardAwareScrollView|null>(null);
@@ -139,6 +141,13 @@ const ProfileLanding: React.FC<Props> = ({ navigation }) => {
       navigation.navigate("Activity Description");
     }
   };
+
+  const submitRequestDelete = async () => {
+    const req = await dispatch(requestDeleteUserAsync(currentUser.id));
+    if (req.meta.requestStatus === 'fulfilled') {
+      dispatch(logoutAction());
+    }
+  }
 
   return (
     <View style={[layoutStyles.screenContainer]}>
@@ -312,12 +321,18 @@ const ProfileLanding: React.FC<Props> = ({ navigation }) => {
           )
         }
       </KeyboardAwareScrollView>
+      <RequestDeleteModal
+        isVisible={deleteModal}
+        closeModal={() => setDeleteModal(false)}
+        confirmDelete={submitRequestDelete}
+      />
       <ProfileSettingsSheet
         logout={() => dispatch(logoutAction())}
         closeSheet={() => handleClosePress()}
         bottomSheetRef={bottomSheetRef}
         customSnapPoints={['25%', '50%']}
         editProfile={() => setEditMode(!editMode)}
+        accountDelete={() => setDeleteModal(true)}
       />
     </View>
   );

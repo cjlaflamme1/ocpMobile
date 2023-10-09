@@ -12,6 +12,7 @@ interface Props {
   closeSheet: () => void;
   editProfile: () => void;
   logout: () => void;
+  accountDelete: () => void;
 };
 
 const ProfileSettingsSheet: React.FC<Props> = (props) => {
@@ -21,6 +22,7 @@ const ProfileSettingsSheet: React.FC<Props> = (props) => {
     bottomSheetRef,
     editProfile,
     logout,
+    accountDelete,
   } = props;
   
 
@@ -71,6 +73,21 @@ const ProfileSettingsSheet: React.FC<Props> = (props) => {
             />
             <CustomText>
               Logout
+            </CustomText>
+          </Pressable>
+        </View>
+        <View style={[bottomSheet.itemContainer]}>
+          <Pressable
+            style={[layoutStyles.flexRow, layoutStyles.alignItemCenter]}
+            onPress={() => accountDelete()}
+          >
+            <Image
+              source={require('../../assets/icons/Delete.png')}
+              style={[{ height: 16, width: 16 }, layoutStyles.mr_1]}
+              contentFit='contain'
+            />
+            <CustomText>
+              Request Account Deletion
             </CustomText>
           </Pressable>
         </View>
