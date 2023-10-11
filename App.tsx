@@ -69,7 +69,12 @@ export default function App() {
         alert('Failed to get push token for push notification!');
         return;
       }
-      token = (await Notifications.getExpoPushTokenAsync()).data;
+      try {
+        token = (await Notifications.getExpoPushTokenAsync()).data;
+      } catch (err) {
+        console.error(err);
+        token = '';
+      }
 
     } else {
       alert('Must use physical device for Push Notifications');
