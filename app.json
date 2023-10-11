@@ -44,7 +44,7 @@
       // "backgroundColor": "#9DBDC6"
     },
     "android": {
-      "versionCode": 19,
+      "versionCode": 20,
       "package": "com.outdoorcommunityproject",
       "adaptiveIcon": {
         "foregroundImage": "./assets/logoDroid.png",
