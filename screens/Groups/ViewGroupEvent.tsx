@@ -40,7 +40,7 @@ const ViewGroupEvent: React.FC<Props> = ({ navigation, route }) => {
             <Pressable
               style={[layoutStyles.flexRow,
               layoutStyles.alignItemCenter,
-              { zIndex: 2 }
+              { zIndex: 2, height: 30, width: 30 }
             ]}
               onPress={() => handleOpen()}
             >

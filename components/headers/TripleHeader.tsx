@@ -40,9 +40,7 @@ const TripleHeader: React.FC<Props> = ({ navigation, title, children }) => {
       </View>
       {
         children ? (
-          <View>
-            {children}
-          </View>
+          children
         ) : (
           <View style={[titleWithButtonStyle.iconButton]} />
         )
