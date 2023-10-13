@@ -59,6 +59,27 @@ const GroupView: React.FC<Props> = ({ navigation, route }) => {
   const handleOpen = () => bottomSheetRef?.current?.expand();
 
   useEffect(() => {
+    navigation.setOptions({
+      header: () => (
+        <TripleHeader navigation={navigation} title='View Group'>
+          <Pressable
+            style={[layoutStyles.flexRow,
+            layoutStyles.alignItemCenter]}
+            onPress={() => handleOpen()}
+          >
+            <Image
+              source={require('../../assets/icons/Setting.png')}
+              contentFit='contain'
+              style={[{ height: 24, width: 24 }, layoutStyles.mr_1]}
+            />
+          </Pressable>
+        </TripleHeader>
+        
+      )
+    });
+  }, [navigation, bottomSheetRef, bottomSheetRef?.current]);
+
+  useEffect(() => {
     if (!selectedGroup || (selectedGroup.id !== groupId)) {
       dispatch(getOneGroupAsync(groupId));
     }
@@ -91,24 +112,6 @@ const GroupView: React.FC<Props> = ({ navigation, route }) => {
           value: groupId,
         }]
       }));
-      navigation.setOptions({
-        header: () => (
-          <TripleHeader navigation={navigation} title='View Group'>
-            <Pressable
-              style={[layoutStyles.flexRow,
-              layoutStyles.alignItemCenter]}
-              onPress={() => handleOpen()}
-            >
-              <Image
-                source={require('../../assets/icons/Setting.png')}
-                contentFit='contain'
-                style={[{ height: 24, width: 24 }, layoutStyles.mr_1]}
-              />
-            </Pressable>
-          </TripleHeader>
-          
-        )
-      });
     }
     return () => {
       dispatch(clearPosts());

@@ -126,6 +126,9 @@ const ActivityDescription: React.FC<Props> = ({ navigation }) => {
         </TripleHeader>
       )
     });
+  }, [navigation, bottomSheetRef, bottomSheetRef?.current])
+
+  useEffect(() => {
     setUpdatedActivity({
       ...selectedUserActivity
     });

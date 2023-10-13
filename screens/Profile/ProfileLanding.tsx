@@ -73,7 +73,7 @@ const ProfileLanding: React.FC<Props> = ({ navigation }) => {
     });
     dispatch(getUserActivitiesAsync());
     dispatch(getNotificationsAsync());
-  }, [navigation])
+  }, [navigation, bottomSheetRef, bottomSheetRef?.current]);
 
   const currentUser = useAppSelector((state) => state.userState.currentUser);
   const userActivities = useAppSelector((state) => state.userActivityState.userActivities);

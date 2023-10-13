@@ -54,7 +54,7 @@ const ViewGroupEvent: React.FC<Props> = ({ navigation, route }) => {
     return () => {
       dispatch(clearSelectedEvent());
     }
-  }, [navigation, eventId]);
+  }, [navigation, eventId, bottomSheetRef, bottomSheetRef?.current]);
 
   const onRefresh = async () => {
     setRefreshing(true);
