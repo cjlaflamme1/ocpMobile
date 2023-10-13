@@ -64,7 +64,9 @@ const GroupView: React.FC<Props> = ({ navigation, route }) => {
         <TripleHeader navigation={navigation} title='View Group'>
           <Pressable
             style={[layoutStyles.flexRow,
-            layoutStyles.alignItemCenter]}
+            layoutStyles.alignItemCenter,
+            { zIndex: 2 }
+          ]}
             onPress={() => handleOpen()}
           >
             <Image

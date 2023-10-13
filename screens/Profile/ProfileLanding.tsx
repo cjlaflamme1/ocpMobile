@@ -59,7 +59,9 @@ const ProfileLanding: React.FC<Props> = ({ navigation }) => {
         <TitleAndAction title='Outdoor Community Project'>
           <Pressable
             style={[layoutStyles.flexRow,
-            layoutStyles.alignItemCenter]}
+            layoutStyles.alignItemCenter,
+            { zIndex: 2 }
+          ]}
             onPress={() => handleOpen()}
           >
             <Image

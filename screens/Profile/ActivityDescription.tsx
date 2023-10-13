@@ -114,7 +114,9 @@ const ActivityDescription: React.FC<Props> = ({ navigation }) => {
         <TripleHeader navigation={navigation} title='Activity Description'>
           <Pressable
             style={[layoutStyles.flexRow,
-            layoutStyles.alignItemCenter]}
+            layoutStyles.alignItemCenter,
+            { zIndex: 2 }
+          ]}
             onPress={() => handleOpen()}
           >
             <Image
