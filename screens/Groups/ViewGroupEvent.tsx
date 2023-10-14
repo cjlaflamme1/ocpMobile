@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { View, RefreshControl, Pressable, Dimensions } from 'react-native';
+import { View, RefreshControl, Pressable, Dimensions, Platform } from 'react-native';
 import { Image } from 'expo-image';
 import layoutStyles from '../../styles/layout';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
@@ -10,6 +10,7 @@ import { NavigationProp } from '@react-navigation/native';
 import EventBottomSheet from '../../components/bottomsheet/EventBottomSheet';
 import BottomSheet from '@gorhom/bottom-sheet';
 import TripleHeader from '../../components/headers/TripleHeader';
+import EventSettings from '../../components/bottomsheet/androidModals/EventSettings';
 
 interface Props {
   navigation: NavigationProp<any, any>;
@@ -18,6 +19,7 @@ interface Props {
 
 const ViewGroupEvent: React.FC<Props> = ({ navigation, route }) => {
   const [refreshing, setRefreshing] = useState(false);
+  const [androidModal, setAndroidModal] = useState(false);
   const eventId = route.params.eventId;
   const dispatch = useAppDispatch();
   const scrollViewRef = useRef<KeyboardAwareScrollView|null>(null);
@@ -29,6 +31,10 @@ const ViewGroupEvent: React.FC<Props> = ({ navigation, route }) => {
   const handleClosePress = () => bottomSheetRef?.current?.close();
 
   const handleOpen = () => bottomSheetRef?.current?.expand();
+
+  const handleOpenAndroid = () => {
+    setAndroidModal(true);
+  };
 
   useEffect(() => {
     if (!selectedGroupEvent || eventId !== selectedGroupEvent.id) {
@@ -42,7 +48,7 @@ const ViewGroupEvent: React.FC<Props> = ({ navigation, route }) => {
               layoutStyles.alignItemCenter,
               { zIndex: 2, height: 30, width: 30 }
             ]}
-              onPress={() => handleOpen()}
+              onPress={() => {Platform.OS === 'ios' ? handleOpen() : handleOpenAndroid()}}
             >
               <Image
                 contentFit='contain'
@@ -129,18 +135,37 @@ const ViewGroupEvent: React.FC<Props> = ({ navigation, route }) => {
           </View>
         </View>
       </KeyboardAwareScrollView>
-      <EventBottomSheet
-        closeSheet={() => handleClosePress()}
-        bottomSheetRef={bottomSheetRef}
-        customSnapPoints={['50%']}
-        creatorView={selectedGroupEvent.creator.id === currentUser.id}
-        quitEvent={leaveEvent}
-        joinEvent={joinEvent}
-        cancelEvent={cancelEvent}
-        attending={!!selectedGroupEvent.attendingUsers && !!selectedGroupEvent.attendingUsers.find((u) => u.id === currentUser.id)}
-        editEvent={editEvent}
-        expiredEvent={new Date(selectedGroupEvent.eventDate).valueOf() < new Date().valueOf()}
-      />
+      {
+        Platform.OS === 'ios' && (
+          <EventBottomSheet
+            closeSheet={() => handleClosePress()}
+            bottomSheetRef={bottomSheetRef}
+            customSnapPoints={['50%']}
+            creatorView={selectedGroupEvent.creator.id === currentUser.id}
+            quitEvent={leaveEvent}
+            joinEvent={joinEvent}
+            cancelEvent={cancelEvent}
+            attending={!!selectedGroupEvent.attendingUsers && !!selectedGroupEvent.attendingUsers.find((u) => u.id === currentUser.id)}
+            editEvent={editEvent}
+            expiredEvent={new Date(selectedGroupEvent.eventDate).valueOf() < new Date().valueOf()}
+          />
+        )
+      }
+      {
+        Platform.OS === 'android' && (
+          <EventSettings
+            isVisible={androidModal}
+            closeModal={() => setAndroidModal(false)}
+            creatorView={selectedGroupEvent.creator.id === currentUser.id}
+            quitEvent={leaveEvent}
+            joinEvent={joinEvent}
+            cancelEvent={cancelEvent}
+            attending={!!selectedGroupEvent.attendingUsers && !!selectedGroupEvent.attendingUsers.find((u) => u.id === currentUser.id)}
+            editEvent={editEvent}
+            expiredEvent={new Date(selectedGroupEvent.eventDate).valueOf() < new Date().valueOf()}
+          />
+        )
+      }
     </View>
   );
 };

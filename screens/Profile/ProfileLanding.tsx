@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { View, RefreshControl, Pressable, TextInput, Platform } from 'react-native';
+import { View, RefreshControl, Pressable, TextInput, Platform, Alert } from 'react-native';
 import { Image } from 'expo-image';
 import ProfileActivityCard from '../../components/ProfileActivityCard';
 import CustomText from '../../components/CustomText';
@@ -19,12 +19,13 @@ import { getOneUserActivityAsync, getUserActivitiesAsync } from '../../store/use
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { getNotificationsAsync } from '../../store/notificationSlice';
 import ProfileSettingsSheet from '../../components/bottomsheet/ProfileSettingsSheet';
-import BottomSheet from '@gorhom/bottom-sheet';
+import BottomSheet, { TouchableWithoutFeedback } from '@gorhom/bottom-sheet';
 import TitleAndAction from '../../components/headers/TitleAndAction';
 import PrimaryButton from '../../components/PrimaryButton';
 import { selectDefaultImage } from '../../services/defaultImage';
 import { manipulateAsync } from 'expo-image-manipulator';
 import RequestDeleteModal from '../../components/modals/RequestDeleteModal';
+import ProfileSettings from '../../components/bottomsheet/androidModals/ProfileSettings';
 
 interface Props {
   navigation: NavigationProp<any, any>
@@ -34,6 +35,7 @@ const ProfileLanding: React.FC<Props> = ({ navigation }) => {
   const [refreshing, setRefreshing] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [deleteModal, setDeleteModal] = useState(false);
+  const [androidModal, setAndroidModal] = useState(false);
   const [debounceHandle, setDebounceHandle] = useState<any>();
   const [debounceFNHandle, setDebounceFNHandle] = useState<any>();
   const scrollViewRef = useRef<KeyboardAwareScrollView|null>(null);
@@ -51,7 +53,13 @@ const ProfileLanding: React.FC<Props> = ({ navigation }) => {
 
   const handleClosePress = () => bottomSheetRef?.current?.close();
 
-  const handleOpen = () => bottomSheetRef?.current?.expand();
+  const handleOpenAndroid = () => {
+    setAndroidModal(true);
+  };
+
+  const handleOpen = () => {
+    bottomSheetRef?.current?.expand();
+  };
 
   useEffect(() => {
     navigation.setOptions({
@@ -60,14 +68,14 @@ const ProfileLanding: React.FC<Props> = ({ navigation }) => {
           <Pressable
             style={[layoutStyles.flexRow,
             layoutStyles.alignItemCenter,
-            { zIndex: 2, height: 30, width: 30 }
+            { zIndex: 2 }
           ]}
-            onPress={() => handleOpen()}
+            onPress={() => {Platform.OS === 'ios' ? handleOpen() : handleOpenAndroid()}}
           >
             <Image
               source={require('../../assets/icons/Setting.png')}
               contentFit='contain'
-              style={[{ height: 24, width: 24, resizeMode: 'contain'}, layoutStyles.mr_1]}
+              style={[{ height: 24, width: 24, resizeMode: 'contain'}, layoutStyles.mr_1, {top: 0, left: 0, position: 'relative'}]}
             />
           </Pressable>
         </TitleAndAction>
@@ -328,14 +336,29 @@ const ProfileLanding: React.FC<Props> = ({ navigation }) => {
         closeModal={() => setDeleteModal(false)}
         confirmDelete={submitRequestDelete}
       />
-      <ProfileSettingsSheet
-        logout={() => dispatch(logoutAction())}
-        closeSheet={() => handleClosePress()}
-        bottomSheetRef={bottomSheetRef}
-        customSnapPoints={['25%', '50%']}
-        editProfile={() => setEditMode(!editMode)}
-        accountDelete={() => setDeleteModal(true)}
-      />
+      {
+        Platform.OS === 'ios' && (
+          <ProfileSettingsSheet
+            logout={() => dispatch(logoutAction())}
+            closeSheet={() => handleClosePress()}
+            bottomSheetRef={bottomSheetRef}
+            customSnapPoints={['25%', '50%']}
+            editProfile={() => setEditMode(!editMode)}
+            accountDelete={() => setDeleteModal(true)}
+          />
+        )
+      }
+      {
+        Platform.OS === 'android' && (
+          <ProfileSettings
+            isVisible={androidModal}
+            closeModal={() => setAndroidModal(false)}
+            editProfile={() => setEditMode(!editMode)}
+            accountDelete={() => setDeleteModal(true)}
+            logout={() => dispatch(logoutAction())}
+          />
+        )
+      }
     </View>
   );
 };

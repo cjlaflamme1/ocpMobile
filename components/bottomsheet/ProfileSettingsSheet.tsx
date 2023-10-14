@@ -36,7 +36,7 @@ const ProfileSettingsSheet: React.FC<Props> = (props) => {
   const logoutPress = () => {
     closeSheet();
     logout();
-  }
+  };
 
   return (
     <BottomSheet
