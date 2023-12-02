@@ -109,7 +109,10 @@ const ViewGroupMessage: React.FC<Props> = ({ navigation, route }) => {
           {
             selectedPost.responses &&
             selectedPost.responses.length > 0 ?
-            selectedPost.responses.map((postResponse) => (
+            selectedPost.responses
+              .slice()
+              .sort((a, b) => a.createdAt?.valueOf() < b.createdAt?.valueOf() ? 1 : -1)
+              .map((postResponse) => (
               <View key={`postResponse-${postResponse.id}`}>
                 <View style={[layoutStyles.flexRow, layoutStyles.jBetween, layoutStyles.mt_1, layoutStyles.mb_1]}>
                   <View style={[layoutStyles.flexRow, layoutStyles.alignItemCenter]}>

@@ -10,7 +10,7 @@ import inputStyle from '../../styles/componentStyles/inputBar';
 import layoutStyles from '../../styles/layout';
 import createGroupStyles from '../../styles/screenStyles/groups/createGroup';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { createGroupAsync, CreateGroupDto, getAllUserGroupsAsync } from '../../store/groupSlice';
+import { createGroupAsync, CreateGroupDto, getAllGroupsAsync, getAllUserGroupsAsync } from '../../store/groupSlice';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { postPresignedUrl, putImageOnS3 } from '../../api/s3API';
 import { User } from '../../store/userSlice';
@@ -85,6 +85,12 @@ const CreateGroup: React.FC<Props> = ({ navigation }) => {
           [],
       }));
       dispatch(getAllUserGroupsAsync({
+        pagination: {
+          take: 8,
+          skip: 0,
+        }
+      }));
+      dispatch(getAllGroupsAsync({
         pagination: {
           take: 8,
           skip: 0,

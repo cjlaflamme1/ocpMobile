@@ -148,7 +148,7 @@ const PostMessageCard: React.FC<Props> = (props: Props) => {
               }
             }}
             onPress={submitPost}
-            disabled={submitting}
+            disabled={submitting || !postContent}
           >
             <CustomText bold style={[{ color: 'white' }]}>{buttonText}</CustomText>
           </Pressable>
