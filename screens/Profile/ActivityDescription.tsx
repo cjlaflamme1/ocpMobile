@@ -18,6 +18,7 @@ import TripleHeader from '../../components/headers/TripleHeader';
 import BottomSheet from '@gorhom/bottom-sheet';
 import ActivitySettingsSheet from '../../components/bottomsheet/ActivitySettingsSheet';
 import { manipulateAsync } from 'expo-image-manipulator';
+import ActivitySettings from '../../components/bottomsheet/androidModals/ActivitySettings';
 
 interface Props {
   navigation: NavigationProp<any, any>;
@@ -26,6 +27,7 @@ interface Props {
 const ActivityDescription: React.FC<Props> = ({ navigation }) => {
   const [refreshing, setRefreshing] = useState(false);
   const [editMode, setEditMode] = useState(false);
+  const [androidModal, setAndroidModal] = useState(false);
   const [updatedActivity, setUpdatedActivity] = useState<Partial<UserActivity>>()
   const scrollViewRef = useRef<KeyboardAwareScrollView|null>(null);
   const dispatch = useAppDispatch();
@@ -38,6 +40,10 @@ const ActivityDescription: React.FC<Props> = ({ navigation }) => {
   const handleClosePress = () => bottomSheetRef?.current?.close();
 
   const handleOpen = () => bottomSheetRef?.current?.expand();
+
+  const handleOpenAndroid = () => {
+    setAndroidModal(true);
+  };
 
   const onRefresh = async () => {
     setRefreshing(true);
@@ -114,8 +120,10 @@ const ActivityDescription: React.FC<Props> = ({ navigation }) => {
         <TripleHeader navigation={navigation} title='Activity Description'>
           <Pressable
             style={[layoutStyles.flexRow,
-            layoutStyles.alignItemCenter]}
-            onPress={() => handleOpen()}
+            layoutStyles.alignItemCenter,
+            { zIndex: 2, height: 30, width: 30 }
+          ]}
+            onPress={() => {Platform.OS === 'ios' ? handleOpen() : handleOpenAndroid()}}
           >
             <Image
               source={require('../../assets/icons/Setting.png')}
@@ -126,6 +134,9 @@ const ActivityDescription: React.FC<Props> = ({ navigation }) => {
         </TripleHeader>
       )
     });
+  }, [navigation, bottomSheetRef, bottomSheetRef?.current])
+
+  useEffect(() => {
     setUpdatedActivity({
       ...selectedUserActivity
     });
@@ -439,12 +450,25 @@ const ActivityDescription: React.FC<Props> = ({ navigation }) => {
           </ScrollView>
         )
       }
-      <ActivitySettingsSheet
-        closeSheet={() => handleClosePress()}
-        bottomSheetRef={bottomSheetRef}
-        customSnapPoints={['25%', '50%']}
-        editProfile={() => setEditMode(!editMode)}
-      />
+      {
+        Platform.OS === 'ios' && (
+          <ActivitySettingsSheet
+            closeSheet={() => handleClosePress()}
+            bottomSheetRef={bottomSheetRef}
+            customSnapPoints={['25%', '50%']}
+            editProfile={() => setEditMode(!editMode)}
+          />
+        )
+      }
+      {
+        Platform.OS === 'android' && (
+          <ActivitySettings
+            closeModal={() => setAndroidModal(false)}
+            editProfile={() => setEditMode(!editMode)}
+            isVisible={androidModal}
+          />
+        )
+      }
     </View>
   );
 };

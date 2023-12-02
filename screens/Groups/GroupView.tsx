@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { ScrollView, View, RefreshControl, Pressable, Dimensions } from 'react-native';
+import { ScrollView, View, RefreshControl, Pressable, Dimensions, Platform } from 'react-native';
 import { Image } from 'expo-image';
 import CustomText from '../../components/CustomText';
 import layoutStyles from '../../styles/layout';
@@ -22,6 +22,7 @@ import BottomSheet from '@gorhom/bottom-sheet';
 import GroupDescriptionModal from '../../components/modals/GroupDescripModal';
 import { NavigationProp } from '@react-navigation/native';
 import TripleHeader from '../../components/headers/TripleHeader';
+import GroupSettings from '../../components/bottomsheet/androidModals/GroupSettings';
 
 interface Props {
   navigation: NavigationProp<any, any>;
@@ -41,6 +42,7 @@ const GroupView: React.FC<Props> = ({ navigation, route }) => {
   });
   const groupId = route.params.groupId;
   const [modalVisible, setModalVisible] = useState(false);
+  const [androidModal, setAndroidModal] = useState(false);
   const [userModal, setUserModal] = useState(false);
   const [descripModal, setDescripModal] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
@@ -57,6 +59,34 @@ const GroupView: React.FC<Props> = ({ navigation, route }) => {
   const handleClosePress = () => bottomSheetRef?.current?.close();
 
   const handleOpen = () => bottomSheetRef?.current?.expand();
+
+  const handleOpenAndroid = () => {
+    setAndroidModal(true);
+  };
+
+  useEffect(() => {
+    navigation.setOptions({
+      header: () => (
+        <TripleHeader navigation={navigation} title='View Group'>
+          <Pressable
+            style={[layoutStyles.flexRow,
+            layoutStyles.alignItemCenter,
+            { zIndex: 2, height: 30, width: 30 }
+          ]}
+            onPress={() => {Platform.OS === 'ios' ? handleOpen() : handleOpenAndroid()}}
+          >
+            <View style={[ { height: 24, width: 24 } ]}>
+              <Image
+                source={require('../../assets/icons/Setting.png')}
+                contentFit='contain'
+                style={[{ height: 24, width: 24 }, layoutStyles.mr_1]}
+              />
+            </View>
+          </Pressable>
+        </TripleHeader>
+      )
+    });
+  }, [navigation, bottomSheetRef, bottomSheetRef?.current]);
 
   useEffect(() => {
     if (!selectedGroup || (selectedGroup.id !== groupId)) {
@@ -91,24 +121,6 @@ const GroupView: React.FC<Props> = ({ navigation, route }) => {
           value: groupId,
         }]
       }));
-      navigation.setOptions({
-        header: () => (
-          <TripleHeader navigation={navigation} title='View Group'>
-            <Pressable
-              style={[layoutStyles.flexRow,
-              layoutStyles.alignItemCenter]}
-              onPress={() => handleOpen()}
-            >
-              <Image
-                source={require('../../assets/icons/Setting.png')}
-                contentFit='contain'
-                style={[{ height: 24, width: 24 }, layoutStyles.mr_1]}
-              />
-            </Pressable>
-          </TripleHeader>
-          
-        )
-      });
     }
     return () => {
       dispatch(clearPosts());
@@ -347,17 +359,35 @@ const GroupView: React.FC<Props> = ({ navigation, route }) => {
         closeModal={() => setDescripModal(false)}
         groupDescription={selectedGroup.description}
       />
-      <SettingsSheet
-        closeSheet={() => handleClosePress()}
-        bottomSheetRef={bottomSheetRef}
-        customSnapPoints={['75%']}
-        inviteMembers={() => setModalVisible(true)}
-        adminView={adminUser()}
-        viewMembers={() => setUserModal(true)}
-        viewDescription={() => setDescripModal(true)}
-        leaveGroup={leaveGroup}
-        editGroup={() => navigation.navigate('Edit Group', { groupId: selectedGroup.id })}
-      />
+      {
+        Platform.OS === 'ios' && (
+          <SettingsSheet
+            closeSheet={() => handleClosePress()}
+            bottomSheetRef={bottomSheetRef}
+            customSnapPoints={['75%']}
+            inviteMembers={() => setModalVisible(true)}
+            adminView={adminUser()}
+            viewMembers={() => setUserModal(true)}
+            viewDescription={() => setDescripModal(true)}
+            leaveGroup={leaveGroup}
+            editGroup={() => navigation.navigate('Edit Group', { groupId: selectedGroup.id })}
+          />
+        )
+      }
+      {
+        Platform.OS === 'android' && (
+          <GroupSettings
+            isVisible={androidModal}
+            closeModal={() => setAndroidModal(false)}
+            inviteMembers={() => setModalVisible(true)}
+            adminView={adminUser()}
+            viewMembers={() => setUserModal(true)}
+            viewDescription={() => setDescripModal(true)}
+            leaveGroup={leaveGroup}
+            editGroup={() => navigation.navigate('Edit Group', { groupId: selectedGroup.id })}
+          />
+        )
+      }
     </View>
   );
 };

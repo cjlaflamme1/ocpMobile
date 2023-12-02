@@ -36,7 +36,7 @@ const ProfileSettingsSheet: React.FC<Props> = (props) => {
   const logoutPress = () => {
     closeSheet();
     logout();
-  }
+  };
 
   return (
     <BottomSheet
@@ -48,7 +48,7 @@ const ProfileSettingsSheet: React.FC<Props> = (props) => {
       <BottomSheetScrollView contentContainerStyle={[bottomSheet.scrollView]}>
         <View style={[bottomSheet.itemContainer]}>
           <Pressable
-            style={[layoutStyles.flexRow, layoutStyles.alignItemCenter]}
+            style={[layoutStyles.flexRow, layoutStyles.alignItemCenter, { zIndex: 2 }]}
             onPress={() => edit()}
           >
             <Image
@@ -63,7 +63,7 @@ const ProfileSettingsSheet: React.FC<Props> = (props) => {
         </View>
         <View style={[bottomSheet.itemContainer]}>
           <Pressable
-            style={[layoutStyles.flexRow, layoutStyles.alignItemCenter]}
+            style={[layoutStyles.flexRow, layoutStyles.alignItemCenter, { zIndex: 2 }]}
             onPress={() => logoutPress()}
           >
             <Image
@@ -78,7 +78,7 @@ const ProfileSettingsSheet: React.FC<Props> = (props) => {
         </View>
         <View style={[bottomSheet.itemContainer]}>
           <Pressable
-            style={[layoutStyles.flexRow, layoutStyles.alignItemCenter]}
+            style={[layoutStyles.flexRow, layoutStyles.alignItemCenter, { zIndex: 2 }]}
             onPress={() => accountDelete()}
           >
             <Image

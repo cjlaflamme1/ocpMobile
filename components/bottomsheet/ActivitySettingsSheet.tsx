@@ -39,7 +39,7 @@ const ActivitySettingsSheet: React.FC<Props> = (props) => {
       <BottomSheetScrollView contentContainerStyle={[bottomSheet.scrollView]}>
         <View style={[bottomSheet.itemContainer]}>
           <Pressable
-            style={[layoutStyles.flexRow, layoutStyles.alignItemCenter]}
+            style={[layoutStyles.flexRow, layoutStyles.alignItemCenter, { zIndex: 2 }]}
             onPress={() => edit()}
           >
             <Image

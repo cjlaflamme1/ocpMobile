@@ -72,7 +72,7 @@ const SettingsSheet: React.FC<Props> = (props) => {
         <View style={[bottomSheet.itemContainer]}>
           <Pressable
             style={[layoutStyles.flexRow,
-            layoutStyles.alignItemCenter]}
+            layoutStyles.alignItemCenter, { zIndex: 2 }]}
             onPress={() => inviteOthers()}
           >
             <Image
@@ -86,7 +86,7 @@ const SettingsSheet: React.FC<Props> = (props) => {
         <View style={[bottomSheet.itemContainer]}>
           <Pressable
             style={[layoutStyles.flexRow,
-            layoutStyles.alignItemCenter]}
+            layoutStyles.alignItemCenter, { zIndex: 2 }]}
             onPress={() => viewList()}
           >
             <Image
@@ -100,7 +100,7 @@ const SettingsSheet: React.FC<Props> = (props) => {
         <View style={[bottomSheet.itemContainer]}>
           <Pressable
             style={[layoutStyles.flexRow,
-            layoutStyles.alignItemCenter]}
+            layoutStyles.alignItemCenter, { zIndex: 2 }]}
             onPress={() => openDescription()}
           >
             <Image
@@ -117,7 +117,7 @@ const SettingsSheet: React.FC<Props> = (props) => {
             <View style={[bottomSheet.itemContainer]}>
               <Pressable
                 style={[layoutStyles.flexRow,
-                layoutStyles.alignItemCenter]}
+                layoutStyles.alignItemCenter, { zIndex: 2 }]}
                 onPress={submitLeaveGroup}
               >
                 <Image
@@ -136,7 +136,7 @@ const SettingsSheet: React.FC<Props> = (props) => {
             <View style={[bottomSheet.itemContainer]}>
               <Pressable
                 style={[layoutStyles.flexRow,
-                layoutStyles.alignItemCenter]}
+                layoutStyles.alignItemCenter, { zIndex: 2 }]}
                 onPress={() => submitEditGroup()}
               >
                 <Image

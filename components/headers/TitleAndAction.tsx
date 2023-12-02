@@ -22,7 +22,7 @@ const TitleAndAction: React.FC<Props> = ({ title, children }) => {
     >
       <View style={[titleWithButtonStyle.iconButton]} />
       <View style={[layoutStyles.mt_1, layoutStyles.mb_1]}>
-        <CustomText center bold h4 style={{ maxWidth: '100%', flexGrow: 1 }}>{title}</CustomText>
+        <CustomText center bold h4 style={{ maxWidth: '95%', flexGrow: 1 }}>{title}</CustomText>
       </View>
       <View>
         {children}

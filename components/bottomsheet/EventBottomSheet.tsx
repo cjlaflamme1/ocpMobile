@@ -92,7 +92,8 @@ const EventBottomSheet: React.FC<Props> = (props) => {
             <View style={[bottomSheet.itemContainer]}>
               <Pressable
                 style={[layoutStyles.flexRow,
-                layoutStyles.alignItemCenter]}
+                layoutStyles.alignItemCenter,
+                { zIndex: 2 }]}
                 onPress={onLeaveClick}
               >
                 <Image
@@ -112,7 +113,7 @@ const EventBottomSheet: React.FC<Props> = (props) => {
             <View style={[bottomSheet.itemContainer]}>
               <Pressable
                 style={[layoutStyles.flexRow,
-                layoutStyles.alignItemCenter]}
+                layoutStyles.alignItemCenter, { zIndex: 2 }]}
                 onPress={onJoinClick}
               >
                 <Image
@@ -131,7 +132,7 @@ const EventBottomSheet: React.FC<Props> = (props) => {
             <View style={[bottomSheet.itemContainer]}>
               <Pressable
                 style={[layoutStyles.flexRow,
-                layoutStyles.alignItemCenter]}
+                layoutStyles.alignItemCenter, { zIndex: 2 }]}
                 onPress={onEditClick}
               >
                 <Image
@@ -150,7 +151,7 @@ const EventBottomSheet: React.FC<Props> = (props) => {
             <View style={[bottomSheet.itemContainer]}>
               <Pressable
                 style={[layoutStyles.flexRow,
-                layoutStyles.alignItemCenter]}
+                layoutStyles.alignItemCenter, { zIndex: 2 }]}
                 onPress={onCancelClick}
               >
                 <Image
