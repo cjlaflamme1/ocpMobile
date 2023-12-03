@@ -2,12 +2,11 @@
   "expo": {
     "name": "Outdoor Community Project",
     "slug": "outdoor-community-project",
-    "version": "1.0.19",
+    "version": "1.0.20",
     "orientation": "portrait",
     "icon": "./assets/logoOnlyApp.png",
     "userInterfaceStyle": "light",
     "backgroundColor": "#FAFAFA",
-      // "backgroundColor": "#9DBDC6",
     "splash": {
       "image": "./assets/originalLogo.png",
       "resizeMode": "contain",
@@ -41,10 +40,9 @@
       "config": {
         "usesNonExemptEncryption": false
       }
-      // "backgroundColor": "#9DBDC6"
     },
     "android": {
-      "versionCode": 33,
+      "versionCode": 34,
       "package": "com.outdoorcommunityproject",
       "adaptiveIcon": {
         "foregroundImage": "./assets/logoDroid.png",
@@ -52,7 +50,6 @@
       },
       "backgroundColor": "#FAFAFA",
       "googleServicesFile": "./google-services.json"
-      // "backgroundColor": "#9DBDC6"
     },
     "web": {
       "favicon": "./assets/favicon.png"

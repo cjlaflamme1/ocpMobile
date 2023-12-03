@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { ScrollView, View, RefreshControl, Pressable, Dimensions, Platform } from 'react-native';
 import { Image } from 'expo-image';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import CustomText from '../../components/CustomText';
 import layoutStyles from '../../styles/layout';
 import globalStyles from '../../styles/global';
@@ -48,6 +49,7 @@ const GroupView: React.FC<Props> = ({ navigation, route }) => {
   const [refreshing, setRefreshing] = useState(false);
   const [radioSelector, setRadioSelector] = useState(0);
   const dispatch = useAppDispatch();
+  const scrollViewRef = useRef<KeyboardAwareScrollView|null>(null);
 
   const selectedGroup = useAppSelector((state) => state.groupState.selectedGroup);
   const currentGroupsPosts = useAppSelector((state) => state.groupPostState.currentGroupsPosts);
@@ -225,7 +227,12 @@ const GroupView: React.FC<Props> = ({ navigation, route }) => {
 
   return (
     <View style={[layoutStyles.screenContainer]}>
-      <ScrollView showsVerticalScrollIndicator={false}  refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
+      <KeyboardAwareScrollView
+        showsVerticalScrollIndicator={false}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+        ref={scrollViewRef}
+        keyboardShouldPersistTaps="handled"
+      >
         <View style={[layoutStyles.mb_3]}>
           <View style={[layoutStyles.mt_2]}>
             <Image
@@ -338,7 +345,7 @@ const GroupView: React.FC<Props> = ({ navigation, route }) => {
             )
           }
         </View>
-      </ScrollView>
+      </KeyboardAwareScrollView>
       <SendInviteModal
         groupId={selectedGroup.id}
         isVisible={modalVisible}

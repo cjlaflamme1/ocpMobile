@@ -180,7 +180,7 @@ const ViewEvent: React.FC<Props> = memo(({ navigation, event, currentUser }) => 
         navigation={navigation}
         isVisible={userModal}
         closeModal={() => setUserModal(false)}
-        userList={[...new Set([...(event.attendingUsers || []), ...([event.creator] || [])])]}
+        userList={[...new Set([...(event.attendingUsers || [])])]}
       />
     </View>
   );
