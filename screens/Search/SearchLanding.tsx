@@ -28,7 +28,7 @@ const SearchLanding: React.FC<Props> = ({ navigation }) => {
     if (searchForGroups && searchForGroups.count <= 0) {
       dispatch(getAllGroupsAsync({
         pagination: {
-          take: 8,
+          take: 25,
           skip: 0,
         }
       }));
@@ -44,7 +44,7 @@ const SearchLanding: React.FC<Props> = ({ navigation }) => {
     setRefreshing(true);
     await dispatch(getAllGroupsAsync({
       pagination: {
-        take: 8,
+        take: 25,
         skip: 0,
       }
     }))
@@ -55,7 +55,7 @@ const SearchLanding: React.FC<Props> = ({ navigation }) => {
     if (searchQuery) {
       dispatch(getAllGroupsAsync({
         pagination: {
-          take: 8,
+          take: 25,
           skip: 0,
         },
         filters: [
@@ -74,7 +74,7 @@ const SearchLanding: React.FC<Props> = ({ navigation }) => {
     } else {
       dispatch(getAllGroupsAsync({
         pagination: {
-          take: 8,
+          take: 25,
           skip: 0,
         }
       }));
@@ -90,13 +90,13 @@ const SearchLanding: React.FC<Props> = ({ navigation }) => {
     }));
     dispatch(getAllUserGroupsAsync({
       pagination: {
-        take: 8,
+        take: 25,
         skip: 0,
       }
     }))
     dispatch(getAllGroupsAsync({
       pagination: {
-        take: 8,
+        take: 25,
         skip: 0,
       }
     }));

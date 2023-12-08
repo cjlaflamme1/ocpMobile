@@ -86,13 +86,13 @@ const CreateGroup: React.FC<Props> = ({ navigation }) => {
       }));
       dispatch(getAllUserGroupsAsync({
         pagination: {
-          take: 8,
+          take: 25,
           skip: 0,
         }
       }));
       dispatch(getAllGroupsAsync({
         pagination: {
-          take: 8,
+          take: 25,
           skip: 0,
         }
       }));

@@ -23,7 +23,7 @@ const ViewGroupMessage: React.FC<Props> = ({ navigation, route }) => {
   const [queryParams, setQueryParams] = useState<QueryObject>({
     pagination: {
       skip: 0,
-      take: 10,
+      take: 25,
     },
     orderBy: {
       column: 'createdAt',
