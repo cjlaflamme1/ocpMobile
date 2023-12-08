@@ -3,6 +3,7 @@ import { View, ScrollView, RefreshControl, Pressable, TextInput, Button, Platfor
 import { Image } from 'expo-image';
 import CustomText from '../../components/CustomText';
 import * as ImagePicker from 'expo-image-picker';
+import {Buffer} from "buffer";
 import PrimaryButton from '../../components/PrimaryButton';
 import inputStyle from '../../styles/componentStyles/inputBar';
 import { Picker } from '@react-native-picker/picker';
@@ -140,7 +141,7 @@ const CreateGroupEvent: React.FC<Props> = ({ navigation }) => {
         dispatch(getAllGroupEventsAsync({
           pagination: {
             skip: 0,
-            take: 10,
+            take: 25,
           },
           orderBy: {
             column: 'createdAt',

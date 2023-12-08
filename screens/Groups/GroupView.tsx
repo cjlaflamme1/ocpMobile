@@ -34,7 +34,7 @@ const GroupView: React.FC<Props> = ({ navigation, route }) => {
   const [queryParams, setQueryParams] = useState<QueryObject>({
     pagination: {
       skip: 0,
-      take: 10,
+      take: 25,
     },
     orderBy: {
       column: 'createdAt',
@@ -98,7 +98,7 @@ const GroupView: React.FC<Props> = ({ navigation, route }) => {
       dispatch(getAllGroupPostsAsync({
         pagination: {
           skip: 0,
-          take: 10,
+          take: 25,
         },
         orderBy: {
           column: 'createdAt',
@@ -112,7 +112,7 @@ const GroupView: React.FC<Props> = ({ navigation, route }) => {
       dispatch(getAllGroupEventsAsync({
         pagination: {
           skip: 0,
-          take: 10,
+          take: 25,
         },
         orderBy: {
           column: 'createdAt',
@@ -159,7 +159,7 @@ const GroupView: React.FC<Props> = ({ navigation, route }) => {
           dispatch(getAllGroupEventsAsync({
             pagination: {
               skip: 0,
-              take: 10,
+              take: 25,
             },
             orderBy: {
               column: 'createdAt',
@@ -210,7 +210,7 @@ const GroupView: React.FC<Props> = ({ navigation, route }) => {
       if (res.meta.requestStatus === 'fulfilled') {
         dispatch(getAllUserGroupsAsync({
           pagination: {
-            take: 8,
+            take: 25,
             skip: 0,
           },
           filteredWithOr: true,

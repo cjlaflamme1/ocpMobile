@@ -33,7 +33,7 @@ const GroupsLanding: React.FC<Props> = ({ navigation, route }) => {
     if (allGroups && allGroups.count <= 0) {
       dispatch(getAllUserGroupsAsync({
         pagination: {
-          take: 8,
+          take: 25,
           skip: 0,
         },
         filteredWithOr: true,
@@ -56,7 +56,7 @@ const GroupsLanding: React.FC<Props> = ({ navigation, route }) => {
       [
         dispatch(getAllUserGroupsAsync({
           pagination: {
-            take: 8,
+            take: 25,
             skip: 0,
           },
           filteredWithOr: true,
@@ -81,7 +81,7 @@ const GroupsLanding: React.FC<Props> = ({ navigation, route }) => {
     dispatch(getAllInvitationsAsync());
     dispatch(getAllUserGroupsAsync({
       pagination: {
-        take: 8,
+        take: 25,
         skip: 0,
       }
     }))
@@ -92,7 +92,7 @@ const GroupsLanding: React.FC<Props> = ({ navigation, route }) => {
     if (searchQuery) {
       dispatch(getAllUserGroupsAsync({
         pagination: {
-          take: 8,
+          take: 25,
           skip: 0,
         },
         filters: [
@@ -106,7 +106,7 @@ const GroupsLanding: React.FC<Props> = ({ navigation, route }) => {
     } else {
       dispatch(getAllUserGroupsAsync({
         pagination: {
-          take: 8,
+          take: 25,
           skip: 0,
         }
       }));
