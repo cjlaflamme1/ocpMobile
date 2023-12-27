@@ -12,6 +12,7 @@ interface Props {
   editProfile: () => void;
   logout: () => void;
   accountDelete: () => void;
+  notificationPress: () => void;
 };
 
 const ProfileSettings: React.FC<Props> = (props: Props) => {
@@ -21,6 +22,7 @@ const ProfileSettings: React.FC<Props> = (props: Props) => {
     editProfile,
     logout,
     accountDelete,
+    notificationPress,
   } = props;
 
   const edit = () => {
@@ -37,6 +39,11 @@ const ProfileSettings: React.FC<Props> = (props: Props) => {
     closeModal();
     accountDelete();
   };
+
+  const notifications = () => {
+    notificationPress();
+    closeModal();
+  }
 
   return (
     <Modal
@@ -68,6 +75,21 @@ const ProfileSettings: React.FC<Props> = (props: Props) => {
                   />
                   <CustomText>
                     Edit Profile
+                  </CustomText>
+                </Pressable>
+              </View>
+              <View style={[bottomSheet.itemContainer]}>
+                <Pressable
+                  style={[layoutStyles.flexRow, layoutStyles.alignItemCenter, { zIndex: 2 }]}
+                  onPress={() => notifications()}
+                >
+                  <Image
+                    source={require('../../../assets/icons/Setting.png')}
+                    style={[{ height: 16, width: 16 }, layoutStyles.mr_1]}
+                    contentFit='contain'
+                  />
+                  <CustomText>
+                    Edit Notifications
                   </CustomText>
                 </Pressable>
               </View>

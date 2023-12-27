@@ -43,7 +43,7 @@ const ProfileSettingsSheet: React.FC<Props> = (props) => {
   const notifications = () => {
     notificationPress();
     closeSheet();
-  }
+  };
 
   return (
     <BottomSheet
