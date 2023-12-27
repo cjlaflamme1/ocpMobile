@@ -345,6 +345,7 @@ const ProfileLanding: React.FC<Props> = ({ navigation }) => {
             customSnapPoints={['25%', '50%']}
             editProfile={() => setEditMode(!editMode)}
             accountDelete={() => setDeleteModal(true)}
+            notificationPress={() => navigation.navigate('notifications')}
           />
         )
       }

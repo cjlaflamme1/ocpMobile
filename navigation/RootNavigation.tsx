@@ -31,7 +31,7 @@ const RootNavigation: React.FC<Props> = ({ expoPushToken }) => {
           loggedIn: true,
           email: loginStatus.payload.email,
           accessToken: null,
-        }))
+        }));
       }
     } catch (e: any) {
       return e;
