@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import TabNavigator from './TabNavigator';
@@ -10,12 +10,15 @@ import globalStyles from '../styles/global';
 import * as Notifications from 'expo-notifications';
 import { getNotificationsAsync } from '../store/notificationSlice';
 import ResetPassword from '../screens/Auth/ResetPassword';
+import { AppState } from 'react-native';
 
 interface Props {
   expoPushToken: string;
 }
 
 const RootNavigation: React.FC<Props> = ({ expoPushToken }) => {
+  const appState = useRef(AppState.currentState);
+  const [appStateVisible, setAppStateVisible] = useState(appState.current);
   const RootStack = createNativeStackNavigator();
   const dispatch = useAppDispatch();
   const currentAuth = useAppSelector((state) => state.authState.currentAuth);
@@ -31,7 +34,7 @@ const RootNavigation: React.FC<Props> = ({ expoPushToken }) => {
           loggedIn: true,
           email: loginStatus.payload.email,
           accessToken: null,
-        }))
+        }));
       }
     } catch (e: any) {
       return e;
@@ -40,7 +43,21 @@ const RootNavigation: React.FC<Props> = ({ expoPushToken }) => {
 
   useEffect(() => {
     checkUser();
+    const subscription = AppState.addEventListener('change', (nextAppState) => {
+      appState.current = nextAppState;
+      setAppStateVisible(appState.current);
+    });
+
+    return () => {
+      subscription.remove();
+    };
   }, []);
+
+  useEffect(() => {
+    if (appStateVisible === 'active') {
+      dispatch(getNotificationsAsync()).catch((err) => console.error(err));
+    }
+  }, [appStateVisible]);
 
   useEffect(() => {
     if (currentUser && expoPushToken) {

@@ -4,7 +4,7 @@ import { Image } from 'expo-image';
 import CustomText from '../CustomText';
 import globalStyles from '../../styles/global';
 import layoutStyles from '../../styles/layout';
-import { dateAndTime, timeSince } from '../../services/timeAndDate';
+import { dateAndTime, dayOfWeek, timeSince } from '../../services/timeAndDate';
 import { useAppDispatch } from '../../store/hooks';
 import { getOneGroupPostAsync } from '../../store/groupPostSlice';
 import { NavigationProp, useRoute } from '@react-navigation/native';
@@ -71,6 +71,9 @@ const EventCard: React.FC<Props> = (props: Props) => {
           </CustomText>
         </View>
         <View style={[layoutStyles.mt_1, layoutStyles.mb_1]}>
+          <CustomText style={[layoutStyles.mb_1]}>
+            {dayOfWeek(event.eventDate)}
+          </CustomText>
           <CustomText>
             {dateAndTime(event.eventDate)}
           </CustomText>

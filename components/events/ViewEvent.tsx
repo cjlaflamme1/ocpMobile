@@ -9,7 +9,7 @@ import { useAppDispatch } from '../../store/hooks';
 import { createPostResponseAsync } from '../../store/groupPostSlice';
 import { NavigationProp } from '@react-navigation/native';
 import CommentResponse from '../../components/groups/CommentResponse';
-import { dateAndTime, timeSince } from '../../services/timeAndDate';
+import { dateAndTime, dayOfWeek, timeSince } from '../../services/timeAndDate';
 import { GroupEvent, clearSelectedEvent, getOneGroupEventAsync, updateGroupEventAsync } from '../../store/groupEventSlice';
 import PrimaryButton from '../PrimaryButton';
 import { User } from '../../store/userSlice';
@@ -89,6 +89,9 @@ const ViewEvent: React.FC<Props> = memo(({ navigation, event, currentUser }) => 
             </CustomText>
           </View>
           <View style={[layoutStyles.mt_1, layoutStyles.mb_1]}>
+            <CustomText h3 style={[layoutStyles.mb_1]}>
+              {dayOfWeek(event.eventDate)}
+            </CustomText>
             <CustomText h3>
               {dateAndTime(event.eventDate)}
             </CustomText>

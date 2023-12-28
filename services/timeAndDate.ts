@@ -32,6 +32,12 @@ export const dateMonthDayYear = (date: Date) => {
   return `${month}-${day}-${year}`;
 };
 
+export const dayOfWeek = (date: Date) => {
+  const weekday = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+  const d = new Date(date);
+  return weekday[d.getDay()];
+}
+
 export const timeSince = (date: Date) => {
 
   let seconds = Math.floor((new Date().valueOf() - date.valueOf()) / 1000);

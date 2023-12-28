@@ -100,7 +100,7 @@ const PostMessageCard: React.FC<Props> = (props: Props) => {
       <View style={[inputStyle.fullWidthInputContainer]}>
         <TextInput
           placeholder={placeholderText}
-          style={[inputStyle.fullWidthInput]}
+          style={[inputStyle.fullWidthInput, inputStyle.multilineInput]}
           multiline
           value={postContent}
           onChangeText={(e) => setPostContent(e)}

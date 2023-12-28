@@ -10,6 +10,7 @@ import CreateActivity from '../screens/Profile/CreateActivity';
 import TitleWithBackButton from '../components/headers/TitleBackButton';
 import TitleAndAction from '../components/headers/TitleAndAction';
 import TripleHeader from '../components/headers/TripleHeader';
+import NotificationSettings from '../screens/Profile/NotificationSettings';
 
 
 
@@ -69,6 +70,18 @@ const ProfileNavigation: React.FC = () => {
               contentStyle: globalStyles.navigationStackScreen,
               header: () => (
                 <TitleWithBackButton title='Create Activity' />
+              )
+            }
+          }
+        />
+        <RootStack.Screen
+          name="notifications"
+          component={NotificationSettings}
+          options={
+            {
+              contentStyle: globalStyles.navigationStackScreen,
+              header: () => (
+                <TitleWithBackButton title='Edit Notifications' />
               )
             }
           }

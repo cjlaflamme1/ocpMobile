@@ -211,7 +211,7 @@ const EditGroup: React.FC<Props> = ({ navigation, route }) => {
               <TextInput
                 placeholder='Enter group description'
                 defaultValue={groupObj.description}
-                style={[inputStyle.fullWidthInput]}
+                style={[inputStyle.fullWidthInput, inputStyle.multilineInput]}
                 multiline
                 onChangeText={(e) => {
                   setGroupObj({
