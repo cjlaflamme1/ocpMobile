@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { View, RefreshControl, Pressable, TextInput, Platform, Alert } from 'react-native';
+import { View, RefreshControl, Pressable, TextInput, Platform } from 'react-native';
 import { Image } from 'expo-image';
 import ProfileActivityCard from '../../components/ProfileActivityCard';
 import CustomText from '../../components/CustomText';
@@ -19,7 +19,7 @@ import { getOneUserActivityAsync, getUserActivitiesAsync } from '../../store/use
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { getNotificationsAsync } from '../../store/notificationSlice';
 import ProfileSettingsSheet from '../../components/bottomsheet/ProfileSettingsSheet';
-import BottomSheet, { TouchableWithoutFeedback } from '@gorhom/bottom-sheet';
+import BottomSheet from '@gorhom/bottom-sheet';
 import TitleAndAction from '../../components/headers/TitleAndAction';
 import PrimaryButton from '../../components/PrimaryButton';
 import { selectDefaultImage } from '../../services/defaultImage';
@@ -197,6 +197,22 @@ const ProfileLanding: React.FC<Props> = ({ navigation }) => {
                 )
               }
             </View>
+            {
+              !editMode
+              && (
+                <Pressable
+                  onPress={() => setEditMode(!editMode)}
+                  style={[profileLandingStyles.editProfilePressable]}
+                >
+                  <Image
+                    source={require("../../assets/icons/EditRed.png")}
+                    style={[profileLandingStyles.editProfileIcon]}
+                    contentFit='contain'
+                  />
+                  <CustomText style={[globalStyles.redLink]}>Edit Profile</CustomText>
+                </Pressable>
+              )
+            }
           </View>
           {
             editMode

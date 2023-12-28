@@ -25,6 +25,21 @@ const profileLandingStyles = StyleSheet.create({
     height: 30,
     width: 30,
     padding: 10,
+  },
+  editProfilePressable: {
+    position: 'absolute',
+    right: 0,
+    top: 0,
+    padding: 6,
+    display: 'flex',
+    alignItems: 'center'
+    // backgroundColor: '#CB1406',
+    // borderRadius: 50,
+  },
+  editProfileIcon: {
+    height: 20,
+    width: 20,
+    padding: 10,
   }
 });
 
