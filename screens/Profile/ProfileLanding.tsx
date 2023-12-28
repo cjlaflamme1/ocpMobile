@@ -357,6 +357,7 @@ const ProfileLanding: React.FC<Props> = ({ navigation }) => {
             editProfile={() => setEditMode(!editMode)}
             accountDelete={() => setDeleteModal(true)}
             logout={() => dispatch(logoutAction())}
+            notificationPress={() => navigation.navigate('notifications')}
           />
         )
       }
