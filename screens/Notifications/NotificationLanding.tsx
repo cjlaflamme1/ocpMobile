@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Pressable, RefreshControl, ScrollView, View } from 'react-native';
-import globalStyles from '../../styles/global';
+import { RefreshControl, ScrollView, View } from 'react-native';
 import layoutStyles from '../../styles/layout';
 import CustomText from '../../components/CustomText';
 import NotificationItem from '../../components/notifications/NotificationItem';
