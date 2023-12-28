@@ -268,7 +268,7 @@ const EditGroupEvent: React.FC<Props> = ({ navigation, route }) => {
             <View style={[inputStyle.fullWidthInputContainer]}>
               <TextInput
                 placeholder='Enter event description'
-                style={[inputStyle.fullWidthInput]}
+                style={[inputStyle.fullWidthInput, inputStyle.multilineInput]}
                 multiline
                 value={eventObj.description || ''}
                 onChangeText={(e) => {

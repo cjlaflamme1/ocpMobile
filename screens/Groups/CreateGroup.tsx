@@ -211,7 +211,7 @@ const CreateGroup: React.FC<Props> = ({ navigation }) => {
             <View style={[inputStyle.fullWidthInputContainer]}>
               <TextInput
                 placeholder='Enter group description'
-                style={[inputStyle.fullWidthInput]}
+                style={[inputStyle.fullWidthInput, inputStyle.multilineInput]}
                 multiline
                 onChangeText={(e) => {
                   setNewGroupObj({
