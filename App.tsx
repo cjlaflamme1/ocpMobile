@@ -4,7 +4,6 @@ import { Platform, StyleSheet } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { Subscription } from 'expo-modules-core';
 import * as Notifications from 'expo-notifications';
-import * as Device from 'expo-device';
 import * as BackgroundFetch from 'expo-background-fetch';
 import * as TaskManager from 'expo-task-manager';
 import { SafeAreaView } from 'react-native-safe-area-context';
