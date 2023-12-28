@@ -42,7 +42,7 @@
       }
     },
     "android": {
-      "versionCode": 38,
+      "versionCode": 39,
       "package": "com.outdoorcommunityproject",
       "adaptiveIcon": {
         "foregroundImage": "./assets/logoDroid.png",
