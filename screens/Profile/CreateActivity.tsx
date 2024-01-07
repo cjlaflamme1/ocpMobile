@@ -49,9 +49,10 @@ const CreateActivity: React.FC<Props> = ({ navigation }) => {
     if (!newActivity) {
       resetActivity();
     }
+    const nav = { navigation: navigation, defaultView: 'Profile Landing'}
     navigation.setOptions({
       header: () => (
-        <TitleWithBackButton title='Create Activity' navigation={navigation} />
+        <TitleWithBackButton title='Create Activity' nav={nav} />
       )
     });
   }, [navigation]);

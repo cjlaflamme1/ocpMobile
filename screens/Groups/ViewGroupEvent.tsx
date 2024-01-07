@@ -40,9 +40,10 @@ const ViewGroupEvent: React.FC<Props> = ({ navigation, route }) => {
     if (!selectedGroupEvent || eventId !== selectedGroupEvent.id) {
       dispatch(getOneGroupEventAsync(eventId));
     }
+    const nav = { navigation: navigation, defaultView: 'Groups Landing'}
     navigation.setOptions({
       header: () => (
-        <TripleHeader navigation={navigation} title='View Event'>
+        <TripleHeader nav={nav} title='View Event'>
             <Pressable
               style={[layoutStyles.flexRow,
               layoutStyles.alignItemCenter,

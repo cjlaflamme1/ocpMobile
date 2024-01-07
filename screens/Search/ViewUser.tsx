@@ -25,10 +25,11 @@ const ViewUser: React.FC<Props> = ({ navigation, route }) => {
   const userId = route.params.userId;
 
   useEffect(() => {
+    const nav = { navigation: navigation, defaultView: 'Search Landing'}
     dispatch(getOneUserAsync(userId));
     navigation.setOptions({
       header: () => (
-        <TitleWithBackButton title='View User' navigation={navigation} />
+        <TitleWithBackButton title='View User' nav={nav}  />
       )
     });
     return () => {

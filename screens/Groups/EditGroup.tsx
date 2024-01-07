@@ -50,9 +50,10 @@ const EditGroup: React.FC<Props> = ({ navigation, route }) => {
         addingUserIds: [],
       });
     }
+    const nav = { navigation: navigation, defaultView: 'Groups Landing'}
     navigation.setOptions({
       header: () => (
-        <TitleWithBackButton title='Edit Group' navigation={navigation} />
+        <TitleWithBackButton title='Edit Group' nav={nav} />
       )
     });
   }, [navigation, groupId]);
