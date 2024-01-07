@@ -62,9 +62,10 @@ const CreateGroupEvent: React.FC<Props> = ({ navigation }) => {
         description: '',
       });
     }
+    const nav = { navigation: navigation, defaultView: 'Groups Landing'}
     navigation.setOptions({
       header: () => (
-        <TitleWithBackButton title='Create Event' navigation={navigation} />
+        <TitleWithBackButton title='Create Event' nav={nav} />
       )
     });
   }, [navigation]);

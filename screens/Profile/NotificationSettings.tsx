@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { NavigationProp } from '@react-navigation/native';
 import * as Notifications from 'expo-notifications';
 import { RefreshControl, ScrollView, View } from 'react-native';
@@ -8,6 +8,7 @@ import PrimaryButton from '../../components/PrimaryButton';
 import registerForPushNotificationsAsync from '../../services/pushNotifications';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { updateCurrentUserAsync } from '../../store/userSlice';
+import TitleWithBackButton from '../../components/headers/TitleBackButton';
 
 interface Props {
   navigation: NavigationProp<any, any>
@@ -29,6 +30,15 @@ const NotificationSettings: React.FC<Props> = ({ navigation }) => {
     setAskAgain(res?.canAskAgain);
     setIsGranted(res?.granted);
   }
+
+  useEffect(() => {
+    const nav = { navigation: navigation, defaultView: 'Profile Landing'}
+    navigation.setOptions({
+      header: () => (
+        <TitleWithBackButton title='Edit Notifications' nav={nav} />
+      )
+    });
+  }, [navigation]);
 
   pushNotificationStatus()
 

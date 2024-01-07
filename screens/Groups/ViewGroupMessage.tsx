@@ -40,9 +40,10 @@ const ViewGroupMessage: React.FC<Props> = ({ navigation, route }) => {
     if (!selectedPost || selectedPost.id !== postId) {
       dispatch(getOneGroupPostAsync(postId));
     }
+    const nav = { navigation: navigation, defaultView: 'Groups Landing'}
     navigation.setOptions({
       header: () => (
-        <TitleWithBackButton title='View Message' navigation={navigation} />
+        <TitleWithBackButton title='View Message' nav={nav} />
       )
     });
     return () => {

@@ -115,9 +115,10 @@ const ActivityDescription: React.FC<Props> = ({ navigation }) => {
   const { width } = Dimensions.get('window');
 
   useEffect(() => {
+    const nav = { navigation: navigation, defaultView: 'Profile Landing'}
     navigation.setOptions({
       header: () => (
-        <TripleHeader navigation={navigation} title='Activity Description'>
+        <TripleHeader nav={nav} title='Activity Description'>
           <Pressable
             style={[layoutStyles.flexRow,
             layoutStyles.alignItemCenter,

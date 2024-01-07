@@ -67,9 +67,10 @@ const GroupView: React.FC<Props> = ({ navigation, route }) => {
   };
 
   useEffect(() => {
+    const nav = { navigation: navigation, defaultView: 'Groups Landing'}
     navigation.setOptions({
       header: () => (
-        <TripleHeader navigation={navigation} title='View Group'>
+        <TripleHeader nav={nav} title='View Group'>
           <Pressable
             style={[layoutStyles.flexRow,
             layoutStyles.alignItemCenter,

@@ -10,13 +10,16 @@ import titleWithButtonStyle from '../../styles/headerStyles/titleWithButton';
 import { NavigationProp } from '@react-navigation/native';
 
 interface Props {
-  navigation?: NavigationProp<any, any>;
+  nav?: {
+    navigation: NavigationProp<any, any>;
+    defaultView: string;
+  }
   title: string;
   children?: any;
   // profileFunction: Function;
 }
 
-const TripleHeader: React.FC<Props> = ({ navigation, title, children }) => {
+const TripleHeader: React.FC<Props> = ({ nav, title, children }) => {
   // const { profileFunction } = props;
   const insets = useSafeAreaInsets();
   return (
@@ -24,16 +27,31 @@ const TripleHeader: React.FC<Props> = ({ navigation, title, children }) => {
       style={[layoutStyles.flexRow, layoutStyles.alignItemCenter, layoutStyles.jBetween, titleWithButtonStyle.headerContainer, { paddingTop: insets.top + 5 }]}
     >
       <View>
-        <Pressable
-          onPress={() => navigation ? navigation.goBack() : null}
-          style={[titleWithButtonStyle.iconButton, layoutStyles.alignItemCenter, layoutStyles.jCenter]}
-        >
-          <Image
-            style={[titleWithButtonStyle.icon]}
-            source={require('../../assets/icons/backButtonIcon.png')}
-            contentFit='contain'
-          />
-        </Pressable>
+        {
+          nav && nav.navigation ? (
+            <Pressable
+              onPress={() => nav.navigation.canGoBack() ? nav.navigation.goBack() : nav.navigation.navigate(nav.defaultView)}
+              style={[titleWithButtonStyle.iconButton, layoutStyles.alignItemCenter, layoutStyles.jCenter]}
+            >
+              <Image
+                style={[titleWithButtonStyle.icon]}
+                source={require('../../assets/icons/backButtonIcon.png')}
+                contentFit='contain'
+              />
+            </Pressable>
+          ) : (
+            <Pressable
+              disabled
+              style={[titleWithButtonStyle.iconButton, layoutStyles.alignItemCenter, layoutStyles.jCenter]}
+            >
+              <Image
+                style={[titleWithButtonStyle.icon]}
+                source={require('../../assets/icons/backButtonIcon.png')}
+                contentFit='contain'
+              />
+            </Pressable>
+          )
+        }
       </View>
       <View style={[layoutStyles.mt_1, layoutStyles.mb_1, layoutStyles.dFlex]}>
         <CustomText style={[{ flexWrap: 'wrap', flexShrink: 1 }]} bold h4>{title}</CustomText>
@@ -52,6 +70,6 @@ const TripleHeader: React.FC<Props> = ({ navigation, title, children }) => {
 export default TripleHeader;
 
 TripleHeader.defaultProps = {
-  navigation: undefined,
+  nav: undefined,
   children: undefined,
 }

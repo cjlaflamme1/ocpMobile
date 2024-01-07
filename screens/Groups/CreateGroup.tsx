@@ -44,9 +44,10 @@ const CreateGroup: React.FC<Props> = ({ navigation }) => {
         pendingInvitationUserIds: [],
       });
     }
+    const nav = { navigation: navigation, defaultView: 'Groups Landing'}
     navigation.setOptions({
       header: () => (
-        <TitleWithBackButton title='Create Group' navigation={navigation} />
+        <TitleWithBackButton title='Create Group' nav={nav} />
       )
     });
   }, [navigation]);

@@ -78,9 +78,10 @@ const EditGroupEvent: React.FC<Props> = ({ navigation, route }) => {
         ampm: 'AM',
       });
     }
+    const nav = { navigation: navigation, defaultView: 'Groups Landing'}
     navigation.setOptions({
       header: () => (
-        <TitleWithBackButton title='Edit Event' navigation={navigation} />
+        <TitleWithBackButton title='Edit Event' nav={nav} />
       )
     });
     return () => {
